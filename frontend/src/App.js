@@ -10,7 +10,7 @@ import ScheduleManagement from '@/pages/ScheduleManagement';
 import AttendanceManagement from '@/pages/AttendanceManagement';
 import FinancialManagement from '@/pages/FinancialManagement';
 import ExercisesManagement from '@/pages/ExercisesManagement';
-import { Toaster } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
