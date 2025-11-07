@@ -12,8 +12,6 @@ const Layout = ({ children, user, onLogout }) => {
   const professionalMenuItems = [
     { path: '/', icon: Home, label: 'Dashboard' },
     { path: '/students', icon: Users, label: 'Alunos' },
-    { path: '/exercises', icon: Dumbbell, label: 'Exercícios' },
-    { path: '/workouts', icon: Activity, label: 'Treinos' },
     { path: '/schedule', icon: Calendar, label: 'Agenda' },
     { path: '/attendance', icon: CheckCircle, label: 'Presenças' },
     { path: '/financial', icon: DollarSign, label: 'Financeiro' },
