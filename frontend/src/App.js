@@ -78,12 +78,12 @@ const App = () => {
           element={user?.type === 'professional' ? <StudentsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
-          path="/exercises"
-          element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+          path="/students/:studentId/workouts"
+          element={user?.type === 'professional' ? <WorkoutsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
-          path="/workouts"
-          element={user ? <WorkoutsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
+          path="/students/:studentId/workouts/exercises"
+          element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
           path="/schedule"
