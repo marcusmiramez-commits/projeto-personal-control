@@ -8,7 +8,7 @@ import StudentsManagement from '@/pages/StudentsManagement';
 import WorkoutsManagement from '@/pages/WorkoutsManagement';
 import ScheduleManagement from '@/pages/ScheduleManagement';
 import AttendanceManagement from '@/pages/AttendanceManagement';
-import FinancialManagement from '@/pages/Financial Management';
+import FinancialManagement from '@/pages/FinancialManagement';
 import ExercisesManagement from '@/pages/ExercisesManagement';
 import { Toaster } from 'sonner';
 
