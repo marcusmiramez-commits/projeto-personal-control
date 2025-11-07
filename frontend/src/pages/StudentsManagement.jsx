@@ -93,8 +93,33 @@ const StudentsManagement = ({ user, onLogout }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredStudents.map((student) => (
             <div key={student.id} className="glass rounded-2xl p-6 card-hover border border-emerald-100" data-testid="student-card">
-              <div className="flex justify-between items-start mb-4"><div><h3 className="text-lg font-bold">{student.name}</h3><p className="text-sm text-slate-600">{student.email}</p></div><Button size="sm" variant="ghost" className="hover:bg-red-50 hover:text-red-600" onClick={() => handleDelete(student.id)} data-testid="delete-student-button"><Trash2 className="w-4 h-4" /></Button></div>
-              <div className="space-y-2"><div className="flex justify-between text-sm"><span className="text-slate-600">Telefone:</span><span className="font-semibold">{student.phone}</span></div><div className="flex justify-between text-sm"><span className="text-slate-600">Contrato:</span><span className="font-semibold capitalize">{student.contract_type}</span></div></div>
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-lg font-bold">{student.name}</h3>
+                  <p className="text-sm text-slate-600">{student.email}</p>
+                </div>
+                <Button size="sm" variant="ghost" className="hover:bg-red-50 hover:text-red-600" onClick={() => handleDelete(student.id)} data-testid="delete-student-button">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-600">Telefone:</span>
+                  <span className="font-semibold">{student.phone}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-600">Contrato:</span>
+                  <span className="font-semibold capitalize">{student.contract_type}</span>
+                </div>
+              </div>
+              <Button 
+                onClick={() => navigate(`/students/${student.id}/workouts`)} 
+                className="w-full mt-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                data-testid="view-workouts-button"
+              >
+                <Dumbbell className="w-4 h-4 mr-2" />
+                Ver Treinos
+              </Button>
             </div>
           ))}
         </div>
