@@ -87,7 +87,24 @@ const StudentsManagement = ({ user, onLogout }) => {
       <div data-testid="students-management">
         <div className="flex justify-between items-center mb-8">
           <div><h1 className="text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>Gerenciar <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Alunos</span></h1><p className="text-slate-600 mt-2">Total: {students.length}</p></div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (open) {
+              // Limpar formulário ao abrir
+              setFormData({ 
+                name: '', 
+                email: '', 
+                password: '', 
+                phone: '', 
+                age: '', 
+                goal: '', 
+                contract_type: 'monthly', 
+                monthly_value: '', 
+                class_balance: 0, 
+                class_value: '' 
+              });
+            }
+          }}>
             <DialogTrigger asChild><Button className="bg-gradient-to-r from-emerald-500 to-green-600" data-testid="add-student-button"><UserPlus className="w-4 h-4 mr-2" />Novo Aluno</Button></DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader><DialogTitle>Cadastrar Novo Aluno</DialogTitle></DialogHeader>
