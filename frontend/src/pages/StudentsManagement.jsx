@@ -284,14 +284,31 @@ const StudentsManagement = ({ user, onLogout }) => {
                   <span className="font-semibold capitalize">{student.contract_type}</span>
                 </div>
               </div>
-              <Button 
-                onClick={() => navigate(`/students/${student.id}/workouts`)} 
-                className="w-full mt-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                data-testid="view-workouts-button"
-              >
-                <Dumbbell className="w-4 h-4 mr-2" />
-                Ver Treinos
-              </Button>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <Button 
+                  onClick={() => navigate(`/students/${student.id}/workouts`)} 
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                  data-testid="view-workouts-button"
+                >
+                  <Dumbbell className="w-4 h-4 mr-2" />
+                  Treinos
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const message = `Olá ${student.name}! 👋\n\n📱 *Lembrete - Dados de Acesso Personal Control*\n\n🔹 Email: ${student.email}\n🔹 Senha: (use a senha cadastrada)\n\n🌐 *Link de acesso:*\n${window.location.origin}/login\n\n⚠️ Use a aba "Login Aluno" para acessar.\n\nNos vemos no treino! 💪`;
+                    const cleanPhone = student.phone.replace(/\D/g, '');
+                    const whatsappUrl = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                    toast.success('WhatsApp aberto!');
+                  }}
+                  className="border-green-500 text-green-600 hover:bg-green-50"
+                  data-testid="send-whatsapp-button"
+                >
+                  <Send className="w-4 h-4 mr-2" />
+                  WhatsApp
+                </Button>
+              </div>
             </div>
           ))}
         </div>
