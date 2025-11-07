@@ -55,7 +55,18 @@ const StudentsManagement = ({ user, onLogout }) => {
       };
       
       await axios.post(`${API}/students`, studentData, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Aluno cadastrado com sucesso!');
+      
+      // Ask if user wants to send credentials via WhatsApp
+      const sendWhatsApp = window.confirm(
+        `Aluno cadastrado com sucesso!\n\nDeseja enviar os dados de acesso via WhatsApp para ${formData.name}?`
+      );
+      
+      if (sendWhatsApp) {
+        sendAccessDataViaWhatsApp(formData);
+      } else {
+        toast.success('Aluno cadastrado com sucesso!');
+      }
+      
       setIsDialogOpen(false);
       setFormData({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
       fetchStudents();
@@ -64,6 +75,19 @@ const StudentsManagement = ({ user, onLogout }) => {
       const errorMsg = error.response?.data?.detail || error.message || 'Erro ao cadastrar aluno';
       toast.error(errorMsg);
     }
+  };
+
+  const sendAccessDataViaWhatsApp = (studentData) => {
+    const message = `Olá ${studentData.name}! 👋\n\nSeu cadastro no Personal Control foi realizado com sucesso! ✅\n\n📱 *Dados de Acesso:*\n\n🔹 Email: ${studentData.email}\n🔹 Senha: ${studentData.password}\n\n🌐 *Link de acesso:*\n${window.location.origin}/login\n\n⚠️ *Importante:* Use a aba "Login Aluno" para acessar o sistema.\n\nQualquer dúvida, estou à disposição! 💪`;
+    
+    // Remove formatting from phone number
+    const cleanPhone = studentData.phone.replace(/\D/g, '');
+    
+    // Open WhatsApp with pre-filled message
+    const whatsappUrl = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+    
+    toast.success('WhatsApp aberto! Envie a mensagem para o aluno.');
   };
 
   const handleDelete = async (id) => {
