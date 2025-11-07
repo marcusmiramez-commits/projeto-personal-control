@@ -37,13 +37,32 @@ const StudentsManagement = ({ user, onLogout }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/students`, formData, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Aluno cadastrado!');
+      
+      // Prepare data with proper type conversion
+      const studentData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        age: formData.age ? parseInt(formData.age) : null,
+        goal: formData.goal || null,
+        anamnesis: formData.anamnesis || null,
+        observations: formData.observations || null,
+        contract_type: formData.contract_type,
+        monthly_value: formData.monthly_value ? parseFloat(formData.monthly_value) : null,
+        class_balance: formData.class_balance ? parseInt(formData.class_balance) : 0,
+        class_value: formData.class_value ? parseFloat(formData.class_value) : null
+      };
+      
+      await axios.post(`${API}/students`, studentData, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success('Aluno cadastrado com sucesso!');
       setIsDialogOpen(false);
       setFormData({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
       fetchStudents();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erro ao cadastrar');
+      console.error('Erro detalhado:', error.response?.data);
+      const errorMsg = error.response?.data?.detail || error.message || 'Erro ao cadastrar aluno';
+      toast.error(errorMsg);
     }
   };
 
