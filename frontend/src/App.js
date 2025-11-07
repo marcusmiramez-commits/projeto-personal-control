@@ -1,54 +1,105 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import '@/App.css';
+import Login from '@/pages/Login';
+import ProfessionalDashboard from '@/pages/ProfessionalDashboard';
+import StudentDashboard from '@/pages/StudentDashboard';
+import StudentsManagement from '@/pages/StudentsManagement';
+import WorkoutsManagement from '@/pages/WorkoutsManagement';
+import ScheduleManagement from '@/pages/ScheduleManagement';
+import AttendanceManagement from '@/pages/AttendanceManagement';
+import FinancialManagement from '@/pages/Financial Management';
+import ExercisesManagement from '@/pages/ExercisesManagement';
+import { Toaster } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+export const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    helloWorldApi();
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      setUser(JSON.parse(userData));
+    }
+    setLoading(false);
   }, []);
 
+  const handleLogin = (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-slate-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-slate-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Toaster position="top-right" richColors />
+      <Routes>
+        <Route
+          path="/login"
+          element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/"
+          element={
+            user ? (
+              user.type === 'professional' ? (
+                <ProfessionalDashboard user={user} onLogout={handleLogout} />
+              ) : (
+                <StudentDashboard user={user} onLogout={handleLogout} />
+              )
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/students"
+          element={user?.type === 'professional' ? <StudentsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/exercises"
+          element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/workouts"
+          element={user ? <WorkoutsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/schedule"
+          element={user ? <ScheduleManagement user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/attendance"
+          element={user?.type === 'professional' ? <AttendanceManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/financial"
+          element={user ? <FinancialManagement user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 };
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
-}
 
 export default App;
