@@ -93,17 +93,129 @@ const StudentsManagement = ({ user, onLogout }) => {
               <DialogHeader><DialogTitle>Cadastrar Novo Aluno</DialogTitle></DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required data-testid="student-name-input" /></div>
-                  <div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required data-testid="student-email-input" /></div>
-                  <div><Label>Senha</Label><Input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required data-testid="student-password-input" /></div>
-                  <div><Label>Telefone</Label><Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} required data-testid="student-phone-input" /></div>
-                  <div><Label>Idade</Label><Input type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} data-testid="student-age-input" /></div>
-                  <div><Label>Contrato</Label><Select value={formData.contract_type} onValueChange={(value) => setFormData({...formData, contract_type: value})}><SelectTrigger data-testid="student-contract-type-select"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="monthly">Mensalista</SelectItem><SelectItem value="prepaid">Pré-pago</SelectItem><SelectItem value="postpaid">Pós-pago</SelectItem></SelectContent></Select></div>
+                  <div>
+                    <Label>Nome Completo *</Label>
+                    <Input 
+                      value={formData.name} 
+                      onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                      required 
+                      minLength={3}
+                      data-testid="student-name-input" 
+                    />
+                  </div>
+                  <div>
+                    <Label>Email *</Label>
+                    <Input 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                      required 
+                      data-testid="student-email-input" 
+                    />
+                  </div>
+                  <div>
+                    <Label>Senha *</Label>
+                    <Input 
+                      type="password" 
+                      value={formData.password} 
+                      onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                      required 
+                      minLength={6}
+                      data-testid="student-password-input" 
+                    />
+                  </div>
+                  <div>
+                    <Label>Telefone *</Label>
+                    <Input 
+                      value={formData.phone} 
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+                      required 
+                      placeholder="11999999999"
+                      data-testid="student-phone-input" 
+                    />
+                  </div>
+                  <div>
+                    <Label>Idade</Label>
+                    <Input 
+                      type="number" 
+                      value={formData.age} 
+                      onChange={(e) => setFormData({...formData, age: e.target.value})} 
+                      min="1"
+                      max="120"
+                      data-testid="student-age-input" 
+                    />
+                  </div>
+                  <div>
+                    <Label>Tipo de Contrato *</Label>
+                    <Select value={formData.contract_type} onValueChange={(value) => setFormData({...formData, contract_type: value})}>
+                      <SelectTrigger data-testid="student-contract-type-select">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="monthly">Mensalista</SelectItem>
+                        <SelectItem value="prepaid">Pré-pago</SelectItem>
+                        <SelectItem value="postpaid">Pós-pago</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                {formData.contract_type === 'monthly' && <div><Label>Valor Mensal</Label><Input type="number" step="0.01" value={formData.monthly_value} onChange={(e) => setFormData({...formData, monthly_value: e.target.value})} data-testid="student-monthly-value-input" /></div>}
-                {formData.contract_type === 'prepaid' && <div className="grid grid-cols-2 gap-4"><div><Label>Saldo</Label><Input type="number" value={formData.class_balance} onChange={(e) => setFormData({...formData, class_balance: e.target.value})} data-testid="student-class-balance-input" /></div><div><Label>Valor/Aula</Label><Input type="number" step="0.01" value={formData.class_value} onChange={(e) => setFormData({...formData, class_value: e.target.value})} data-testid="student-class-value-input" /></div></div>}
-                <div><Label>Objetivo</Label><Input value={formData.goal} onChange={(e) => setFormData({...formData, goal: e.target.value})} data-testid="student-goal-input" /></div>
-                <Button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-green-600" data-testid="submit-student-button">Cadastrar</Button>
+                {formData.contract_type === 'monthly' && (
+                  <div>
+                    <Label>Valor Mensal (R$)</Label>
+                    <Input 
+                      type="number" 
+                      step="0.01" 
+                      min="0"
+                      value={formData.monthly_value} 
+                      onChange={(e) => setFormData({...formData, monthly_value: e.target.value})} 
+                      placeholder="600.00"
+                      data-testid="student-monthly-value-input" 
+                    />
+                  </div>
+                )}
+                {formData.contract_type === 'prepaid' && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Saldo de Aulas</Label>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        value={formData.class_balance} 
+                        onChange={(e) => setFormData({...formData, class_balance: e.target.value})} 
+                        placeholder="10"
+                        data-testid="student-class-balance-input" 
+                      />
+                    </div>
+                    <div>
+                      <Label>Valor por Aula (R$)</Label>
+                      <Input 
+                        type="number" 
+                        step="0.01" 
+                        min="0"
+                        value={formData.class_value} 
+                        onChange={(e) => setFormData({...formData, class_value: e.target.value})} 
+                        placeholder="50.00"
+                        data-testid="student-class-value-input" 
+                      />
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <Label>Objetivo</Label>
+                  <Input 
+                    value={formData.goal} 
+                    onChange={(e) => setFormData({...formData, goal: e.target.value})} 
+                    placeholder="Ex: Emagrecimento, ganho de massa..."
+                    data-testid="student-goal-input" 
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700" 
+                  data-testid="submit-student-button"
+                >
+                  Cadastrar Aluno
+                </Button>
               </form>
             </DialogContent>
           </Dialog>
