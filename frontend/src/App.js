@@ -43,9 +43,18 @@ const App = () => {
   }, []);
 
   const handleLogin = (userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    try {
+      if (!userData || !token) {
+        console.error('Dados de login inválidos');
+        return;
+      }
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+    } catch (error) {
+      console.error('Erro ao salvar dados de login:', error);
+    }
   };
 
   const handleLogout = () => {
