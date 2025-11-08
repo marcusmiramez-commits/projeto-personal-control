@@ -133,9 +133,13 @@ const AttendanceManagement = ({ user, onLogout }) => {
         setLastSaved(new Date());
         console.log(`✓ Salvo: ${row.studentName} - Dia ${day} - ${newValue ? 'Presente' : 'Falta'}`);
       } else {
-        // Se desmarcou
+        // DELETAR presença do backend quando desmarcar
+        await axios.delete(`${API}/attendance/${row.studentId}/${dateStr}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
         setLastSaved(new Date());
-        console.log(`○ Desmarcado: ${row.studentName} - Dia ${day}`);
+        console.log(`✓ Deletado: ${row.studentName} - Dia ${day}`);
       }
     } catch (error) {
       console.error('Erro ao salvar presença:', error);
