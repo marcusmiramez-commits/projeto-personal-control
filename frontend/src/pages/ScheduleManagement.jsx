@@ -12,7 +12,7 @@ const ScheduleManagement = ({ user, onLogout }) => {
     '20:00', '21:00', '22:00'
   ]);
   
-  const weekDays = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO', 'DOMINGO'];
+  const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
   
   const [schedule, setSchedule] = useState(() => {
     const saved = localStorage.getItem(`schedule_${user?.id}`);
