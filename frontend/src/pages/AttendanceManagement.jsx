@@ -257,6 +257,19 @@ const AttendanceManagement = ({ user, onLogout }) => {
             <Button variant="outline" onClick={() => changeMonth(1)} data-testid="next-month-button">
               <ChevronRight className="w-4 h-4" />
             </Button>
+            <Button 
+              onClick={() => {
+                setLoading(true);
+                fetchData();
+                toast.success('Dados atualizados!');
+              }} 
+              variant="outline" 
+              className="border-emerald-500 text-emerald-600 hover:bg-emerald-50" 
+              data-testid="refresh-button"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Atualizar
+            </Button>
             <Button onClick={exportToCSV} variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50" data-testid="export-button">
               <Download className="w-4 h-4 mr-2" />
               Exportar CSV
