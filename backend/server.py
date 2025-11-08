@@ -574,7 +574,7 @@ async def get_attendances(student_id: Optional[str] = None, month: Optional[str]
 
 # ============= PAYMENTS ROUTES =============
 
-@api_router.post("/payments", response_model=Payment)
+@api_router.post("/payments")
 async def create_payment(payment: PaymentCreate, current_user: dict = Depends(get_current_user)):
     if current_user["type"] != "professional":
         raise HTTPException(status_code=403, detail="Only professionals can create payments")
@@ -594,7 +594,24 @@ async def create_payment(payment: PaymentCreate, current_user: dict = Depends(ge
     )
     doc = payment_obj.model_dump()
     await db.payments.insert_one(doc)
-    return payment_obj
+    
+    # Auto-update class balance for prepaid students
+    classes_added = 0
+    if student.get("contract_type") == "prepaid" and student.get("class_value") and student.get("class_value") > 0:
+        classes_added = int(payment.amount / student["class_value"])
+        current_balance = student.get("class_balance", 0)
+        new_balance = current_balance + classes_added
+        
+        await db.students.update_one(
+            {"id": payment.student_id},
+            {"$set": {"class_balance": new_balance}}
+        )
+    
+    return {
+        **payment_obj.model_dump(),
+        "classes_added": classes_added,
+        "message": f"{classes_added} aulas adicionadas ao saldo" if classes_added > 0 else "Pagamento registrado"
+    }
 
 @api_router.get("/payments", response_model=List[Payment])
 async def get_payments(student_id: Optional[str] = None, month: Optional[str] = None, current_user: dict = Depends(get_current_user)):
