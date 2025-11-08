@@ -505,7 +505,36 @@ async def mark_attendance(attendance: AttendanceCreate, current_user: dict = Dep
     if not student or student["professional_id"] != current_user["id"]:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    # Update class balance if prepaid/postpaid
+    # Verificar se já existe registro para esta data
+    existing = await db.attendances.find_one({
+        "professional_id": current_user["id"],
+        "student_id": attendance.student_id,
+        "date": attendance.date
+    }, {"_id": 0})
+    
+    # Se já existe, atualizar ao invés de inserir
+    if existing:
+        await db.attendances.update_one(
+            {
+                "professional_id": current_user["id"],
+                "student_id": attendance.student_id,
+                "date": attendance.date
+            },
+            {"$set": {"present": attendance.present}}
+        )
+        
+        attendance_obj = Attendance(
+            id=existing["id"],
+            professional_id=current_user["id"],
+            student_id=attendance.student_id,
+            student_name=student["name"],
+            date=attendance.date,
+            present=attendance.present,
+            created_at=existing["created_at"]
+        )
+        return attendance_obj
+    
+    # Update class balance if prepaid/postpaid (apenas para novo registro)
     if attendance.present:
         if student["contract_type"] == "prepaid" and student["class_balance"] > 0:
             await db.students.update_one(
@@ -513,6 +542,7 @@ async def mark_attendance(attendance: AttendanceCreate, current_user: dict = Dep
                 {"$inc": {"class_balance": -1}}
             )
     
+    # Inserir novo registro
     attendance_obj = Attendance(
         professional_id=current_user["id"],
         student_id=attendance.student_id,
