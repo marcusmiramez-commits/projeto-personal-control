@@ -6,24 +6,50 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Users, Dumbbell, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const ExercisesManagement = ({ user, onLogout }) => {
+  const navigate = useNavigate();
   const [exercises, setExercises] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({ name: '', muscle_group: '', description: '' });
 
-  useEffect(() => { fetchExercises(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  const fetchExercises = async () => {
+  const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/exercises`, { headers: { Authorization: `Bearer ${token}` } });
-      setExercises(response.data);
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Fetch exercises, students, and all workouts
+      const [exercisesRes, studentsRes] = await Promise.all([
+        axios.get(`${API}/exercises`, { headers }),
+        axios.get(`${API}/students`, { headers })
+      ]);
+      
+      setExercises(exercisesRes.data);
+      setStudents(studentsRes.data);
+      
+      // Fetch all workouts for all students
+      const allWorkouts = [];
+      for (const student of studentsRes.data) {
+        try {
+          const workoutsRes = await axios.get(`${API}/workouts/student/${student.id}`, { headers });
+          allWorkouts.push(...workoutsRes.data.map(w => ({ ...w, student_id: student.id, student_name: student.name })));
+        } catch (err) {
+          // Student might not have workouts yet
+        }
+      }
+      setWorkouts(allWorkouts);
+      
     } catch (error) {
-      toast.error('Erro ao carregar');
+      toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
     }
