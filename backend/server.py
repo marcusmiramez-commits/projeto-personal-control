@@ -614,6 +614,77 @@ async def get_payments(student_id: Optional[str] = None, month: Optional[str] = 
     
     return payments
 
+# ============= FINANCIAL REPORT ENDPOINT =============
+
+@api_router.get("/financial/report")
+async def get_financial_report(month: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can view financial reports")
+    
+    # Get current month if not specified
+    if not month:
+        from datetime import datetime, timezone
+        month = datetime.now(timezone.utc).strftime("%Y-%m")
+    
+    # Get all students
+    students = await db.students.find({"professional_id": current_user["id"], "status": "active"}, {"_id": 0}).to_list(1000)
+    
+    # Get attendances for the month
+    attendances = await db.attendances.find({"professional_id": current_user["id"]}, {"_id": 0}).to_list(10000)
+    month_attendances = [a for a in attendances if a["date"].startswith(month) and a["present"]]
+    
+    # Get payments for the month
+    payments = await db.payments.find({"professional_id": current_user["id"], "reference_month": month}, {"_id": 0}).to_list(1000)
+    
+    # Calculate financial data for each student
+    report = []
+    total_expected = 0
+    total_received = 0
+    
+    for student in students:
+        student_attendances = [a for a in month_attendances if a["student_id"] == student["id"]]
+        student_payments = [p for p in payments if p["student_id"] == student["id"]]
+        
+        classes_count = len(student_attendances)
+        paid_amount = sum([p["amount"] for p in student_payments])
+        
+        # Calculate expected amount based on contract type
+        expected_amount = 0
+        if student["contract_type"] == "monthly":
+            expected_amount = student.get("monthly_value", 0) or 0
+        elif student["contract_type"] == "postpaid":
+            expected_amount = classes_count * (student.get("class_value", 0) or 0)
+        elif student["contract_type"] == "prepaid":
+            # For prepaid, expected is based on classes used
+            expected_amount = classes_count * (student.get("class_value", 0) or 0)
+        
+        payment_status = "paid" if paid_amount >= expected_amount else "pending"
+        
+        report.append({
+            "student_id": student["id"],
+            "student_name": student["name"],
+            "contract_type": student["contract_type"],
+            "classes_count": classes_count,
+            "expected_amount": expected_amount,
+            "paid_amount": paid_amount,
+            "balance": paid_amount - expected_amount,
+            "payment_status": payment_status,
+            "class_value": student.get("class_value", 0),
+            "monthly_value": student.get("monthly_value", 0),
+            "class_balance": student.get("class_balance", 0)
+        })
+        
+        total_expected += expected_amount
+        total_received += paid_amount
+    
+    return {
+        "month": month,
+        "total_expected": total_expected,
+        "total_received": total_received,
+        "total_pending": total_expected - total_received,
+        "students": report
+    }
+
 # ============= DASHBOARD ROUTES =============
 
 @api_router.get("/dashboard/professional")
