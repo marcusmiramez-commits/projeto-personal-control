@@ -1,14 +1,342 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { API } from '../App';
 import Layout from '../components/Layout';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Save, Download, ChevronLeft, ChevronRight, UserPlus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const AttendanceManagement = ({ user, onLogout }) => {
+  const [students, setStudents] = useState([]);
+  const [attendanceRows, setAttendanceRows] = useState([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [loading, setLoading] = useState(true);
+
+  const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  useEffect(() => {
+    fetchData();
+  }, [currentMonth, currentYear]);
+
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Buscar alunos
+      const studentsRes = await axios.get(`${API}/students`, { headers });
+      setStudents(studentsRes.data);
+      
+      // Buscar presenças do mês
+      const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+      const attendanceRes = await axios.get(`${API}/attendance?month=${monthStr}`, { headers });
+      
+      // Criar mapa de presenças
+      const attendanceMap = {};
+      attendanceRes.data.forEach(att => {
+        const key = `${att.student_id}_${att.date}`;
+        attendanceMap[key] = att.present;
+      });
+      
+      // Criar linhas de presença (iniciar com alunos cadastrados)
+      const rows = studentsRes.data.map(student => ({
+        studentId: student.id,
+        studentName: student.name,
+        attendance: {}
+      }));
+      
+      // Adicionar linhas vazias se necessário
+      while (rows.length < 10) {
+        rows.push({
+          studentId: null,
+          studentName: '',
+          attendance: {}
+        });
+      }
+      
+      // Preencher dados de presença
+      rows.forEach(row => {
+        days.forEach(day => {
+          const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const key = `${row.studentId}_${dateStr}`;
+          row.attendance[day] = attendanceMap[key];
+        });
+      });
+      
+      setAttendanceRows(rows);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      toast.error('Erro ao carregar dados');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCellClick = async (rowIndex, day, isRightClick = false) => {
+    const row = attendanceRows[rowIndex];
+    
+    // Se não tem aluno associado, não faz nada
+    if (!row.studentId) {
+      toast.error('Adicione um aluno a esta linha primeiro');
+      return;
+    }
+    
+    const currentValue = row.attendance[day];
+    let newValue;
+    
+    if (isRightClick) {
+      // Click direito: falta (false) ou limpar
+      newValue = currentValue === false ? undefined : false;
+    } else {
+      // Click esquerdo: presença (true) ou limpar
+      newValue = currentValue === true ? undefined : true;
+    }
+    
+    // Atualizar estado local
+    const newRows = [...attendanceRows];
+    newRows[rowIndex].attendance[day] = newValue;
+    setAttendanceRows(newRows);
+    
+    // Salvar no backend
+    try {
+      const token = localStorage.getItem('token');
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      
+      if (newValue !== undefined) {
+        await axios.post(`${API}/attendance`, {
+          student_id: row.studentId,
+          date: dateStr,
+          present: newValue
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao salvar presença:', error);
+      toast.error('Erro ao salvar presença');
+    }
+  };
+
+  const handleStudentNameChange = (rowIndex, studentId) => {
+    const newRows = [...attendanceRows];
+    const student = students.find(s => s.id === studentId);
+    if (student) {
+      newRows[rowIndex].studentId = student.id;
+      newRows[rowIndex].studentName = student.name;
+      setAttendanceRows(newRows);
+    }
+  };
+
+  const addEmptyRow = () => {
+    setAttendanceRows([...attendanceRows, {
+      studentId: null,
+      studentName: '',
+      attendance: {}
+    }]);
+  };
+
+  const removeRow = (rowIndex) => {
+    const newRows = attendanceRows.filter((_, index) => index !== rowIndex);
+    setAttendanceRows(newRows);
+  };
+
+  const changeMonth = (direction) => {
+    let newMonth = currentMonth + direction;
+    let newYear = currentYear;
+    
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear++;
+    } else if (newMonth < 0) {
+      newMonth = 11;
+      newYear--;
+    }
+    
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
+
+  const exportToCSV = () => {
+    let csv = 'Nome,' + days.join(',') + '\n';
+    
+    attendanceRows.forEach(row => {
+      if (row.studentName) {
+        const line = [row.studentName];
+        days.forEach(day => {
+          const val = row.attendance[day];
+          line.push(val === true ? 'P' : val === false ? 'F' : '');
+        });
+        csv += line.join(',') + '\n';
+      }
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `presencas_${months[currentMonth]}_${currentYear}.csv`;
+    a.click();
+    toast.success('Arquivo CSV exportado!');
+  };
+
+  if (loading) {
+    return (
+      <Layout user={user} onLogout={onLogout}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout user={user} onLogout={onLogout}>
       <div data-testid="attendance-management">
-        <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk' }}>Controle de <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Presenças</span></h1>
-        <div className="glass rounded-2xl p-8 text-center border border-emerald-100">
-          <p className="text-slate-600">Módulo de Presenças em desenvolvimento</p>
-          <p className="text-sm text-slate-500 mt-2">Em breve você poderá marcar presenças e gerar relatórios</p>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
+              Controle de <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Presenças</span>
+            </h1>
+            <p className="text-slate-600 mt-2">Click esquerdo: ✓ Presença | Click direito: ✗ Falta</p>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" onClick={() => changeMonth(-1)} data-testid="prev-month-button">
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <div className="px-4 py-2 bg-white border rounded-lg font-semibold min-w-[200px] text-center">
+              {months[currentMonth]} {currentYear}
+            </div>
+            <Button variant="outline" onClick={() => changeMonth(1)} data-testid="next-month-button">
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+            <Button onClick={exportToCSV} variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50" data-testid="export-button">
+              <Download className="w-4 h-4 mr-2" />
+              Exportar CSV
+            </Button>
+          </div>
+        </div>
+
+        <div className="glass rounded-2xl p-6 border border-emerald-100 overflow-x-auto">
+          <div className="min-w-[1400px]">
+            <table className="w-full border-collapse" data-testid="attendance-table">
+              <thead>
+                <tr>
+                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-3 border border-slate-600 font-bold sticky left-0 z-10 min-w-[200px]">
+                    NOME
+                  </th>
+                  {days.map(day => (
+                    <th key={day} className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-3 border border-blue-500 font-bold text-center min-w-[40px]">
+                      {day}
+                    </th>
+                  ))}
+                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-3 border border-slate-600 font-bold text-center min-w-[60px]">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {attendanceRows.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-2 border border-blue-500 sticky left-0 z-10">
+                      {row.studentId ? (
+                        <div className="font-semibold px-2">{row.studentName}</div>
+                      ) : (
+                        <Select onValueChange={(value) => handleStudentNameChange(rowIndex, value)}>
+                          <SelectTrigger className="bg-white text-slate-900 border-0 h-8">
+                            <SelectValue placeholder="Selecionar aluno..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {students.filter(s => !attendanceRows.some(r => r.studentId === s.id)).map(student => (
+                              <SelectItem key={student.id} value={student.id}>{student.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </td>
+                    {days.map(day => {
+                      const value = row.attendance[day];
+                      let bgColor = 'bg-blue-50';
+                      let content = '';
+                      
+                      if (value === true) {
+                        bgColor = 'bg-green-100';
+                        content = '✓';
+                      } else if (value === false) {
+                        bgColor = 'bg-red-100';
+                        content = '✗';
+                      }
+                      
+                      return (
+                        <td
+                          key={day}
+                          className={`${bgColor} p-2 border border-blue-200 text-center cursor-pointer hover:opacity-70 transition-opacity`}
+                          onClick={() => handleCellClick(rowIndex, day, false)}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            handleCellClick(rowIndex, day, true);
+                          }}
+                          data-testid={`attendance-cell-${rowIndex}-${day}`}
+                        >
+                          <span className="text-lg font-bold">{content}</span>
+                        </td>
+                      );
+                    })}
+                    <td className="bg-slate-50 p-2 border border-slate-200 text-center">
+                      <button
+                        onClick={() => removeRow(rowIndex)}
+                        className="p-1 hover:bg-red-100 rounded"
+                        data-testid={`remove-row-${rowIndex}`}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-4 flex justify-between items-center">
+            <Button onClick={addEmptyRow} variant="outline" className="border-emerald-500 text-emerald-600 hover:bg-emerald-50" data-testid="add-row-button">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Adicionar Linha
+            </Button>
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-green-100 border border-green-300 rounded flex items-center justify-center">✓</div>
+                <span>Presente</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-red-100 border border-red-300 rounded flex items-center justify-center">✗</div>
+                <span>Falta</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-blue-50 border border-blue-200 rounded"></div>
+                <span>Não marcado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="glass rounded-xl p-4 border border-emerald-100">
+            <h3 className="font-bold text-emerald-700 mb-2">💡 Dica 1</h3>
+            <p className="text-sm text-slate-600">Click esquerdo marca presença (✓), click novamente para desmarcar</p>
+          </div>
+          <div className="glass rounded-xl p-4 border border-emerald-100">
+            <h3 className="font-bold text-emerald-700 mb-2">🖱️ Dica 2</h3>
+            <p className="text-sm text-slate-600">Click direito marca falta (✗), click novamente para desmarcar</p>
+          </div>
+          <div className="glass rounded-xl p-4 border border-emerald-100">
+            <h3 className="font-bold text-emerald-700 mb-2">💾 Dica 3</h3>
+            <p className="text-sm text-slate-600">As presenças são salvas automaticamente ao clicar</p>
+          </div>
         </div>
       </div>
     </Layout>
