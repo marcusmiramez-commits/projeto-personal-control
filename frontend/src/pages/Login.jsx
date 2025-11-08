@@ -105,13 +105,40 @@ const Login = ({ onLogin }) => {
 
   const handleStudentLogin = async (e) => {
     e.preventDefault();
+    
+    if (!formData.email || !formData.password) {
+      toast.error('Preencha email e senha');
+      return;
+    }
+    
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/auth/login/student`, { email: formData.email, password: formData.password });
-      toast.success('Login realizado com sucesso!');
-      onLogin(response.data.user, response.data.access_token);
+      const response = await axios.post(`${API}/auth/login/student`, { 
+        email: formData.email.trim().toLowerCase(), 
+        password: formData.password 
+      });
+      
+      if (response.data && response.data.access_token && response.data.user) {
+        toast.success(`Bem-vindo, ${response.data.user.name}!`);
+        onLogin(response.data.user, response.data.access_token);
+      } else {
+        toast.error('Resposta inválida do servidor');
+      }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erro ao fazer login');
+      console.error('Erro no login:', error);
+      let errorMsg = 'Erro ao fazer login';
+      
+      if (error.response?.status === 401) {
+        errorMsg = 'Email ou senha incorretos';
+      } else if (error.response?.status === 500) {
+        errorMsg = 'Erro no servidor. Tente novamente.';
+      } else if (error.response?.data?.detail) {
+        errorMsg = error.response.data.detail;
+      } else if (!error.response) {
+        errorMsg = 'Erro de conexão. Verifique sua internet.';
+      }
+      
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
