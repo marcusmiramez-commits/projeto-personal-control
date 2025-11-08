@@ -97,17 +97,18 @@ const AttendanceManagement = ({ user, onLogout }) => {
       newValue = currentValue === true ? undefined : true;
     }
     
-    // Atualizar estado local
+    // Atualizar estado local IMEDIATAMENTE
     const newRows = [...attendanceRows];
     newRows[rowIndex].attendance[day] = newValue;
     setAttendanceRows(newRows);
     
-    // Salvar no backend
+    // Salvar no backend de forma assíncrona
+    const token = localStorage.getItem('token');
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    
     try {
-      const token = localStorage.getItem('token');
-      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      
       if (newValue !== undefined) {
+        // Salvar presença/falta
         await axios.post(`${API}/attendance`, {
           student_id: row.studentId,
           date: dateStr,
@@ -115,10 +116,22 @@ const AttendanceManagement = ({ user, onLogout }) => {
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        
+        // Feedback visual discreto
+        console.log(`✓ Presença salva: ${row.studentName} - Dia ${day} - ${newValue ? 'Presente' : 'Falta'}`);
+      } else {
+        // Se desmarcou, podemos deixar assim ou implementar delete
+        console.log(`○ Presença desmarcada: ${row.studentName} - Dia ${day}`);
       }
     } catch (error) {
       console.error('Erro ao salvar presença:', error);
-      toast.error('Erro ao salvar presença');
+      
+      // Reverter mudança local em caso de erro
+      const revertRows = [...attendanceRows];
+      revertRows[rowIndex].attendance[day] = currentValue;
+      setAttendanceRows(revertRows);
+      
+      toast.error('Erro ao salvar. Tente novamente.');
     }
   };
 
