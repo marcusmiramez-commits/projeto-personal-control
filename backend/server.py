@@ -347,6 +347,36 @@ async def delete_student(student_id: str, current_user: dict = Depends(get_curre
         raise HTTPException(status_code=404, detail="Student not found")
     return {"message": "Student deleted successfully"}
 
+class AddClassesRequest(BaseModel):
+    classes: int
+
+@api_router.post("/students/{student_id}/add-classes")
+async def add_classes_to_student(student_id: str, request: AddClassesRequest, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can add classes")
+    
+    if request.classes <= 0:
+        raise HTTPException(status_code=400, detail="Number of classes must be positive")
+    
+    student = await db.students.find_one({"id": student_id, "professional_id": current_user["id"]}, {"_id": 0})
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    current_balance = student.get("class_balance", 0)
+    new_balance = current_balance + request.classes
+    
+    await db.students.update_one(
+        {"id": student_id},
+        {"$set": {"class_balance": new_balance}}
+    )
+    
+    return {
+        "message": f"{request.classes} aulas adicionadas com sucesso",
+        "previous_balance": current_balance,
+        "new_balance": new_balance,
+        "classes_added": request.classes
+    }
+
 # ============= EXERCISES ROUTES =============
 
 @api_router.post("/exercises", response_model=Exercise)
