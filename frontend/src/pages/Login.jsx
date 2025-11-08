@@ -59,17 +59,45 @@ const Login = ({ onLogin }) => {
 
   const handleProfessionalRegister = async (e) => {
     e.preventDefault();
+    
     if (!formData.name || !formData.email || !formData.password || !formData.phone) {
-      toast.error('Preencha todos os campos');
+      toast.error('Preencha todos os campos obrigatórios');
       return;
     }
+    
+    if (formData.password.length < 6) {
+      toast.error('A senha deve ter no mínimo 6 caracteres');
+      return;
+    }
+    
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/auth/register/professional`, { name: formData.name, email: formData.email, password: formData.password, phone: formData.phone });
-      toast.success('Cadastro realizado com sucesso!');
-      onLogin(response.data.user, response.data.access_token);
+      const response = await axios.post(`${API}/auth/register/professional`, { 
+        name: formData.name.trim(), 
+        email: formData.email.trim().toLowerCase(), 
+        password: formData.password, 
+        phone: formData.phone.trim() 
+      });
+      
+      if (response.data && response.data.access_token && response.data.user) {
+        toast.success(`Cadastro realizado! Bem-vindo, ${response.data.user.name}!`);
+        onLogin(response.data.user, response.data.access_token);
+      } else {
+        toast.error('Resposta inválida do servidor');
+      }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erro ao cadastrar');
+      console.error('Erro no cadastro:', error);
+      let errorMsg = 'Erro ao cadastrar';
+      
+      if (error.response?.status === 400) {
+        errorMsg = error.response.data?.detail || 'Email já cadastrado';
+      } else if (error.response?.data?.detail) {
+        errorMsg = error.response.data.detail;
+      } else if (!error.response) {
+        errorMsg = 'Erro de conexão. Verifique sua internet.';
+      }
+      
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
