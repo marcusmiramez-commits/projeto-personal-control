@@ -22,8 +22,22 @@ const App = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
+    
     if (token && userData) {
-      setUser(JSON.parse(userData));
+      try {
+        const parsedUser = JSON.parse(userData);
+        if (parsedUser && parsedUser.id && parsedUser.type) {
+          setUser(parsedUser);
+        } else {
+          // Dados inválidos, limpar
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      } catch (error) {
+        console.error('Erro ao parsear dados do usuário:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
     setLoading(false);
   }, []);
