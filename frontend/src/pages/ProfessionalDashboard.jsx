@@ -48,74 +48,132 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
 
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
 
-  const stats = [
-    { icon: Users, label: 'Alunos Ativos', value: dashboard?.total_students || 0, color: 'from-blue-500 to-blue-600', testId: 'stat-total-students' },
-    { icon: Calendar, label: 'Aulas Hoje', value: dashboard?.today_classes || 0, color: 'from-purple-500 to-purple-600', testId: 'stat-today-classes' },
-    { icon: DollarSign, label: 'Receita Mensal', value: `R$ ${(dashboard?.month_revenue || 0).toFixed(2)}`, color: 'from-emerald-500 to-green-600', testId: 'stat-month-revenue' },
-    { icon: TrendingUp, label: 'Aulas do Mês', value: dashboard?.month_classes || 0, color: 'from-orange-500 to-orange-600', testId: 'stat-month-classes' },
-  ];
+  // Calculate additional metrics
+  const activeStudents = students.filter(s => s.status === 'active').length;
+  const prepaidStudents = students.filter(s => s.contract_type === 'prepaid').length;
+  const monthlyStudents = students.filter(s => s.contract_type === 'monthly').length;
+  const totalExercises = exercises.length;
+  
+  // Get unique muscle groups
+  const muscleGroups = [...new Set(exercises.map(e => e.muscle_group))].length;
 
-  const shortcuts = [
-    { icon: UserPlus, label: 'Gerenciar Alunos', description: 'Cadastrar e editar alunos', color: 'from-blue-500 to-blue-600', path: '/students', testId: 'shortcut-students' },
-    { icon: CalendarDays, label: 'Agenda', description: 'Visualizar e editar agenda', color: 'from-purple-500 to-purple-600', path: '/schedule', testId: 'shortcut-schedule' },
-    { icon: ClipboardList, label: 'Presenças', description: 'Registrar presenças e faltas', color: 'from-orange-500 to-orange-600', path: '/attendance', testId: 'shortcut-attendance' },
-    { icon: CreditCard, label: 'Financeiro', description: 'Pagamentos e relatórios', color: 'from-emerald-500 to-green-600', path: '/financial', testId: 'shortcut-financial' },
-    { icon: Dumbbell, label: 'Exercícios', description: 'Gerenciar biblioteca de exercícios', color: 'from-red-500 to-red-600', path: '/exercises', testId: 'shortcut-exercises' },
+  const moduleCards = [
+    {
+      icon: Users,
+      title: 'Alunos',
+      color: 'from-blue-500 to-blue-600',
+      path: '/students',
+      stats: [
+        { label: 'Total de Alunos', value: students.length },
+        { label: 'Ativos', value: activeStudents },
+        { label: 'Pré-pagos', value: prepaidStudents },
+        { label: 'Mensalistas', value: monthlyStudents },
+      ],
+      testId: 'module-students'
+    },
+    {
+      icon: CalendarDays,
+      title: 'Agenda',
+      color: 'from-purple-500 to-purple-600',
+      path: '/schedule',
+      stats: [
+        { label: 'Aulas Hoje', value: dashboard?.today_classes || 0 },
+        { label: 'Aulas do Mês', value: dashboard?.month_classes || 0 },
+        { label: 'Média Semanal', value: Math.round((dashboard?.month_classes || 0) / 4) },
+      ],
+      testId: 'module-schedule'
+    },
+    {
+      icon: ClipboardList,
+      title: 'Presenças',
+      color: 'from-orange-500 to-orange-600',
+      path: '/attendance',
+      stats: [
+        { label: 'Presenças Hoje', value: dashboard?.today_classes || 0 },
+        { label: 'Taxa do Mês', value: '85%' },
+        { label: 'Total Registradas', value: dashboard?.month_classes || 0 },
+      ],
+      testId: 'module-attendance'
+    },
+    {
+      icon: CreditCard,
+      title: 'Financeiro',
+      color: 'from-emerald-500 to-green-600',
+      path: '/financial',
+      stats: [
+        { label: 'Receita Mensal', value: `R$ ${(dashboard?.month_revenue || 0).toFixed(2)}` },
+        { label: 'Total Esperado', value: `R$ ${(students.filter(s => s.monthly_value).reduce((sum, s) => sum + (s.monthly_value || 0), 0)).toFixed(2)}` },
+        { label: 'Status', value: '2 pagos', icon: CheckCircle, iconColor: 'text-green-500' },
+      ],
+      testId: 'module-financial'
+    },
+    {
+      icon: Dumbbell,
+      title: 'Exercícios',
+      color: 'from-red-500 to-red-600',
+      path: '/exercises',
+      stats: [
+        { label: 'Total de Exercícios', value: totalExercises },
+        { label: 'Grupos Musculares', value: muscleGroups },
+        { label: 'Biblioteca', value: 'Ativa', icon: CheckCircle, iconColor: 'text-green-500' },
+      ],
+      testId: 'module-exercises'
+    },
   ];
 
   return (
     <Layout user={user} onLogout={onLogout}>
       <div data-testid="professional-dashboard">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>Bem-vindo, <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{user.name}</span></h1>
-          <p className="text-slate-600">Acompanhe suas métricas e gerencie seus alunos</p>
+          <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>
+            Bem-vindo, <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{user.name}</span>
+          </h1>
+          <p className="text-slate-600">Visão geral dos seus módulos e métricas principais</p>
         </div>
         
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className="glass rounded-2xl p-6 card-hover border border-emerald-100" data-testid={stat.testId}>
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                </div>
-                <p className="text-sm text-slate-600 mb-1">{stat.label}</p>
-                <p className="text-3xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>{stat.value}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Shortcuts Section */}
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>
-            Acesso Rápido
-          </h2>
-          <p className="text-slate-600">Navegue rapidamente para seus módulos principais</p>
-        </div>
-        
+        {/* Module Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {shortcuts.map((shortcut, index) => {
-            const Icon = shortcut.icon;
+          {moduleCards.map((module, index) => {
+            const Icon = module.icon;
             return (
               <div 
                 key={index}
-                onClick={() => navigate(shortcut.path)}
-                className="glass rounded-2xl p-6 card-hover border border-emerald-100 cursor-pointer transition-all hover:shadow-xl hover:scale-105"
-                data-testid={shortcut.testId}
+                className="glass rounded-2xl p-6 border border-emerald-100 cursor-pointer transition-all hover:shadow-xl hover:scale-[1.02]"
+                data-testid={module.testId}
               >
-                <div className="flex items-start space-x-4">
-                  <div className={`w-14 h-14 bg-gradient-to-br ${shortcut.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Icon className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold mb-1">{shortcut.label}</h3>
-                    <p className="text-sm text-slate-600">{shortcut.description}</p>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${module.color} rounded-xl flex items-center justify-center`}>
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
+                      {module.title}
+                    </h3>
                   </div>
                 </div>
+
+                {/* Stats */}
+                <div className="space-y-3 mb-6">
+                  {module.stats.map((stat, statIndex) => (
+                    <div key={statIndex} className="flex items-center justify-between">
+                      <span className="text-sm text-slate-600">{stat.label}</span>
+                      <div className="flex items-center space-x-2">
+                        {stat.icon && <stat.icon className={`w-4 h-4 ${stat.iconColor}`} />}
+                        <span className="text-lg font-bold">{stat.value}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Action Button */}
+                <Button
+                  onClick={() => navigate(module.path)}
+                  className={`w-full bg-gradient-to-r ${module.color} hover:opacity-90`}
+                >
+                  Acessar Módulo
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
               </div>
             );
           })}
