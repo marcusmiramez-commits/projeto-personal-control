@@ -2,28 +2,48 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
-import { Users, Calendar, DollarSign, TrendingUp, UserPlus, CalendarDays, CreditCard, ClipboardList, Dumbbell } from 'lucide-react';
+import { Users, Calendar, DollarSign, UserPlus, CalendarDays, CreditCard, ClipboardList, Dumbbell, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/button';
 
 const ProfessionalDashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const [dashboard, setDashboard] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboard = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API}/dashboard/professional`, { headers: { Authorization: `Bearer ${token}` } });
-        setDashboard(response.data);
+        
+        // Fetch dashboard data
+        const dashboardResponse = await axios.get(`${API}/dashboard/professional`, { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+        setDashboard(dashboardResponse.data);
+        
+        // Fetch students
+        const studentsResponse = await axios.get(`${API}/students`, { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+        setStudents(studentsResponse.data);
+        
+        // Fetch exercises
+        const exercisesResponse = await axios.get(`${API}/exercises`, { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+        setExercises(exercisesResponse.data);
+        
       } catch (error) {
         toast.error('Erro ao carregar dashboard');
       } finally {
         setLoading(false);
       }
     };
-    fetchDashboard();
+    fetchData();
   }, []);
 
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
