@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { UserPlus, Search, Trash2, Dumbbell, Send, Edit } from 'lucide-react';
+import { UserPlus, Search, Trash2, Dumbbell, Send, Edit, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -18,7 +18,9 @@ const StudentsManagement = ({ user, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddClassesDialogOpen, setIsAddClassesDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
+  const [classesToAdd, setClassesToAdd] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
   const [editFormData, setEditFormData] = useState({ name: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
 
