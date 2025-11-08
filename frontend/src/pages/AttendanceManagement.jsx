@@ -105,6 +105,7 @@ const AttendanceManagement = ({ user, onLogout }) => {
     setAttendanceRows(newRows);
     
     // Salvar no backend de forma assíncrona
+    setSaving(true);
     const token = localStorage.getItem('token');
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
@@ -119,11 +120,13 @@ const AttendanceManagement = ({ user, onLogout }) => {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // Feedback visual discreto
-        console.log(`✓ Presença salva: ${row.studentName} - Dia ${day} - ${newValue ? 'Presente' : 'Falta'}`);
+        // Atualizar timestamp de último salvamento
+        setLastSaved(new Date());
+        console.log(`✓ Salvo: ${row.studentName} - Dia ${day} - ${newValue ? 'Presente' : 'Falta'}`);
       } else {
-        // Se desmarcou, podemos deixar assim ou implementar delete
-        console.log(`○ Presença desmarcada: ${row.studentName} - Dia ${day}`);
+        // Se desmarcou
+        setLastSaved(new Date());
+        console.log(`○ Desmarcado: ${row.studentName} - Dia ${day}`);
       }
     } catch (error) {
       console.error('Erro ao salvar presença:', error);
@@ -134,6 +137,8 @@ const AttendanceManagement = ({ user, onLogout }) => {
       setAttendanceRows(revertRows);
       
       toast.error('Erro ao salvar. Tente novamente.');
+    } finally {
+      setSaving(false);
     }
   };
 
