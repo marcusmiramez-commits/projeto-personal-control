@@ -25,17 +25,8 @@ const AttendanceManagement = ({ user, onLogout }) => {
     fetchData();
   }, [currentMonth, currentYear]);
 
-  // Auto-refresh a cada 60 segundos para manter dados sincronizados
-  // Apenas se não estiver salvando para não sobrescrever mudanças
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!saving) {
-        fetchData();
-      }
-    }, 60000); // 60 segundos
-
-    return () => clearInterval(interval);
-  }, [currentMonth, currentYear, saving]);
+  // Auto-refresh DESABILITADO para evitar sobrescrever mudanças do usuário
+  // O usuário pode mudar de mês para forçar refresh manual se necessário
 
   const fetchData = async () => {
     try {
