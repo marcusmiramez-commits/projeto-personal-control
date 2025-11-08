@@ -585,6 +585,52 @@ const StudentsManagement = ({ user, onLogout }) => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Dialog for Adding Classes */}
+      <Dialog open={isAddClassesDialogOpen} onOpenChange={setIsAddClassesDialogOpen}>
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>Adicionar Aulas ao Saldo</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddClasses} className="space-y-4">
+            <div>
+              <Label>Quantidade de Aulas</Label>
+              <Input
+                type="number"
+                min="1"
+                value={classesToAdd}
+                onChange={(e) => setClassesToAdd(e.target.value)}
+                placeholder="Ex: 10"
+                required
+                data-testid="classes-to-add-input"
+              />
+              <p className="text-sm text-slate-600 mt-2">
+                Saldo atual: <span className="font-semibold">{editFormData.class_balance || 0} aulas</span>
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsAddClassesDialogOpen(false);
+                  setClassesToAdd('');
+                }}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Adicionar
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
