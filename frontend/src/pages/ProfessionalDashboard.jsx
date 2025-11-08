@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
-import { Users, Calendar, DollarSign, TrendingUp } from 'lucide-react';
+import { Users, Calendar, DollarSign, TrendingUp, UserPlus, CalendarDays, CreditCard, ClipboardList, Dumbbell } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const ProfessionalDashboard = ({ user, onLogout }) => {
   const [dashboard, setDashboard] = useState(null);
