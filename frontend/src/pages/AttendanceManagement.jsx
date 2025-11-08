@@ -222,7 +222,22 @@ const AttendanceManagement = ({ user, onLogout }) => {
             <h1 className="text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
               Controle de <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Presenças</span>
             </h1>
-            <p className="text-slate-600 mt-2">Click esquerdo: ✓ Presença | Click direito: ✗ Falta</p>
+            <div className="flex items-center space-x-4 mt-2">
+              <p className="text-slate-600">Click esquerdo: ✓ Presença | Click direito: ✗ Falta</p>
+              <div className="flex items-center space-x-2">
+                {saving ? (
+                  <div className="flex items-center space-x-2 text-blue-600">
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm">Salvando...</span>
+                  </div>
+                ) : lastSaved ? (
+                  <div className="flex items-center space-x-2 text-green-600">
+                    <Save className="w-4 h-4" />
+                    <span className="text-sm">Salvo automaticamente às {lastSaved.toLocaleTimeString('pt-BR')}</span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
           
           <div className="flex items-center space-x-2">
