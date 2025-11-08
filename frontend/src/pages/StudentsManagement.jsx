@@ -154,6 +154,39 @@ const StudentsManagement = ({ user, onLogout }) => {
     }
   };
 
+  const handleAddClasses = async (e) => {
+    e.preventDefault();
+    
+    const classesNum = parseInt(classesToAdd);
+    if (!classesNum || classesNum <= 0) {
+      toast.error('Informe uma quantidade válida de aulas');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${API}/students/${editingStudent.id}/add-classes`,
+        { classes: classesNum },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      toast.success(response.data.message);
+      setIsAddClassesDialogOpen(false);
+      setClassesToAdd('');
+      fetchStudents();
+      
+      // Update editFormData to reflect new balance
+      setEditFormData({
+        ...editFormData,
+        class_balance: response.data.new_balance
+      });
+    } catch (error) {
+      console.error('Erro ao adicionar aulas:', error);
+      toast.error('Erro ao adicionar aulas');
+    }
+  };
+
   const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.email.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
