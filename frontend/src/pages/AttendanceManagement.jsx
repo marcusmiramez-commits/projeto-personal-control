@@ -25,6 +25,15 @@ const AttendanceManagement = ({ user, onLogout }) => {
     fetchData();
   }, [currentMonth, currentYear]);
 
+  // Auto-refresh a cada 30 segundos para manter dados sincronizados
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData();
+    }, 30000); // 30 segundos
+
+    return () => clearInterval(interval);
+  }, [currentMonth, currentYear]);
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
