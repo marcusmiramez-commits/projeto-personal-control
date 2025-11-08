@@ -255,8 +255,14 @@ async def register_professional(professional: ProfessionalCreate):
 
 @api_router.post("/auth/login/professional")
 async def login_professional(credentials: ProfessionalLogin):
+    logging.info(f"Login attempt for email: {credentials.email}")
     prof = await db.professionals.find_one({"email": credentials.email}, {"_id": 0})
-    if not prof or not verify_password(credentials.password, prof["password_hash"]):
+    logging.info(f"Professional found: {prof is not None}")
+    if prof:
+        logging.info(f"Has password_hash: {'password_hash' in prof}")
+        password_valid = verify_password(credentials.password, prof.get("password_hash", ""))
+        logging.info(f"Password valid: {password_valid}")
+    if not prof or not verify_password(credentials.password, prof.get("password_hash", "")):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     access_token = create_access_token(data={"sub": prof["id"], "type": "professional"})
