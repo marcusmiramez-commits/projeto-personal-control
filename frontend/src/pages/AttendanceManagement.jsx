@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Save, Download, ChevronLeft, ChevronRight, UserPlus, Trash2 } from 'lucide-react';
+import { Save, Download, ChevronLeft, ChevronRight, UserPlus, Trash2, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 const AttendanceManagement = ({ user, onLogout }) => {
