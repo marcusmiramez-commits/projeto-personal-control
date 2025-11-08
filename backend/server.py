@@ -479,6 +479,21 @@ async def delete_schedule(schedule_id: str, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=404, detail="Schedule not found")
     return {"message": "Schedule deleted successfully"}
 
+# ============= DELETE ATTENDANCE =============
+
+@api_router.delete("/attendance/{student_id}/{date}")
+async def delete_attendance(student_id: str, date: str, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can delete attendance")
+    
+    result = await db.attendances.delete_one({
+        "professional_id": current_user["id"],
+        "student_id": student_id,
+        "date": date
+    })
+    
+    return {"message": "Attendance deleted successfully", "deleted_count": result.deleted_count}
+
 # ============= ATTENDANCE ROUTES =============
 
 @api_router.post("/attendance", response_model=Attendance)
