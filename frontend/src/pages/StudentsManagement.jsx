@@ -105,6 +105,53 @@ const StudentsManagement = ({ user, onLogout }) => {
     }
   };
 
+  const handleEdit = (student) => {
+    setEditingStudent(student);
+    setEditFormData({
+      name: student.name,
+      phone: student.phone,
+      age: student.age || '',
+      goal: student.goal || '',
+      contract_type: student.contract_type,
+      monthly_value: student.monthly_value || '',
+      class_balance: student.class_balance || 0,
+      class_value: student.class_value || ''
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Prepare data with proper type conversion
+      const updateData = {
+        name: editFormData.name,
+        phone: editFormData.phone,
+        age: editFormData.age ? parseInt(editFormData.age) : null,
+        goal: editFormData.goal || null,
+        contract_type: editFormData.contract_type,
+        monthly_value: editFormData.monthly_value ? parseFloat(editFormData.monthly_value) : null,
+        class_balance: editFormData.class_balance ? parseInt(editFormData.class_balance) : 0,
+        class_value: editFormData.class_value ? parseFloat(editFormData.class_value) : null
+      };
+      
+      await axios.put(`${API}/students/${editingStudent.id}`, updateData, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      
+      toast.success('Cadastro atualizado com sucesso!');
+      setIsEditDialogOpen(false);
+      setEditingStudent(null);
+      fetchStudents();
+    } catch (error) {
+      console.error('Erro detalhado:', error.response?.data);
+      const errorMsg = error.response?.data?.detail || error.message || 'Erro ao atualizar cadastro';
+      toast.error(errorMsg);
+    }
+  };
+
   const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.email.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
