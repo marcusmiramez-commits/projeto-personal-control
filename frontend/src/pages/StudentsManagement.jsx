@@ -500,31 +500,43 @@ const StudentsManagement = ({ user, onLogout }) => {
             )}
 
             {editFormData.contract_type === 'prepaid' && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Saldo de Aulas</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={editFormData.class_balance}
-                    onChange={(e) => setEditFormData({...editFormData, class_balance: e.target.value})}
-                    placeholder="10"
-                    data-testid="edit-student-class-balance-input"
-                  />
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Saldo de Aulas</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={editFormData.class_balance}
+                      onChange={(e) => setEditFormData({...editFormData, class_balance: e.target.value})}
+                      placeholder="10"
+                      data-testid="edit-student-class-balance-input"
+                    />
+                  </div>
+                  <div>
+                    <Label>Valor por Aula (R$)</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={editFormData.class_value}
+                      onChange={(e) => setEditFormData({...editFormData, class_value: e.target.value})}
+                      placeholder="50.00"
+                      data-testid="edit-student-class-value-input"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label>Valor por Aula (R$)</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={editFormData.class_value}
-                    onChange={(e) => setEditFormData({...editFormData, class_value: e.target.value})}
-                    placeholder="50.00"
-                    data-testid="edit-student-class-value-input"
-                  />
-                </div>
-              </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsAddClassesDialogOpen(true)}
+                  className="w-full border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                  data-testid="add-classes-button"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar Aulas ao Saldo
+                </Button>
+              </>
             )}
 
             {editFormData.contract_type === 'postpaid' && (
