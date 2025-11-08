@@ -320,9 +320,26 @@ const StudentsManagement = ({ user, onLogout }) => {
                   <h3 className="text-lg font-bold">{student.name}</h3>
                   <p className="text-sm text-slate-600">{student.email}</p>
                 </div>
-                <Button size="sm" variant="ghost" className="hover:bg-red-50 hover:text-red-600" onClick={() => handleDelete(student.id)} data-testid="delete-student-button">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                <div className="flex space-x-1">
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="hover:bg-blue-50 hover:text-blue-600" 
+                    onClick={() => handleEdit(student)} 
+                    data-testid="edit-student-button"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="hover:bg-red-50 hover:text-red-600" 
+                    onClick={() => handleDelete(student.id)} 
+                    data-testid="delete-student-button"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -333,6 +350,12 @@ const StudentsManagement = ({ user, onLogout }) => {
                   <span className="text-slate-600">Contrato:</span>
                   <span className="font-semibold capitalize">{student.contract_type}</span>
                 </div>
+                {student.contract_type === 'prepaid' && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Saldo:</span>
+                    <span className="font-semibold">{student.class_balance} aulas</span>
+                  </div>
+                )}
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <Button 
