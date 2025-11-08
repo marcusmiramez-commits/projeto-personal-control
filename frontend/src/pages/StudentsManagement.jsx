@@ -387,6 +387,157 @@ const StudentsManagement = ({ user, onLogout }) => {
         </div>
         {filteredStudents.length === 0 && <div className="text-center py-12"><p className="text-slate-600">Nenhum aluno encontrado</p></div>}
       </div>
+
+      {/* Modal de Edição */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar Cadastro - {editingStudent?.name}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdate} className="space-y-4" data-testid="edit-student-form">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-blue-800">
+                <strong>Email:</strong> {editingStudent?.email}
+              </p>
+              <p className="text-xs text-blue-600 mt-1">O email não pode ser alterado pois é usado para login</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Nome Completo *</Label>
+                <Input
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                  required
+                  minLength={3}
+                  data-testid="edit-student-name-input"
+                />
+              </div>
+              <div>
+                <Label>Telefone *</Label>
+                <Input
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                  required
+                  placeholder="11999999999"
+                  data-testid="edit-student-phone-input"
+                />
+              </div>
+              <div>
+                <Label>Idade</Label>
+                <Input
+                  type="number"
+                  value={editFormData.age}
+                  onChange={(e) => setEditFormData({...editFormData, age: e.target.value})}
+                  min="1"
+                  max="120"
+                  data-testid="edit-student-age-input"
+                />
+              </div>
+              <div>
+                <Label>Tipo de Contrato *</Label>
+                <Select value={editFormData.contract_type} onValueChange={(value) => setEditFormData({...editFormData, contract_type: value})}>
+                  <SelectTrigger data-testid="edit-student-contract-type-select">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="monthly">Mensalista</SelectItem>
+                    <SelectItem value="prepaid">Pré-pago</SelectItem>
+                    <SelectItem value="postpaid">Pós-pago</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {editFormData.contract_type === 'monthly' && (
+              <div>
+                <Label>Valor Mensal (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editFormData.monthly_value}
+                  onChange={(e) => setEditFormData({...editFormData, monthly_value: e.target.value})}
+                  placeholder="600.00"
+                  data-testid="edit-student-monthly-value-input"
+                />
+              </div>
+            )}
+
+            {editFormData.contract_type === 'prepaid' && (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Saldo de Aulas</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={editFormData.class_balance}
+                    onChange={(e) => setEditFormData({...editFormData, class_balance: e.target.value})}
+                    placeholder="10"
+                    data-testid="edit-student-class-balance-input"
+                  />
+                </div>
+                <div>
+                  <Label>Valor por Aula (R$)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={editFormData.class_value}
+                    onChange={(e) => setEditFormData({...editFormData, class_value: e.target.value})}
+                    placeholder="50.00"
+                    data-testid="edit-student-class-value-input"
+                  />
+                </div>
+              </div>
+            )}
+
+            {editFormData.contract_type === 'postpaid' && (
+              <div>
+                <Label>Valor por Aula (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editFormData.class_value}
+                  onChange={(e) => setEditFormData({...editFormData, class_value: e.target.value})}
+                  placeholder="50.00"
+                  data-testid="edit-student-postpaid-class-value-input"
+                />
+              </div>
+            )}
+
+            <div>
+              <Label>Objetivo</Label>
+              <Input
+                value={editFormData.goal}
+                onChange={(e) => setEditFormData({...editFormData, goal: e.target.value})}
+                placeholder="Ex: Emagrecimento, ganho de massa..."
+                data-testid="edit-student-goal-input"
+              />
+            </div>
+
+            <div className="flex space-x-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+                className="flex-1"
+                data-testid="cancel-edit-button"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+                data-testid="submit-edit-button"
+              >
+                Salvar Alterações
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
