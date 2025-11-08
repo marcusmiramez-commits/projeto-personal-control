@@ -72,7 +72,7 @@ const FinancialManagement = ({ user, onLogout }) => {
       const token = localStorage.getItem('token');
       const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
       
-      await axios.post(`${API}/payments`, {
+      const response = await axios.post(`${API}/payments`, {
         student_id: selectedStudent.student_id,
         amount: parseFloat(paymentAmount),
         payment_date: new Date().toISOString().split('T')[0],
@@ -82,7 +82,13 @@ const FinancialManagement = ({ user, onLogout }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      toast.success('Pagamento registrado com sucesso!');
+      // Show success message with classes added info if applicable
+      if (response.data.classes_added > 0) {
+        toast.success(`${response.data.message}`, { duration: 4000 });
+      } else {
+        toast.success('Pagamento registrado com sucesso!');
+      }
+      
       setIsPaymentDialogOpen(false);
       setPaymentAmount('');
       fetchReport();
