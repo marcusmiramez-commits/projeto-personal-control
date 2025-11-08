@@ -589,11 +589,17 @@ async def get_professional_dashboard(current_user: dict = Depends(get_current_us
     month_attendances = [a for a in month_attendances if a["date"].startswith(current_month)]
     total_classes = len([a for a in month_attendances if a["present"]])
     
+    # Calcular taxa de presença
+    attendance_rate = 0
+    if len(month_attendances) > 0:
+        attendance_rate = round((total_classes / len(month_attendances)) * 100, 1)
+    
     return {
         "total_students": total_students,
         "today_classes": len(today_schedules),
         "month_revenue": total_revenue,
-        "month_classes": total_classes
+        "month_classes": total_classes,
+        "attendance_rate": attendance_rate
     }
 
 @api_router.get("/dashboard/student")
