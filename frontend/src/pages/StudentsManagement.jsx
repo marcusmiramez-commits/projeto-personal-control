@@ -17,7 +17,10 @@ const StudentsManagement = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+  const [editFormData, setEditFormData] = useState({ name: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
 
   useEffect(() => { fetchStudents(); }, []);
 
