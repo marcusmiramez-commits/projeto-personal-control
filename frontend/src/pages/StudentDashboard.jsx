@@ -59,51 +59,63 @@ const StudentDashboard = ({ user, onLogout }) => {
     </Layout>
   );
 
-  // Calculate statistics
+  // Get student data
   const student = dashboard?.student;
-  const presentCount = attendances.filter(a => a.present).length;
-  const totalScheduledThisMonth = attendances.length;
-  const attendanceRate = totalScheduledThisMonth > 0 
-    ? Math.round((presentCount / totalScheduledThisMonth) * 100) 
-    : 0;
+  const contractType = student?.contract_type;
+
+  // Calculate attendance statistics for current month
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const monthAttendances = attendances.filter(a => a.date && a.date.startsWith(currentMonth));
+  const presentCount = monthAttendances.filter(a => a.present).length;
+  const absentCount = monthAttendances.filter(a => !a.present).length;
+  const totalClasses = monthAttendances.length;
 
   // Count total workouts across all routines
   const totalWorkouts = workoutRoutines.reduce((sum, routine) => {
     return sum + (routine.workouts?.length || 0);
   }, 0);
 
-  // Get schedule data from localStorage (professional's schedule)
-  const getStudentScheduleInfo = () => {
-    try {
-      // We need to get the professional_id from the student data
-      const professionalId = student?.professional_id;
-      if (!professionalId) return { weeklyClasses: 0, nextClass: null };
-      
-      const scheduleData = localStorage.getItem(`schedule_${professionalId}`);
-      if (!scheduleData) return { weeklyClasses: 0, nextClass: null };
-      
-      const schedule = JSON.parse(scheduleData);
-      const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-      
-      let weeklyClasses = 0;
-      Object.keys(schedule).forEach(time => {
-        weekDays.forEach(day => {
-          const cellValue = schedule[time]?.[day]?.trim().toLowerCase();
-          const studentName = student?.name?.toLowerCase();
-          if (cellValue && studentName && cellValue.includes(studentName)) {
-            weeklyClasses++;
-          }
-        });
-      });
-      
-      return { weeklyClasses };
-    } catch (error) {
-      console.error('Error reading schedule:', error);
-      return { weeklyClasses: 0 };
+  // Calculate financial data based on contract type
+  const calculateFinancialData = () => {
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const pendingPayments = payments.filter(p => p.status === 'pending');
+    const totalPending = pendingPayments.reduce((sum, p) => sum + p.amount, 0);
+
+    if (contractType === 'prepaid') {
+      // Pré-pago: calcular valor pendente de pagamentos pendentes
+      return {
+        classBalance: student?.classes_remaining || 0,
+        pendingAmount: totalPending,
+        showClassBalance: true,
+        type: 'Pré-pago'
+      };
+    } else if (contractType === 'postpaid') {
+      // Pós-pago: calcular valor a pagar com base nas aulas dadas
+      const classValue = student?.class_value || 0;
+      const totalToPay = presentCount * classValue;
+      return {
+        amountToPay: totalToPay,
+        classValue: classValue,
+        showClassBalance: false,
+        type: 'Pós-pago'
+      };
+    } else if (contractType === 'monthly') {
+      // Mensalista: mostrar valor mensal e pendências
+      return {
+        monthlyValue: student?.monthly_value || 0,
+        pendingAmount: totalPending,
+        showClassBalance: false,
+        type: 'Mensal'
+      };
     }
+    
+    return {
+      showClassBalance: false,
+      type: 'N/A'
+    };
   };
 
-  const scheduleInfo = getStudentScheduleInfo();
+  const financialData = calculateFinancialData();
 
   return (
     <Layout user={user} onLogout={onLogout}>
