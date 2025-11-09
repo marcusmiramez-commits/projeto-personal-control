@@ -116,6 +116,18 @@ backend:
         - working: "NA"
           agent: "main"
           comment: "Backend endpoints for workout management are working correctly. No changes needed for this bug fix."
+  
+  - task: "Student credentials update endpoint"
+    implemented: true
+    working: "testing_needed"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Created PUT /students/me/credentials endpoint. Validates email uniqueness, verifies current password before allowing password change, hashes new password. Returns appropriate error messages for validation failures."
 
 frontend:
   - task: "Dynamic series field rendering in WorkoutDetail"
