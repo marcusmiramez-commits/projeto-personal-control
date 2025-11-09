@@ -26,6 +26,8 @@ const ExercisesManagement = ({ user, onLogout }) => {
   const [editingExercise, setEditingExercise] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
