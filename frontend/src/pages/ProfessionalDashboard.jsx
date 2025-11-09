@@ -98,6 +98,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
     }
   };
 
+  // Recalculate stats when refreshTrigger changes
   const scheduleStats = getScheduleStats();
 
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
