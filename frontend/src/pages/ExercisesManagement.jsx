@@ -231,31 +231,88 @@ const ExercisesManagement = ({ user, onLogout }) => {
       </div>
 
       <div>
-        <Label>URL da Imagem</Label>
-        <div className="flex space-x-2">
-          <Image className="w-5 h-5 text-slate-400 mt-2" />
-          <Input 
-            value={formData.image_url} 
-            onChange={(e) => setFormData({...formData, image_url: e.target.value})} 
-            placeholder="https://exemplo.com/imagem.jpg"
-            type="url"
-          />
+        <Label>Imagem</Label>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => document.getElementById(isEdit ? 'edit-image-upload' : 'image-upload').click()}
+              disabled={uploadingImage}
+            >
+              <Image className="w-4 h-4 mr-2" />
+              {uploadingImage ? 'Enviando...' : 'Selecionar Imagem'}
+            </Button>
+            <input
+              id={isEdit ? 'edit-image-upload' : 'image-upload'}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) handleFileUpload(file, 'image');
+              }}
+            />
+          </div>
+          {formData.image_url && (
+            <div className="relative">
+              <img src={formData.image_url} alt="Preview" className="w-full h-32 object-cover rounded-lg" onError={(e) => e.target.style.display = 'none'} />
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="absolute top-2 right-2 bg-white hover:bg-red-50 hover:text-red-600"
+                onClick={() => setFormData({...formData, image_url: ''})}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
         </div>
-        {formData.image_url && (
-          <img src={formData.image_url} alt="Preview" className="mt-2 w-full h-32 object-cover rounded-lg" onError={(e) => e.target.style.display = 'none'} />
-        )}
       </div>
 
       <div>
-        <Label>URL do Vídeo</Label>
-        <div className="flex space-x-2">
-          <Video className="w-5 h-5 text-slate-400 mt-2" />
-          <Input 
-            value={formData.video_url} 
-            onChange={(e) => setFormData({...formData, video_url: e.target.value})} 
-            placeholder="https://youtube.com/watch?v=..."
-            type="url"
-          />
+        <Label>Vídeo</Label>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => document.getElementById(isEdit ? 'edit-video-upload' : 'video-upload').click()}
+              disabled={uploadingVideo}
+            >
+              <Video className="w-4 h-4 mr-2" />
+              {uploadingVideo ? 'Enviando...' : 'Selecionar Vídeo'}
+            </Button>
+            <input
+              id={isEdit ? 'edit-video-upload' : 'video-upload'}
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) handleFileUpload(file, 'video');
+              }}
+            />
+          </div>
+          {formData.video_url && (
+            <div className="flex items-center justify-between p-2 bg-slate-100 rounded">
+              <span className="text-sm text-slate-600 flex items-center">
+                <Video className="w-4 h-4 mr-2" />
+                Vídeo anexado
+              </span>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => setFormData({...formData, video_url: ''})}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
