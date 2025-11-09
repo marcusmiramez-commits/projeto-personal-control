@@ -585,8 +585,19 @@ async def create_workout(workout: WorkoutCreate, current_user: dict = Depends(ge
     await db.workouts.insert_one(doc)
     return workout_obj
 
+@api_router.get("/workouts/routine/{routine_id}", response_model=List[Workout])
+async def get_routine_workouts(routine_id: str, current_user: dict = Depends(get_current_user)):
+    """Get all workouts for a specific routine"""
+    if current_user["type"] == "professional":
+        workouts = await db.workouts.find({"professional_id": current_user["id"], "routine_id": routine_id}, {"_id": 0}).to_list(1000)
+    else:
+        # Student access
+        workouts = await db.workouts.find({"routine_id": routine_id}, {"_id": 0}).to_list(1000)
+    return workouts
+
 @api_router.get("/workouts/student/{student_id}", response_model=List[Workout])
 async def get_student_workouts(student_id: str, current_user: dict = Depends(get_current_user)):
+    """Get all workouts for a student (legacy endpoint)"""
     if current_user["type"] == "professional":
         workouts = await db.workouts.find({"professional_id": current_user["id"], "student_id": student_id}, {"_id": 0}).to_list(1000)
     elif current_user["type"] == "student" and current_user["id"] == student_id:
@@ -595,14 +606,21 @@ async def get_student_workouts(student_id: str, current_user: dict = Depends(get
         raise HTTPException(status_code=403, detail="Access denied")
     return workouts
 
-@api_router.put("/workouts/{workout_id}")
-async def update_workout(workout_id: str, updates: dict, current_user: dict = Depends(get_current_user)):
+@api_router.put("/workouts/{workout_id}", response_model=Workout)
+async def update_workout(workout_id: str, workout_update: WorkoutUpdate, current_user: dict = Depends(get_current_user)):
     if current_user["type"] != "professional":
         raise HTTPException(status_code=403, detail="Only professionals can update workouts")
     
-    updates["updated_at"] = datetime.now(timezone.utc).isoformat()
-    await db.workouts.update_one({"id": workout_id, "professional_id": current_user["id"]}, {"$set": updates})
-    return {"message": "Workout updated successfully"}
+    update_data = {k: v for k, v in workout_update.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.workouts.update_one(
+        {"id": workout_id, "professional_id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.workouts.find_one({"id": workout_id}, {"_id": 0})
+    return Workout(**updated)
 
 @api_router.delete("/workouts/{workout_id}")
 async def delete_workout(workout_id: str, current_user: dict = Depends(get_current_user)):
