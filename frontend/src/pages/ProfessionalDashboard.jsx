@@ -119,9 +119,9 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
       color: 'from-purple-500 to-purple-600',
       path: '/schedule',
       stats: [
-        { label: 'Aulas Hoje', value: dashboard?.today_classes || 0 },
-        { label: 'Aulas do Mês', value: dashboard?.month_classes || 0 },
-        { label: 'Média Semanal', value: Math.round((dashboard?.month_classes || 0) / 4) },
+        { label: 'Aulas Hoje', value: scheduleStats.today },
+        { label: 'Aulas do Mês', value: scheduleStats.month },
+        { label: 'Média Semanal', value: scheduleStats.weeklyAvg },
       ],
       testId: 'module-schedule'
     },
