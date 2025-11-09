@@ -455,6 +455,33 @@ async def delete_exercise(exercise_id: str, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=404, detail="Exercise not found")
     return {"message": "Exercise deleted successfully"}
 
+@api_router.post("/upload")
+async def upload_file(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Upload image or video file"""
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can upload files")
+    
+    # Validate file type
+    allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'video/x-msvideo']
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid file type. Only images and videos are allowed")
+    
+    # Generate unique filename
+    file_extension = Path(file.filename).suffix
+    unique_filename = f"{uuid.uuid4()}{file_extension}"
+    file_path = UPLOAD_DIR / unique_filename
+    
+    # Save file
+    try:
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving file: {str(e)}")
+    
+    # Return URL
+    file_url = f"/uploads/{unique_filename}"
+    return {"url": file_url, "filename": unique_filename}
+
 # ============= WORKOUTS ROUTES =============
 
 @api_router.post("/workouts", response_model=Workout)
