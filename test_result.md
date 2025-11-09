@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix dynamic series fields not appearing in WorkoutDetail when user clicks buttons to add fields (Repetições, Carga, Pausa, Tempo, Observações)"
+user_problem_statement: "1. Fix dynamic series fields not appearing in WorkoutDetail (RESOLVED). 2. Fix schedule dashboard card not updating after adding student names to schedule cells"
 
 backend:
   - task: "Workout module API endpoints"
