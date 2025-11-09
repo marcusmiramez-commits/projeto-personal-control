@@ -394,7 +394,7 @@ const StudentsManagement = ({ user, onLogout }) => {
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <Button 
-                  onClick={() => navigate(`/students/${student.id}/workouts`)} 
+                  onClick={() => navigate(`/students/${student.id}/routines`)} 
                   className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
                   data-testid="view-workouts-button"
                 >
