@@ -68,6 +68,75 @@ const StudentDashboard = ({ user, onLogout }) => {
     fetchData();
   }, [user.id]);
 
+  const handleOpenEditDialog = () => {
+    setEditForm({
+      email: student?.email || '',
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveCredentials = async () => {
+    try {
+      // Validations
+      if (!editForm.email) {
+        toast.error('Email é obrigatório');
+        return;
+      }
+
+      if (editForm.newPassword && editForm.newPassword !== editForm.confirmPassword) {
+        toast.error('As senhas não coincidem');
+        return;
+      }
+
+      if (editForm.newPassword && editForm.newPassword.length < 6) {
+        toast.error('A senha deve ter pelo menos 6 caracteres');
+        return;
+      }
+
+      setIsSaving(true);
+      const token = localStorage.getItem('token');
+      
+      const updateData = {
+        email: editForm.email
+      };
+
+      // Only include password fields if user wants to change password
+      if (editForm.newPassword) {
+        updateData.current_password = editForm.currentPassword;
+        updateData.new_password = editForm.newPassword;
+      }
+
+      await axios.put(`${API}/students/me/credentials`, updateData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.success('Credenciais atualizadas com sucesso!');
+      
+      // Update local user data if email changed
+      if (editForm.email !== student?.email) {
+        const updatedUser = { ...user, email: editForm.email };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      setIsEditDialogOpen(false);
+      
+      // Refresh dashboard data
+      const dashboardResponse = await axios.get(`${API}/dashboard/student`, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      setDashboard(dashboardResponse.data);
+      
+    } catch (error) {
+      console.error('Error updating credentials:', error);
+      toast.error(error.response?.data?.detail || 'Erro ao atualizar credenciais');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (loading) return (
     <Layout user={user} onLogout={onLogout}>
       <div className="flex items-center justify-center min-h-[400px]">
