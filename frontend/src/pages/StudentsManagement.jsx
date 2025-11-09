@@ -132,6 +132,7 @@ const StudentsManagement = ({ user, onLogout }) => {
       // Prepare data with proper type conversion
       const updateData = {
         name: editFormData.name,
+        email: editFormData.email,
         phone: editFormData.phone,
         age: editFormData.age ? parseInt(editFormData.age) : null,
         goal: editFormData.goal || null,
@@ -140,6 +141,11 @@ const StudentsManagement = ({ user, onLogout }) => {
         class_balance: editFormData.class_balance ? parseInt(editFormData.class_balance) : 0,
         class_value: editFormData.class_value ? parseFloat(editFormData.class_value) : null
       };
+      
+      // Only include password if it was changed (not empty)
+      if (editFormData.password && editFormData.password.trim() !== '') {
+        updateData.password = editFormData.password;
+      }
       
       await axios.put(`${API}/students/${editingStudent.id}`, updateData, { 
         headers: { Authorization: `Bearer ${token}` } 
