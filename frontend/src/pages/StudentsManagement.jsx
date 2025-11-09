@@ -111,6 +111,8 @@ const StudentsManagement = ({ user, onLogout }) => {
     setEditingStudent(student);
     setEditFormData({
       name: student.name,
+      email: student.email,
+      password: '', // Empty by default, only fill if changing
       phone: student.phone,
       age: student.age || '',
       goal: student.goal || '',
