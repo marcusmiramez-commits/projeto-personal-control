@@ -151,7 +151,7 @@ frontend:
           agent: "main"
           comment: "Fixed by implementing getScheduleStats() function in ProfessionalDashboard that reads from localStorage and calculates real-time statistics. Added event listener for 'scheduleUpdated' event. ScheduleManagement now dispatches this event on every schedule change to trigger dashboard refresh."
   
-  - task: "Student dashboard cards with real data"
+  - task: "Student dashboard cards with contract-specific financial data"
     implemented: true
     working: "testing_needed"
     file: "frontend/src/pages/StudentDashboard.jsx"
@@ -161,7 +161,7 @@ frontend:
     status_history:
         - working: "testing_needed"
           agent: "main"
-          comment: "Completely redesigned StudentDashboard with three enhanced cards: 1) Aulas (renamed from Presenças do Mês) - shows attendance count, scheduled classes, attendance rate, and weekly classes from schedule. 2) Financeiro (renamed from Saldo de Aulas) - displays contract type, class balance for prepaid or monthly value for monthly contracts, and value per class. 3) Treinos (Fichas de Treino) - shows active routines count, total workouts, and lists routine names. All data now fetched from real API endpoints."
+          comment: "Redesigned StudentDashboard with contract-specific layouts. PRE-PAID: Card 1 shows class balance, Card 2 shows pending amount + attendance report. POST-PAID: Card 1 shows attendance report (presence/absence), Card 2 shows amount to pay based on classes given. MONTHLY: Card 1 shows attendance report, Card 2 shows pending monthly payment. All cards fetch real data from payments and attendances APIs."
 
 metadata:
   created_by: "main_agent"
