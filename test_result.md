@@ -189,17 +189,17 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "4.0"
-  test_sequence: 4
+  version: "5.0"
+  test_sequence: 5
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Student dashboard cards with real data"
+    - "Student credentials editing functionality"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
-      message: "Implemented three major improvements: 1) WorkoutDetail dynamic fields (RESOLVED). 2) Schedule dashboard card with real-time stats (PENDING USER TEST). 3) StudentDashboard completely redesigned with three enhanced cards showing real data from API: Aulas card (attendance tracking), Financeiro card (contract and payment info), and Treinos card (workout routines). All cards now fetch and display actual data. Ready for comprehensive testing."
+      message: "Implemented student credentials editing: Added 'Editar Acesso' button on student dashboard. Modal allows editing email and password with proper validations. Backend endpoint handles email uniqueness check and password verification. All previous improvements complete: WorkoutDetail (RESOLVED), Schedule dashboard (PENDING TEST), StudentDashboard with contract-specific data (PENDING TEST), Credentials editing (PENDING TEST)."
