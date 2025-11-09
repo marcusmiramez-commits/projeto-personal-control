@@ -13,6 +13,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
   const [students, setStudents] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
