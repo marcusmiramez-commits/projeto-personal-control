@@ -414,6 +414,49 @@ async def delete_student(student_id: str, current_user: dict = Depends(get_curre
 class AddClassesRequest(BaseModel):
     classes: int
 
+class StudentCredentialsUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    current_password: Optional[str] = None
+    new_password: Optional[str] = None
+
+@api_router.put("/students/me/credentials")
+async def update_student_credentials(updates: StudentCredentialsUpdate, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "student":
+        raise HTTPException(status_code=403, detail="Only students can update their own credentials")
+    
+    student = await db.students.find_one({"id": current_user["id"]}, {"_id": 0})
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    update_data = {}
+    
+    # Update email if provided
+    if updates.email:
+        # Check if email is already in use by another student
+        existing_student = await db.students.find_one({"email": updates.email, "id": {"$ne": current_user["id"]}}, {"_id": 0})
+        if existing_student:
+            raise HTTPException(status_code=400, detail="Email já está em uso")
+        update_data["email"] = updates.email
+    
+    # Update password if provided
+    if updates.new_password:
+        if not updates.current_password:
+            raise HTTPException(status_code=400, detail="Senha atual é necessária para alterar a senha")
+        
+        # Verify current password
+        if not verify_password(updates.current_password, student["password_hash"]):
+            raise HTTPException(status_code=400, detail="Senha atual incorreta")
+        
+        # Hash new password
+        update_data["password_hash"] = hash_password(updates.new_password)
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhuma atualização fornecida")
+    
+    await db.students.update_one({"id": current_user["id"]}, {"$set": update_data})
+    
+    return {"message": "Credenciais atualizadas com sucesso"}
+
 @api_router.post("/students/{student_id}/add-classes")
 async def add_classes_to_student(student_id: str, request: AddClassesRequest, current_user: dict = Depends(get_current_user)):
     if current_user["type"] != "professional":
