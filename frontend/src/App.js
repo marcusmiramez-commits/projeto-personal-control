@@ -97,6 +97,20 @@ const App = () => {
           }
         />
         <Route
+          path="/dashboard"
+          element={
+            user ? (
+              user.type === 'professional' ? (
+                <ProfessionalDashboard user={user} onLogout={handleLogout} />
+              ) : (
+                <StudentDashboard user={user} onLogout={handleLogout} />
+              )
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
           path="/students"
           element={user?.type === 'professional' ? <StudentsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
