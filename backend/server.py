@@ -136,12 +136,36 @@ class WorkoutExercise(BaseModel):
     duration: Optional[str] = None  # tempo
     observations: Optional[str] = None
 
-class Workout(BaseModel):
+# ============= WORKOUT ROUTINE (MACRO) =============
+
+class WorkoutRoutine(BaseModel):
+    """Rotina de treino (ex: Musculação, Aeróbico, Funcional)"""
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     professional_id: str
     student_id: str
-    workout_name: str  # "A", "B", "C", etc
+    routine_name: str  # "Musculação", "Aeróbico", etc
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class WorkoutRoutineCreate(BaseModel):
+    student_id: str
+    routine_name: str
+
+class WorkoutRoutineUpdate(BaseModel):
+    routine_name: Optional[str] = None
+
+# ============= WORKOUT (TREINO) =============
+
+class Workout(BaseModel):
+    """Treino dentro de uma rotina (ex: Treino A - Peito)"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    professional_id: str
+    student_id: str
+    routine_id: str  # ID da rotina pai
+    workout_name: str  # Nome personalizado: "Peito e Ombro", "Inferiores"
+    division: str  # Divisão: "A", "B", "Segunda", "Terça", etc
     exercises: List[WorkoutExercise]
     progress_notes: Optional[str] = None
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
@@ -149,8 +173,16 @@ class Workout(BaseModel):
 
 class WorkoutCreate(BaseModel):
     student_id: str
+    routine_id: str
     workout_name: str
+    division: str
     exercises: List[WorkoutExercise]
+    progress_notes: Optional[str] = None
+
+class WorkoutUpdate(BaseModel):
+    workout_name: Optional[str] = None
+    division: Optional[str] = None
+    exercises: Optional[List[WorkoutExercise]] = None
     progress_notes: Optional[str] = None
 
 class Schedule(BaseModel):
