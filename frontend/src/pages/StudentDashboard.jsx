@@ -128,82 +128,158 @@ const StudentDashboard = ({ user, onLogout }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card: Aulas */}
-          <div className="glass rounded-2xl p-6 border border-emerald-100" data-testid="student-attendance-stat">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-white" />
+          {/* Card 1: Saldo/Aulas (depende do tipo de contrato) */}
+          {contractType === 'prepaid' ? (
+            <div className="glass rounded-2xl p-6 border border-blue-100" data-testid="student-balance-stat">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>Saldo de Aulas</h3>
               </div>
-              <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>Aulas</h3>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">Presenças do Mês</span>
-                <span className="text-lg font-bold">{presentCount}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">Aulas Agendadas</span>
-                <span className="text-lg font-bold">{totalScheduledThisMonth}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">Taxa de Presença</span>
-                <span className="text-lg font-bold text-emerald-600">{attendanceRate}%</span>
-              </div>
-              <div className="flex items-center justify-between pt-2 border-t border-slate-200">
-                <span className="text-sm text-slate-600">Aulas na Semana</span>
-                <span className="text-lg font-bold">{scheduleInfo.weeklyClasses}</span>
+              <div className="space-y-3">
+                <div className="text-center py-3">
+                  <p className="text-sm text-slate-600 mb-2">Aulas Restantes</p>
+                  <p className="text-5xl font-bold text-blue-600">{financialData.classBalance}</p>
+                </div>
+                <div className="pt-3 border-t border-slate-200">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-600">Tipo</span>
+                    <span className="font-bold">{financialData.type}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="glass rounded-2xl p-6 border border-emerald-100" data-testid="student-attendance-stat">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>Aulas</h3>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">Presenças</span>
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                    <span className="text-xl font-bold text-emerald-600">{presentCount}</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">Faltas</span>
+                  <div className="flex items-center space-x-1">
+                    <XCircle className="w-4 h-4 text-red-500" />
+                    <span className="text-xl font-bold text-red-600">{absentCount}</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                  <span className="text-sm text-slate-600">Total no Mês</span>
+                  <span className="text-lg font-bold">{totalClasses}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">Tipo</span>
+                  <span className="text-sm font-bold">{financialData.type}</span>
+                </div>
+              </div>
+            </div>
+          )}
 
-          {/* Card: Financeiro */}
-          <div className="glass rounded-2xl p-6 border border-blue-100" data-testid="student-balance-stat">
+          {/* Card 2: Financeiro (valores e pendências) */}
+          <div className="glass rounded-2xl p-6 border border-orange-100" data-testid="student-financial-stat">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>Financeiro</h3>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">Tipo de Contrato</span>
-                <span className="text-sm font-bold capitalize">
-                  {student?.contract_type === 'prepaid' ? 'Pré-pago' : 'Mensal'}
-                </span>
-              </div>
-              {student?.contract_type === 'prepaid' ? (
+              {contractType === 'prepaid' && (
                 <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Saldo de Aulas</span>
-                    <span className="text-2xl font-bold text-blue-600">
-                      {student?.classes_remaining || 0}
-                    </span>
+                  <div className="text-center py-2">
+                    <p className="text-sm text-slate-600 mb-1">Valor Pendente</p>
+                    <p className={`text-3xl font-bold ${financialData.pendingAmount > 0 ? 'text-orange-600' : 'text-emerald-600'}`}>
+                      R$ {financialData.pendingAmount.toFixed(2)}
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Valor por Aula</span>
-                    <span className="text-lg font-bold">
-                      R$ {(student?.class_value || 0).toFixed(2)}
-                    </span>
+                  {financialData.pendingAmount > 0 && (
+                    <div className="flex items-center justify-center space-x-1 text-orange-600 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      <span>Pagamento pendente</span>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t border-slate-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-600">Presenças do Mês</span>
+                      <span className="font-bold">{presentCount}</span>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-sm text-slate-600">Faltas do Mês</span>
+                      <span className="font-bold text-red-600">{absentCount}</span>
+                    </div>
                   </div>
                 </>
-              ) : (
+              )}
+              
+              {contractType === 'postpaid' && (
                 <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Valor Mensal</span>
-                    <span className="text-2xl font-bold text-blue-600">
-                      R$ {(student?.monthly_value || 0).toFixed(2)}
-                    </span>
+                  <div className="text-center py-2">
+                    <p className="text-sm text-slate-600 mb-1">Valor a Pagar</p>
+                    <p className="text-3xl font-bold text-orange-600">
+                      R$ {financialData.amountToPay.toFixed(2)}
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Status</span>
-                    <span className="text-sm font-bold text-emerald-600">Ativo</span>
+                  <div className="pt-2 border-t border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">Aulas Dadas</span>
+                      <span className="font-bold">{presentCount}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">Valor/Aula</span>
+                      <span className="font-bold">R$ {financialData.classValue.toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">Faltas</span>
+                      <span className="font-bold text-red-600">{absentCount}</span>
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {contractType === 'monthly' && (
+                <>
+                  <div className="text-center py-2">
+                    <p className="text-sm text-slate-600 mb-1">Valor Pendente</p>
+                    <p className={`text-3xl font-bold ${financialData.pendingAmount > 0 ? 'text-orange-600' : 'text-emerald-600'}`}>
+                      R$ {financialData.pendingAmount.toFixed(2)}
+                    </p>
+                  </div>
+                  {financialData.pendingAmount > 0 && (
+                    <div className="flex items-center justify-center space-x-1 text-orange-600 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      <span>Mensalidade pendente</span>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">Valor Mensal</span>
+                      <span className="font-bold">R$ {financialData.monthlyValue.toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">Presenças do Mês</span>
+                      <span className="font-bold text-emerald-600">{presentCount}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">Faltas do Mês</span>
+                      <span className="font-bold text-red-600">{absentCount}</span>
+                    </div>
                   </div>
                 </>
               )}
             </div>
           </div>
 
-          {/* Card: Fichas de Treino */}
+          {/* Card 3: Treinos */}
           <div className="glass rounded-2xl p-6 border border-purple-100" data-testid="student-workouts-stat">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
