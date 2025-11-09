@@ -133,7 +133,7 @@ const WorkoutDetail = ({ user, onLogout }) => {
     const exercise = workout.exercises[exerciseIndex];
     const updatedExercise = {
       ...exercise,
-      series: [...(exercise.series || []), { reps: '', rest_time: '', load: '', duration: '', observations: '' }]
+      series: [...(exercise.series || []), {}]  // Nova série vazia
     };
     
     const updatedExercises = [...workout.exercises];
