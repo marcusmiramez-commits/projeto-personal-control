@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the new prepaid student class balance features implemented in the backend"
+user_problem_statement: "Fix dynamic series fields not appearing in WorkoutDetail when user clicks buttons to add fields (Repetições, Carga, Pausa, Tempo, Observações)"
 
 backend:
   - task: "Auto-update class balance on payment registration"
