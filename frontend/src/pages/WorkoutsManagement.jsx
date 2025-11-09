@@ -1,52 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API } from '../App';
+import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Textarea } from '../components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Plus, Trash2, ArrowLeft, Dumbbell, Edit } from 'lucide-react';
+import { Plus, Trash2, Edit, Dumbbell, ArrowLeft, FolderOpen, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 
 const WorkoutsManagement = ({ user, onLogout }) => {
   const { studentId } = useParams();
   const navigate = useNavigate();
+  
   const [student, setStudent] = useState(null);
+  const [routines, setRoutines] = useState([]);
+  const [selectedRoutine, setSelectedRoutine] = useState(null);
   const [workouts, setWorkouts] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // Dialogs
+  const [isRoutineDialogOpen, setIsRoutineDialogOpen] = useState(false);
+  const [isWorkoutDialogOpen, setIsWorkoutDialogOpen] = useState(false);
   const [isExerciseDialogOpen, setIsExerciseDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    workout_name: 'A',
-    exercises: []
-  });
-  const [exerciseFormData, setExerciseFormData] = useState({
-    name: '',
-    muscle_group: '',
-    description: ''
+  const [editingWorkout, setEditingWorkout] = useState(null);
+  const [editingExercise, setEditingExercise] = useState(null);
+  const [currentWorkoutForExercise, setCurrentWorkoutForExercise] = useState(null);
+  
+  // Forms
+  const [routineForm, setRoutineForm] = useState({ routine_name: '' });
+  const [workoutForm, setWorkoutForm] = useState({ workout_name: '', division: '', exercises: [], progress_notes: '' });
+  const [exerciseForm, setExerciseForm] = useState({
+    exercise_id: '',
+    sets: '',
+    reps: '',
+    rest_time: '',
+    load: '',
+    duration: '',
+    observations: ''
   });
 
   useEffect(() => {
     fetchData();
   }, [studentId]);
 
+  useEffect(() => {
+    if (selectedRoutine) {
+      fetchWorkouts(selectedRoutine.id);
+    }
+  }, [selectedRoutine]);
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       
-      const [studentRes, workoutsRes, exercisesRes] = await Promise.all([
-        axios.get(`${API}/students/${studentId}`, { headers }),
-        axios.get(`${API}/workouts/student/${studentId}`, { headers }),
+      const [studentRes, routinesRes, exercisesRes] = await Promise.all([
+        axios.get(`${API}/students`, { headers }),
+        axios.get(`${API}/workout-routines/student/${studentId}`, { headers }),
         axios.get(`${API}/exercises`, { headers })
       ]);
       
-      setStudent(studentRes.data);
-      setWorkouts(workoutsRes.data);
+      const foundStudent = studentRes.data.find(s => s.id === studentId);
+      setStudent(foundStudent);
+      setRoutines(routinesRes.data);
       setExercises(exercisesRes.data);
     } catch (error) {
       toast.error('Erro ao carregar dados');
@@ -55,272 +76,568 @@ const WorkoutsManagement = ({ user, onLogout }) => {
     }
   };
 
-  const handleCreateWorkout = async (e) => {
-    e.preventDefault();
+  const fetchWorkouts = async (routineId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/workouts`, { ...formData, student_id: studentId }, {
+      const response = await axios.get(`${API}/workouts/routine/${routineId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Treino criado!');
-      setIsDialogOpen(false);
-      setFormData({ workout_name: 'A', exercises: [] });
-      fetchData();
+      setWorkouts(response.data);
     } catch (error) {
-      toast.error('Erro ao criar treino');
+      toast.error('Erro ao carregar treinos');
     }
   };
 
-  const handleCreateExercise = async (e) => {
+  // ===== ROUTINES =====
+  const handleCreateRoutine = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/exercises`, exerciseFormData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success('Exercício criado!');
-      setIsExerciseDialogOpen(false);
-      setExerciseFormData({ name: '', muscle_group: '', description: '' });
+      await axios.post(`${API}/workout-routines`, {
+        student_id: studentId,
+        routine_name: routineForm.routine_name
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      
+      toast.success('Rotina criada!');
+      setIsRoutineDialogOpen(false);
+      setRoutineForm({ routine_name: '' });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao criar exercício');
+      toast.error('Erro ao criar rotina');
+    }
+  };
+
+  const handleDeleteRoutine = async (routineId) => {
+    if (!window.confirm('Excluir rotina e todos os treinos?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/workout-routines/${routineId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success('Rotina excluída!');
+      if (selectedRoutine?.id === routineId) {
+        setSelectedRoutine(null);
+        setWorkouts([]);
+      }
+      fetchData();
+    } catch (error) {
+      toast.error('Erro ao excluir rotina');
+    }
+  };
+
+  // ===== WORKOUTS =====
+  const handleOpenWorkoutDialog = (workout = null) => {
+    if (workout) {
+      setEditingWorkout(workout);
+      setWorkoutForm({
+        workout_name: workout.workout_name,
+        division: workout.division,
+        exercises: workout.exercises || [],
+        progress_notes: workout.progress_notes || ''
+      });
+    } else {
+      setEditingWorkout(null);
+      setWorkoutForm({ workout_name: '', division: '', exercises: [], progress_notes: '' });
+    }
+    setIsWorkoutDialogOpen(true);
+  };
+
+  const handleSaveWorkout = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (editingWorkout) {
+        await axios.put(`${API}/workouts/${editingWorkout.id}`, workoutForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.success('Treino atualizado!');
+      } else {
+        await axios.post(`${API}/workouts`, {
+          student_id: studentId,
+          routine_id: selectedRoutine.id,
+          ...workoutForm
+        }, { headers: { Authorization: `Bearer ${token}` } });
+        toast.success('Treino criado!');
+      }
+      
+      setIsWorkoutDialogOpen(false);
+      fetchWorkouts(selectedRoutine.id);
+    } catch (error) {
+      toast.error('Erro ao salvar treino');
     }
   };
 
   const handleDeleteWorkout = async (workoutId) => {
-    if (!window.confirm('Excluir este treino?')) return;
+    if (!window.confirm('Excluir treino?')) return;
+    
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`${API}/workouts/${workoutId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
       toast.success('Treino excluído!');
-      fetchData();
+      fetchWorkouts(selectedRoutine.id);
     } catch (error) {
-      toast.error('Erro ao excluir');
+      toast.error('Erro ao excluir treino');
     }
   };
 
-  const handleDeleteExercise = async (exerciseId) => {
-    if (!window.confirm('Excluir este exercício?')) return;
+  // ===== EXERCISES IN WORKOUT =====
+  const handleOpenExerciseDialog = (workout, exercise = null, index = null) => {
+    setCurrentWorkoutForExercise(workout);
+    
+    if (exercise) {
+      setEditingExercise({ exercise, index });
+      setExerciseForm({
+        exercise_id: exercise.exercise_id,
+        sets: exercise.sets || '',
+        reps: exercise.reps || '',
+        rest_time: exercise.rest_time || '',
+        load: exercise.load || '',
+        duration: exercise.duration || '',
+        observations: exercise.observations || ''
+      });
+    } else {
+      setEditingExercise(null);
+      setExerciseForm({
+        exercise_id: '',
+        sets: '',
+        reps: '',
+        rest_time: '',
+        load: '',
+        duration: '',
+        observations: ''
+      });
+    }
+    setIsExerciseDialogOpen(true);
+  };
+
+  const handleSaveExercise = async (e) => {
+    e.preventDefault();
+    
+    const selectedExercise = exercises.find(ex => ex.id === exerciseForm.exercise_id);
+    if (!selectedExercise) {
+      toast.error('Selecione um exercício');
+      return;
+    }
+    
+    const exerciseData = {
+      exercise_id: selectedExercise.id,
+      exercise_name: selectedExercise.name,
+      sets: exerciseForm.sets ? parseInt(exerciseForm.sets) : null,
+      reps: exerciseForm.reps || null,
+      rest_time: exerciseForm.rest_time || null,
+      load: exerciseForm.load || null,
+      duration: exerciseForm.duration || null,
+      observations: exerciseForm.observations || null
+    };
+    
+    let updatedExercises = [...currentWorkoutForExercise.exercises];
+    
+    if (editingExercise !== null) {
+      updatedExercises[editingExercise.index] = exerciseData;
+    } else {
+      updatedExercises.push(exerciseData);
+    }
+    
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${API}/exercises/${exerciseId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success('Exercício excluído!');
-      fetchData();
+      await axios.put(`${API}/workouts/${currentWorkoutForExercise.id}`, {
+        exercises: updatedExercises
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      
+      toast.success(editingExercise ? 'Exercício atualizado!' : 'Exercício adicionado!');
+      setIsExerciseDialogOpen(false);
+      fetchWorkouts(selectedRoutine.id);
     } catch (error) {
-      toast.error('Erro ao excluir');
+      toast.error('Erro ao salvar exercício');
     }
   };
 
-  const addExerciseToWorkout = () => {
-    setFormData({
-      ...formData,
-      exercises: [...formData.exercises, { exercise_id: '', exercise_name: '', sets: 3, reps: '10', load: '', observations: '' }]
-    });
-  };
-
-  const updateExerciseInWorkout = (index, field, value) => {
-    const newExercises = [...formData.exercises];
-    newExercises[index][field] = value;
+  const handleDeleteExerciseFromWorkout = async (workout, exerciseIndex) => {
+    if (!window.confirm('Remover exercício do treino?')) return;
     
-    if (field === 'exercise_id') {
-      const exercise = exercises.find(ex => ex.id === value);
-      if (exercise) {
-        newExercises[index].exercise_name = exercise.name;
-      }
+    const updatedExercises = workout.exercises.filter((_, i) => i !== exerciseIndex);
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API}/workouts/${workout.id}`, {
+        exercises: updatedExercises
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      
+      toast.success('Exercício removido!');
+      fetchWorkouts(selectedRoutine.id);
+    } catch (error) {
+      toast.error('Erro ao remover exercício');
     }
-    
-    setFormData({ ...formData, exercises: newExercises });
   };
 
-  const removeExerciseFromWorkout = (index) => {
-    setFormData({
-      ...formData,
-      exercises: formData.exercises.filter((_, i) => i !== index)
-    });
-  };
-
-  if (loading) {
-    return (
-      <Layout user={user} onLogout={onLogout}>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      </Layout>
-    );
-  }
+  if (loading) return (
+    <Layout user={user} onLogout={onLogout}>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    </Layout>
+  );
 
   return (
     <Layout user={user} onLogout={onLogout}>
-      <div data-testid="workouts-management">
-        <Button onClick={() => navigate('/students')} variant="ghost" className="mb-4" data-testid="back-button">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Voltar para Alunos
-        </Button>
-
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
-              Treinos de <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{student?.name}</span>
-            </h1>
-            <p className="text-slate-600 mt-2">Gerencie os treinos e exercícios do aluno</p>
+      <div>
+        {/* Header */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/students')}
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Voltar para Alunos
+          </Button>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
+                Treinos de <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{student?.name}</span>
+              </h1>
+              <p className="text-slate-600 mt-2">{routines.length} rotinas • {workouts.length} treinos</p>
+            </div>
           </div>
-          <div className="flex space-x-2">
-            <Dialog open={isExerciseDialogOpen} onOpenChange={setIsExerciseDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50" data-testid="manage-exercises-button">
-                  <Dumbbell className="w-4 h-4 mr-2" />
-                  Gerenciar Exercícios
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Adicionar Novo Exercício</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleCreateExercise} className="space-y-4">
-                  <div>
-                    <Label>Nome do Exercício</Label>
-                    <Input value={exerciseFormData.name} onChange={(e) => setExerciseFormData({...exerciseFormData, name: e.target.value})} required data-testid="exercise-name-input" />
-                  </div>
-                  <div>
-                    <Label>Grupo Muscular</Label>
-                    <Input value={exerciseFormData.muscle_group} onChange={(e) => setExerciseFormData({...exerciseFormData, muscle_group: e.target.value})} required data-testid="exercise-muscle-input" />
-                  </div>
-                  <div>
-                    <Label>Descrição</Label>
-                    <Input value={exerciseFormData.description} onChange={(e) => setExerciseFormData({...exerciseFormData, description: e.target.value})} data-testid="exercise-description-input" />
-                  </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-blue-600" data-testid="submit-exercise-button">Adicionar Exercício</Button>
-                </form>
-              </DialogContent>
-            </Dialog>
+        </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-emerald-500 to-green-600" data-testid="add-workout-button">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Novo Treino
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Criar Novo Treino</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleCreateWorkout} className="space-y-4">
-                  <div>
-                    <Label>Nome do Treino (A, B, C...)</Label>
-                    <Input value={formData.workout_name} onChange={(e) => setFormData({...formData, workout_name: e.target.value})} required data-testid="workout-name-input" />
-                  </div>
+        {/* Routines Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold">Rotinas de Treino</h2>
+            <Button
+              onClick={() => setIsRoutineDialogOpen(true)}
+              className="bg-gradient-to-r from-emerald-500 to-green-600"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nova Rotina
+            </Button>
+          </div>
 
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <Label>Exercícios</Label>
-                      <Button type="button" size="sm" onClick={addExerciseToWorkout} data-testid="add-exercise-to-workout-button">
-                        <Plus className="w-4 h-4 mr-1" />
-                        Adicionar Exercício
-                      </Button>
-                    </div>
-                    
-                    {formData.exercises.map((exercise, index) => (
-                      <div key={index} className="p-4 bg-slate-50 rounded-lg mb-3 space-y-3">
-                        <div className="flex justify-between items-center">
-                          <Label className="font-bold">Exercício {index + 1}</Label>
-                          <Button type="button" size="sm" variant="ghost" onClick={() => removeExerciseFromWorkout(index)}>
-                            <Trash2 className="w-4 h-4 text-red-600" />
-                          </Button>
-                        </div>
-                        <Select value={exercise.exercise_id} onValueChange={(value) => updateExerciseInWorkout(index, 'exercise_id', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o exercício" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {exercises.map(ex => (
-                              <SelectItem key={ex.id} value={ex.id}>{ex.name} - {ex.muscle_group}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <div className="grid grid-cols-3 gap-2">
-                          <div>
-                            <Label className="text-xs">Séries</Label>
-                            <Input type="number" value={exercise.sets} onChange={(e) => updateExerciseInWorkout(index, 'sets', e.target.value)} />
-                          </div>
-                          <div>
-                            <Label className="text-xs">Repetições</Label>
-                            <Input value={exercise.reps} onChange={(e) => updateExerciseInWorkout(index, 'reps', e.target.value)} />
-                          </div>
-                          <div>
-                            <Label className="text-xs">Carga</Label>
-                            <Input value={exercise.load} onChange={(e) => updateExerciseInWorkout(index, 'load', e.target.value)} placeholder="10kg" />
-                          </div>
-                        </div>
+          {routines.length === 0 ? (
+            <div className="text-center py-12 glass rounded-2xl">
+              <FolderOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-600">Nenhuma rotina criada ainda</p>
+              <p className="text-sm text-slate-500">Crie uma rotina como "Musculação" ou "Aeróbico"</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {routines.map(routine => (
+                <div
+                  key={routine.id}
+                  onClick={() => setSelectedRoutine(routine)}
+                  className={`glass rounded-2xl p-6 cursor-pointer transition-all hover:shadow-lg ${
+                    selectedRoutine?.id === routine.id ? 'ring-2 ring-emerald-500' : ''
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                        <Dumbbell className="w-6 h-6 text-white" />
                       </div>
-                    ))}
+                      <div>
+                        <h3 className="font-bold text-lg">{routine.routine_name}</h3>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteRoutine(routine.id);
+                      }}
+                      className="hover:bg-red-50 hover:text-red-600"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
-
-                  <Button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-green-600" data-testid="submit-workout-button">Criar Treino</Button>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Lista de Exercícios Disponíveis */}
-        <div className="mb-8 glass rounded-2xl p-6 border border-blue-100">
-          <h2 className="text-2xl font-bold mb-4">📚 Biblioteca de Exercícios</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {exercises.map(ex => (
-              <div key={ex.id} className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-semibold text-sm">{ex.name}</p>
-                    <p className="text-xs text-slate-600">{ex.muscle_group}</p>
-                  </div>
-                  <button onClick={() => handleDeleteExercise(ex.id)} className="p-1 hover:bg-red-100 rounded">
-                    <Trash2 className="w-3 h-3 text-red-600" />
-                  </button>
-                </div>
-              </div>
-            ))}
-            {exercises.length === 0 && <p className="text-slate-600 col-span-4">Nenhum exercício cadastrado. Crie exercícios para montar os treinos.</p>}
-          </div>
-        </div>
+        {/* Workouts Section */}
+        {selectedRoutine && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">
+                Treinos - {selectedRoutine.routine_name}
+              </h2>
+              <Button
+                onClick={() => handleOpenWorkoutDialog()}
+                className="bg-gradient-to-r from-blue-500 to-blue-600"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Novo Treino
+              </Button>
+            </div>
 
-        {/* Lista de Treinos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workouts.map(workout => (
-            <div key={workout.id} className="glass rounded-2xl p-6 border border-emerald-100" data-testid="workout-card">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-2xl font-bold">Treino {workout.workout_name}</h3>
-                  <p className="text-sm text-slate-600">{workout.exercises?.length || 0} exercícios</p>
-                </div>
-                <Button size="sm" variant="ghost" className="hover:bg-red-50 hover:text-red-600" onClick={() => handleDeleteWorkout(workout.id)} data-testid="delete-workout-button">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+            {workouts.length === 0 ? (
+              <div className="text-center py-12 glass rounded-2xl">
+                <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                <p className="text-slate-600">Nenhum treino nesta rotina</p>
               </div>
-              
-              <div className="space-y-2">
-                {workout.exercises?.map((ex, idx) => (
-                  <div key={idx} className="bg-emerald-50 rounded-lg p-3">
-                    <p className="font-semibold text-sm">{ex.exercise_name}</p>
-                    <p className="text-xs text-slate-600">{ex.sets}x{ex.reps} {ex.load && `- ${ex.load}`}</p>
+            ) : (
+              <div className="space-y-4">
+                {workouts.map(workout => (
+                  <div key={workout.id} className="glass rounded-2xl p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-sm font-bold">
+                            {workout.division}
+                          </span>
+                          <h3 className="text-xl font-bold">{workout.workout_name}</h3>
+                        </div>
+                        {workout.progress_notes && (
+                          <p className="text-sm text-slate-600 mt-2">{workout.progress_notes}</p>
+                        )}
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleOpenWorkoutDialog(workout)}
+                          className="hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDeleteWorkout(workout.id)}
+                          className="hover:bg-red-50 hover:text-red-600"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Exercises in workout */}
+                    <div className="border-t border-slate-200 pt-4 mt-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold text-slate-700">Exercícios ({workout.exercises?.length || 0})</h4>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleOpenExerciseDialog(workout)}
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          Adicionar
+                        </Button>
+                      </div>
+
+                      {workout.exercises && workout.exercises.length > 0 ? (
+                        <div className="space-y-2">
+                          {workout.exercises.map((exercise, idx) => (
+                            <div key={idx} className="flex items-start justify-between p-3 bg-slate-50 rounded-lg">
+                              <div className="flex-1">
+                                <p className="font-semibold">{exercise.exercise_name}</p>
+                                <div className="flex flex-wrap gap-2 mt-2 text-sm text-slate-600">
+                                  {exercise.sets && <span>Séries: {exercise.sets}</span>}
+                                  {exercise.reps && <span>• Reps: {exercise.reps}</span>}
+                                  {exercise.rest_time && <span>• Pausa: {exercise.rest_time}</span>}
+                                  {exercise.load && <span>• Carga: {exercise.load}</span>}
+                                  {exercise.duration && <span>• Tempo: {exercise.duration}</span>}
+                                </div>
+                                {exercise.observations && (
+                                  <p className="text-xs text-slate-500 mt-1 italic">{exercise.observations}</p>
+                                )}
+                              </div>
+                              <div className="flex space-x-1 ml-2">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleOpenExerciseDialog(workout, exercise, idx)}
+                                >
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleDeleteExerciseFromWorkout(workout, idx)}
+                                  className="hover:text-red-600"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-slate-500 text-center py-4">Nenhum exercício adicionado</p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          ))}
-        </div>
-
-        {workouts.length === 0 && (
-          <div className="text-center py-12 glass rounded-2xl border border-emerald-100">
-            <Dumbbell className="w-16 h-16 mx-auto text-slate-400 mb-4" />
-            <p className="text-slate-600">Nenhum treino criado ainda</p>
-            <p className="text-sm text-slate-500 mt-2">Clique em "Novo Treino" para começar</p>
+            )}
           </div>
         )}
+
+        {/* Dialog: Create Routine */}
+        <Dialog open={isRoutineDialogOpen} onOpenChange={setIsRoutineDialogOpen}>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>Nova Rotina de Treino</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleCreateRoutine} className="space-y-4">
+              <div>
+                <Label>Nome da Rotina *</Label>
+                <Input
+                  value={routineForm.routine_name}
+                  onChange={(e) => setRoutineForm({ ...routineForm, routine_name: e.target.value })}
+                  placeholder="Ex: Musculação, Aeróbico, Funcional"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-green-600">
+                Criar Rotina
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog: Create/Edit Workout */}
+        <Dialog open={isWorkoutDialogOpen} onOpenChange={setIsWorkoutDialogOpen}>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>{editingWorkout ? 'Editar Treino' : 'Novo Treino'}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSaveWorkout} className="space-y-4">
+              <div>
+                <Label>Nome do Treino *</Label>
+                <Input
+                  value={workoutForm.workout_name}
+                  onChange={(e) => setWorkoutForm({ ...workoutForm, workout_name: e.target.value })}
+                  placeholder="Ex: Peito e Ombro, Inferiores, Costas"
+                  required
+                />
+              </div>
+              <div>
+                <Label>Divisão *</Label>
+                <Input
+                  value={workoutForm.division}
+                  onChange={(e) => setWorkoutForm({ ...workoutForm, division: e.target.value })}
+                  placeholder="Ex: A, B, C ou Segunda, Terça"
+                  required
+                />
+              </div>
+              <div>
+                <Label>Observações</Label>
+                <Textarea
+                  value={workoutForm.progress_notes}
+                  onChange={(e) => setWorkoutForm({ ...workoutForm, progress_notes: e.target.value })}
+                  placeholder="Notas sobre o treino..."
+                  rows={3}
+                />
+              </div>
+              <Button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-blue-600">
+                {editingWorkout ? 'Atualizar' : 'Criar'} Treino
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog: Add/Edit Exercise */}
+        <Dialog open={isExerciseDialogOpen} onOpenChange={setIsExerciseDialogOpen}>
+          <DialogContent className="bg-white max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editingExercise ? 'Editar Exercício' : 'Adicionar Exercício'}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSaveExercise} className="space-y-4">
+              <div>
+                <Label>Exercício *</Label>
+                <Select
+                  value={exerciseForm.exercise_id}
+                  onValueChange={(value) => setExerciseForm({ ...exerciseForm, exercise_id: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um exercício" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {exercises.map(ex => (
+                      <SelectItem key={ex.id} value={ex.id}>
+                        {ex.name} ({ex.muscle_group})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Séries</Label>
+                  <Input
+                    type="number"
+                    value={exerciseForm.sets}
+                    onChange={(e) => setExerciseForm({ ...exerciseForm, sets: e.target.value })}
+                    placeholder="Ex: 4"
+                  />
+                </div>
+                <div>
+                  <Label>Repetições</Label>
+                  <Input
+                    value={exerciseForm.reps}
+                    onChange={(e) => setExerciseForm({ ...exerciseForm, reps: e.target.value })}
+                    placeholder="Ex: 12 ou 8-12"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Pausa</Label>
+                  <Input
+                    value={exerciseForm.rest_time}
+                    onChange={(e) => setExerciseForm({ ...exerciseForm, rest_time: e.target.value })}
+                    placeholder="Ex: 60s ou 1min"
+                  />
+                </div>
+                <div>
+                  <Label>Carga</Label>
+                  <Input
+                    value={exerciseForm.load}
+                    onChange={(e) => setExerciseForm({ ...exerciseForm, load: e.target.value })}
+                    placeholder="Ex: 50kg"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label>Tempo/Duração</Label>
+                <Input
+                  value={exerciseForm.duration}
+                  onChange={(e) => setExerciseForm({ ...exerciseForm, duration: e.target.value })}
+                  placeholder="Ex: 30s ou 2min"
+                />
+              </div>
+
+              <div>
+                <Label>Observações</Label>
+                <Textarea
+                  value={exerciseForm.observations}
+                  onChange={(e) => setExerciseForm({ ...exerciseForm, observations: e.target.value })}
+                  placeholder="Notas sobre execução, técnica, progressão..."
+                  rows={3}
+                />
+              </div>
+
+              <Button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-green-600">
+                {editingExercise ? 'Atualizar' : 'Adicionar'} Exercício
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
