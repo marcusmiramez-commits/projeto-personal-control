@@ -105,65 +105,17 @@
 user_problem_statement: "Fix dynamic series fields not appearing in WorkoutDetail when user clicks buttons to add fields (Repetições, Carga, Pausa, Tempo, Observações)"
 
 backend:
-  - task: "Auto-update class balance on payment registration"
+  - task: "Workout module API endpoints"
     implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Payment of R$ 600.00 correctly added 10 classes (600/60=10). Response includes classes_added field and proper message. Student balance updated from 10 to 20."
-        
-  - task: "Manual class addition endpoint"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Manual addition of 5 classes worked correctly. Response includes previous_balance, new_balance, classes_added, and success message. Student balance updated from 5 to 10."
-
-  - task: "Payment validation for non-prepaid students"
-    implemented: true
-    working: true
+    working: "NA"
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
     needs_retesting: false
     status_history:
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Payments for monthly contract students correctly do not add classes (classes_added: 0)."
-
-  - task: "Input validation for manual class addition"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Negative and zero class values correctly rejected with 400 error. Unauthorized access properly blocked with 403 error."
-
-  - task: "Edge case handling for class calculations"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED - Zero class_value handled without division by zero error. Fractional calculations correctly use integer division (500/70=7 classes)."
+        - working: "NA"
+          agent: "main"
+          comment: "Backend endpoints for workout management are working correctly. No changes needed for this bug fix."
 
 metadata:
   created_by: "testing_agent"
