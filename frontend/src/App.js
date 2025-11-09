@@ -117,12 +117,16 @@ const App = () => {
           element={user?.type === 'professional' ? <StudentsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
-          path="/students/:studentId/workouts"
-          element={user?.type === 'professional' ? <WorkoutsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+          path="/students/:studentId/routines"
+          element={user?.type === 'professional' ? <WorkoutRoutines user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
-          path="/students/:studentId/workouts/exercises"
-          element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+          path="/students/:studentId/routines/:routineId/workouts"
+          element={user?.type === 'professional' ? <WorkoutsList user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/students/:studentId/routines/:routineId/workouts/:workoutId"
+          element={user?.type === 'professional' ? <WorkoutDetail user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
           path="/exercises"
