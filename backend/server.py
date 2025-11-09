@@ -516,6 +516,60 @@ async def upload_file(file: UploadFile = File(...), current_user: dict = Depends
     file_url = f"/uploads/{unique_filename}"
     return {"url": file_url, "filename": unique_filename}
 
+# ============= WORKOUT ROUTINES ROUTES =============
+
+@api_router.post("/workout-routines", response_model=WorkoutRoutine)
+async def create_workout_routine(routine: WorkoutRoutineCreate, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can create workout routines")
+    
+    routine_obj = WorkoutRoutine(
+        professional_id=current_user["id"],
+        **routine.model_dump()
+    )
+    doc = routine_obj.model_dump()
+    await db.workout_routines.insert_one(doc)
+    return routine_obj
+
+@api_router.get("/workout-routines/student/{student_id}", response_model=List[WorkoutRoutine])
+async def get_student_routines(student_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] == "professional":
+        routines = await db.workout_routines.find({"professional_id": current_user["id"], "student_id": student_id}, {"_id": 0}).to_list(1000)
+    elif current_user["type"] == "student" and current_user["id"] == student_id:
+        routines = await db.workout_routines.find({"student_id": student_id}, {"_id": 0}).to_list(1000)
+    else:
+        raise HTTPException(status_code=403, detail="Access denied")
+    return routines
+
+@api_router.put("/workout-routines/{routine_id}", response_model=WorkoutRoutine)
+async def update_workout_routine(routine_id: str, routine_update: WorkoutRoutineUpdate, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can update workout routines")
+    
+    update_data = {k: v for k, v in routine_update.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.workout_routines.update_one(
+        {"id": routine_id, "professional_id": current_user["id"]},
+        {"$set": update_data}
+    )
+    
+    updated = await db.workout_routines.find_one({"id": routine_id}, {"_id": 0})
+    return WorkoutRoutine(**updated)
+
+@api_router.delete("/workout-routines/{routine_id}")
+async def delete_workout_routine(routine_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can delete workout routines")
+    
+    # Também deletar todos os workouts dessa rotina
+    await db.workouts.delete_many({"routine_id": routine_id, "professional_id": current_user["id"]})
+    
+    result = await db.workout_routines.delete_one({"id": routine_id, "professional_id": current_user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Workout routine not found")
+    return {"message": "Workout routine and associated workouts deleted successfully"}
+
 # ============= WORKOUTS ROUTES =============
 
 @api_router.post("/workouts", response_model=Workout)
