@@ -162,6 +162,18 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Redesigned StudentDashboard with contract-specific layouts. PRE-PAID: Card 1 shows class balance, Card 2 shows pending amount + attendance report. POST-PAID: Card 1 shows attendance report (presence/absence), Card 2 shows amount to pay based on classes given. MONTHLY: Card 1 shows attendance report, Card 2 shows pending monthly payment. All cards fetch real data from payments and attendances APIs."
+  
+  - task: "Student credentials editing functionality"
+    implemented: true
+    working: "testing_needed"
+    file: "frontend/src/pages/StudentDashboard.jsx, backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Added 'Editar Acesso' button on student dashboard that opens a modal for editing email and password. Backend endpoint PUT /students/me/credentials created with validations: checks email uniqueness, requires current password for password changes, validates password match. Frontend includes password visibility toggles and proper validation messages."
 
 metadata:
   created_by: "main_agent"
