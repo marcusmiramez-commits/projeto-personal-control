@@ -206,11 +206,21 @@ const StudentDashboard = ({ user, onLogout }) => {
   return (
     <Layout user={user} onLogout={onLogout}>
       <div data-testid="student-dashboard">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>
-            Olá, <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{user.name}</span>
-          </h1>
-          <p className="text-slate-600">Acompanhe seu progresso e informações importantes</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>
+              Olá, <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{user.name}</span>
+            </h1>
+            <p className="text-slate-600">Acompanhe seu progresso e informações importantes</p>
+          </div>
+          <Button
+            onClick={handleOpenEditDialog}
+            variant="outline"
+            className="flex items-center space-x-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+          >
+            <Settings className="w-4 h-4" />
+            <span>Editar Acesso</span>
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
