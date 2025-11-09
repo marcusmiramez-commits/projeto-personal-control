@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1. Fix dynamic series fields not appearing in WorkoutDetail (RESOLVED). 2. Fix schedule dashboard card not updating after adding student names to schedule cells (RESOLVED). 3. Connect student dashboard cards with real data: workout routines, financial info, and attendance/schedule data"
+user_problem_statement: "1. Fix dynamic series fields not appearing in WorkoutDetail (RESOLVED). 2. Fix schedule dashboard card not updating after adding student names to schedule cells (RESOLVED). 3. Connect student dashboard cards with real data: workout routines, financial info, and attendance/schedule data (RESOLVED). 4. Make student access credentials (email and password) editable"
 
 backend:
   - task: "Workout module API endpoints"
