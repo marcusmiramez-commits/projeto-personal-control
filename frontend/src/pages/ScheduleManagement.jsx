@@ -30,6 +30,8 @@ const ScheduleManagement = ({ user, onLogout }) => {
 
   useEffect(() => {
     localStorage.setItem(`schedule_${user?.id}`, JSON.stringify(schedule));
+    // Dispatch event to notify dashboard of schedule changes
+    window.dispatchEvent(new Event('scheduleUpdated'));
   }, [schedule, user]);
 
   const handleCellChange = (time, day, value) => {
