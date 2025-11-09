@@ -415,6 +415,112 @@ const StudentDashboard = ({ user, onLogout }) => {
             </p>
           </div>
         )}
+
+        {/* Edit Credentials Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>Editar Dados de Acesso</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {/* Email */}
+              <div>
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  placeholder="seu@email.com"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-200">
+                <p className="text-sm text-slate-600 mb-4">
+                  Deixe os campos abaixo em branco se não quiser alterar a senha
+                </p>
+
+                {/* Current Password */}
+                <div className="mb-3">
+                  <Label>Senha Atual</Label>
+                  <div className="relative">
+                    <Input
+                      type={showCurrentPassword ? 'text' : 'password'}
+                      value={editForm.currentPassword}
+                      onChange={(e) => setEditForm({ ...editForm, currentPassword: e.target.value })}
+                      placeholder="Digite sua senha atual"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* New Password */}
+                <div className="mb-3">
+                  <Label>Nova Senha</Label>
+                  <div className="relative">
+                    <Input
+                      type={showNewPassword ? 'text' : 'password'}
+                      value={editForm.newPassword}
+                      onChange={(e) => setEditForm({ ...editForm, newPassword: e.target.value })}
+                      placeholder="Digite a nova senha (mínimo 6 caracteres)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <Label>Confirmar Nova Senha</Label>
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={editForm.confirmPassword}
+                      onChange={(e) => setEditForm({ ...editForm, confirmPassword: e.target.value })}
+                      placeholder="Confirme a nova senha"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  onClick={() => setIsEditDialogOpen(false)}
+                  variant="outline"
+                  className="flex-1"
+                  disabled={isSaving}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={handleSaveCredentials}
+                  className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600"
+                  disabled={isSaving}
+                >
+                  {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
