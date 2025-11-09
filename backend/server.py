@@ -413,6 +413,29 @@ async def get_exercises(current_user: dict = Depends(get_current_user)):
         exercises = await db.exercises.find({"professional_id": student["professional_id"]}, {"_id": 0}).to_list(1000)
     return exercises
 
+@api_router.put("/exercises/{exercise_id}", response_model=Exercise)
+async def update_exercise(exercise_id: str, exercise_update: ExerciseUpdate, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can update exercises")
+    
+    # Get existing exercise
+    existing = await db.exercises.find_one({"id": exercise_id, "professional_id": current_user["id"]}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+    
+    # Update only provided fields
+    update_data = {k: v for k, v in exercise_update.model_dump().items() if v is not None}
+    
+    if update_data:
+        await db.exercises.update_one(
+            {"id": exercise_id, "professional_id": current_user["id"]},
+            {"$set": update_data}
+        )
+    
+    # Return updated exercise
+    updated = await db.exercises.find_one({"id": exercise_id}, {"_id": 0})
+    return Exercise(**updated)
+
 @api_router.delete("/exercises/{exercise_id}")
 async def delete_exercise(exercise_id: str, current_user: dict = Depends(get_current_user)):
     if current_user["type"] != "professional":
