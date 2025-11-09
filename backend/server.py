@@ -129,9 +129,11 @@ class ExerciseUpdate(BaseModel):
 class WorkoutExercise(BaseModel):
     exercise_id: str
     exercise_name: str
-    sets: int
-    reps: str
-    load: Optional[str] = None
+    sets: Optional[int] = None
+    reps: Optional[str] = None
+    rest_time: Optional[str] = None  # pausa
+    load: Optional[str] = None  # carga
+    duration: Optional[str] = None  # tempo
     observations: Optional[str] = None
 
 class Workout(BaseModel):
