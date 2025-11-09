@@ -117,20 +117,35 @@ backend:
           agent: "main"
           comment: "Backend endpoints for workout management are working correctly. No changes needed for this bug fix."
 
+frontend:
+  - task: "Dynamic series field rendering in WorkoutDetail"
+    implemented: true
+    working: "testing_needed"
+    file: "frontend/src/pages/WorkoutDetail.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported clicking buttons to add fields (Repetições, Carga, Pausa, Tempo, Observações) but fields not appearing on screen"
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Fixed handleUpdateSeries to update local state immediately with setWorkout() before API call. This ensures UI updates instantly when user clicks to add fields. Added error handling to revert state on API failure."
+
 metadata:
-  created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
-  run_ui: false
+  created_by: "main_agent"
+  version: "2.0"
+  test_sequence: 2
+  run_ui: true
 
 test_plan:
   current_focus:
-    - "Auto-update class balance on payment registration"
-    - "Manual class addition endpoint"
+    - "Dynamic series field rendering in WorkoutDetail"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
-    - agent: "testing"
-      message: "Comprehensive testing completed for prepaid student class balance features. All core functionality working correctly including payment auto-calculation, manual class addition, input validation, and edge cases. Backend APIs are fully functional and ready for production use."
+    - agent: "main"
+      message: "Fixed React state update issue in WorkoutDetail.jsx. The handleUpdateSeries function now updates local state immediately with setWorkout() before making API call, ensuring dynamic fields appear instantly when user clicks add buttons. Ready for testing."
