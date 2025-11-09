@@ -70,7 +70,7 @@ const StudentDashboard = ({ user, onLogout }) => {
 
   const handleOpenEditDialog = () => {
     setEditForm({
-      email: student?.email || '',
+      email: dashboard?.student?.email || '',
       currentPassword: '',
       newPassword: '',
       confirmPassword: ''
