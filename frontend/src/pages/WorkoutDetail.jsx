@@ -46,6 +46,20 @@ const WorkoutDetail = ({ user, onLogout }) => {
       const foundRoutine = routinesRes.data.find(r => r.id === routineId);
       const foundWorkout = workoutsRes.data.find(w => w.id === workoutId);
       
+      // Migrate old structure to new series structure
+      if (foundWorkout && foundWorkout.exercises) {
+        foundWorkout.exercises = foundWorkout.exercises.map(ex => {
+          if (!ex.series || ex.series.length === 0) {
+            // Create default series array
+            return {
+              ...ex,
+              series: [{ reps: '', rest_time: '', load: '', duration: '', observations: '' }]
+            };
+          }
+          return ex;
+        });
+      }
+      
       setStudent(foundStudent);
       setRoutine(foundRoutine);
       setWorkout(foundWorkout);
