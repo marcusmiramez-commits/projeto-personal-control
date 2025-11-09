@@ -50,10 +50,10 @@ const WorkoutDetail = ({ user, onLogout }) => {
       if (foundWorkout && foundWorkout.exercises) {
         foundWorkout.exercises = foundWorkout.exercises.map(ex => {
           if (!ex.series || ex.series.length === 0) {
-            // Create default series array
+            // Create default empty series array
             return {
               ...ex,
-              series: [{ reps: '', rest_time: '', load: '', duration: '', observations: '' }]
+              series: [{}]  // Série vazia, campos adicionados pelo usuário
             };
           }
           return ex;
