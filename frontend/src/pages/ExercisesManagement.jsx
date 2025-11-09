@@ -53,6 +53,45 @@ const ExercisesManagement = ({ user, onLogout }) => {
     }
   };
 
+  const handleFileUpload = async (file, type) => {
+    try {
+      const token = localStorage.getItem('token');
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      if (type === 'image') {
+        setUploadingImage(true);
+      } else {
+        setUploadingVideo(true);
+      }
+
+      const response = await axios.post(`${API}/upload`, formDataUpload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      const fileUrl = response.data.url;
+      
+      if (type === 'image') {
+        setFormData({ ...formData, image_url: fileUrl });
+        toast.success('Imagem enviada com sucesso!');
+      } else {
+        setFormData({ ...formData, video_url: fileUrl });
+        toast.success('Vídeo enviado com sucesso!');
+      }
+    } catch (error) {
+      toast.error(`Erro ao enviar ${type === 'image' ? 'imagem' : 'vídeo'}`);
+    } finally {
+      if (type === 'image') {
+        setUploadingImage(false);
+      } else {
+        setUploadingVideo(false);
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
