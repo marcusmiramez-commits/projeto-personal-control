@@ -404,10 +404,6 @@ const ExerciseCard = ({ exercise, onEdit, onDelete }) => {
         </div>
       </div>
 
-      {/* Description */}
-      {exercise.description && (
-        <p className="text-sm text-slate-600 line-clamp-2">{exercise.description}</p>
-      )}
     </div>
   );
 };
