@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
-import { CheckCircle, Activity, Dumbbell, DollarSign, Calendar } from 'lucide-react';
+import { CheckCircle, XCircle, Dumbbell, DollarSign, Calendar, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const StudentDashboard = ({ user, onLogout }) => {
   const [dashboard, setDashboard] = useState(null);
   const [workoutRoutines, setWorkoutRoutines] = useState([]);
   const [attendances, setAttendances] = useState([]);
+  const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,15 +29,17 @@ const StudentDashboard = ({ user, onLogout }) => {
         });
         setWorkoutRoutines(routinesResponse.data);
         
-        // Fetch attendances for current month
+        // Fetch attendances (all time for better reporting)
         const attendancesResponse = await axios.get(`${API}/attendances`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        const monthAttendances = attendancesResponse.data.filter(a => 
-          a.date && a.date.startsWith(currentMonth)
-        );
-        setAttendances(monthAttendances);
+        setAttendances(attendancesResponse.data);
+        
+        // Fetch payments
+        const paymentsResponse = await axios.get(`${API}/payments`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setPayments(paymentsResponse.data);
         
       } catch (error) {
         console.error('Error fetching student data:', error);
