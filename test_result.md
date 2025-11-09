@@ -165,17 +165,17 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "3.0"
-  test_sequence: 3
+  version: "4.0"
+  test_sequence: 4
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Schedule dashboard card statistics update"
+    - "Student dashboard cards with real data"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
-      message: "Fixed two issues: 1) WorkoutDetail dynamic fields (RESOLVED by user). 2) Schedule dashboard card now reads from localStorage and calculates statistics in real-time. Implemented event-driven update system where ScheduleManagement dispatches 'scheduleUpdated' event on changes, and ProfessionalDashboard listens and recalculates stats. Ready for user testing."
+      message: "Implemented three major improvements: 1) WorkoutDetail dynamic fields (RESOLVED). 2) Schedule dashboard card with real-time stats (PENDING USER TEST). 3) StudentDashboard completely redesigned with three enhanced cards showing real data from API: Aulas card (attendance tracking), Financeiro card (contract and payment info), and Treinos card (workout routines). All cards now fetch and display actual data. Ready for comprehensive testing."
