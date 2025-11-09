@@ -19,6 +19,38 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
         <title>Emergent | Fullstack App</title>
+        <script>
+            // Suppress ResizeObserver errors globally (MUST BE FIRST)
+            (function() {
+                const resizeObserverErr = /ResizeObserver loop/;
+                const originalError = window.onerror;
+                
+                window.onerror = function(message, source, lineno, colno, error) {
+                    if (typeof message === 'string' && resizeObserverErr.test(message)) {
+                        return true;
+                    }
+                    if (originalError) {
+                        return originalError.apply(this, arguments);
+                    }
+                    return false;
+                };
+                
+                window.addEventListener('error', function(e) {
+                    if (resizeObserverErr.test(e.message)) {
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                    }
+                }, true);
+                
+                const consoleError = console.error;
+                console.error = function(...args) {
+                    if (args[0] && typeof args[0] === 'string' && resizeObserverErr.test(args[0])) {
+                        return;
+                    }
+                    consoleError.apply(console, args);
+                };
+            })();
+        </script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
         <!--
         These two scripts have been added for the testing, please do not edit or remove them
