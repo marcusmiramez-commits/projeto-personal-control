@@ -91,7 +91,7 @@ const WorkoutDetail = ({ user, onLogout }) => {
     const newExercise = {
       exercise_id: selectedExercise.id,
       exercise_name: selectedExercise.name,
-      series: [{ reps: '', rest_time: '', load: '', duration: '', observations: '' }]
+      series: [{}]  // Série vazia, campos adicionados sob demanda
     };
     
     const updatedExercises = [...(workout.exercises || []), newExercise];
