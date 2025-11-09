@@ -438,13 +438,6 @@ const StudentsManagement = ({ user, onLogout }) => {
             <DialogTitle>Editar Cadastro - {editingStudent?.name}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleUpdate} className="space-y-4" data-testid="edit-student-form">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-              <p className="text-sm text-blue-800">
-                <strong>Email:</strong> {editingStudent?.email}
-              </p>
-              <p className="text-xs text-blue-600 mt-1">O email não pode ser alterado pois é usado para login</p>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Nome Completo *</Label>
@@ -457,6 +450,17 @@ const StudentsManagement = ({ user, onLogout }) => {
                 />
               </div>
               <div>
+                <Label>Email *</Label>
+                <Input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  required
+                  placeholder="aluno@email.com"
+                  data-testid="edit-student-email-input"
+                />
+              </div>
+              <div>
                 <Label>Telefone *</Label>
                 <Input
                   value={editFormData.phone}
@@ -465,6 +469,18 @@ const StudentsManagement = ({ user, onLogout }) => {
                   placeholder="11999999999"
                   data-testid="edit-student-phone-input"
                 />
+              </div>
+              <div>
+                <Label>Nova Senha</Label>
+                <Input
+                  type="password"
+                  value={editFormData.password}
+                  onChange={(e) => setEditFormData({...editFormData, password: e.target.value})}
+                  placeholder="Deixe vazio para manter a senha atual"
+                  minLength={6}
+                  data-testid="edit-student-password-input"
+                />
+                <p className="text-xs text-slate-500 mt-1">Preencha apenas se quiser alterar a senha (mínimo 6 caracteres)</p>
               </div>
               <div>
                 <Label>Idade</Label>
