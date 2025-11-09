@@ -222,6 +222,12 @@ const WorkoutDetail = ({ user, onLogout }) => {
     const updatedExercises = [...workout.exercises];
     updatedExercises[exerciseIndex] = updatedExercise;
     
+    // Update local state immediately for instant UI feedback
+    setWorkout({
+      ...workout,
+      exercises: updatedExercises
+    });
+    
     try {
       const token = localStorage.getItem('token');
       await axios.put(`${API}/workouts/${workoutId}`, {
@@ -229,6 +235,8 @@ const WorkoutDetail = ({ user, onLogout }) => {
       }, { headers: { Authorization: `Bearer ${token}` } });
     } catch (error) {
       toast.error('Erro ao atualizar série');
+      // Revert on error
+      fetchData();
     }
   };
 
