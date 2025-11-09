@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
-import { CheckCircle, XCircle, Dumbbell, DollarSign, Calendar, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Dumbbell, DollarSign, Calendar, AlertCircle, Settings, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
 const StudentDashboard = ({ user, onLogout }) => {
   const [dashboard, setDashboard] = useState(null);
@@ -11,6 +15,19 @@ const StudentDashboard = ({ user, onLogout }) => {
   const [attendances, setAttendances] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Credentials edit state
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    email: '',
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
