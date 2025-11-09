@@ -126,15 +126,24 @@ class ExerciseUpdate(BaseModel):
     image_url: Optional[str] = None
     video_url: Optional[str] = None
 
+class Series(BaseModel):
+    """Série individual de um exercício"""
+    reps: Optional[str] = None
+    rest_time: Optional[str] = None
+    load: Optional[str] = None
+    duration: Optional[str] = None
+    observations: Optional[str] = None
+
 class WorkoutExercise(BaseModel):
     exercise_id: str
     exercise_name: str
-    sets: Optional[int] = None
-    reps: Optional[str] = None
-    rest_time: Optional[str] = None  # pausa
-    load: Optional[str] = None  # carga
-    duration: Optional[str] = None  # tempo
-    observations: Optional[str] = None
+    sets: Optional[int] = None  # deprecated - usar series
+    reps: Optional[str] = None  # deprecated - usar series
+    rest_time: Optional[str] = None  # deprecated - usar series
+    load: Optional[str] = None  # deprecated - usar series
+    duration: Optional[str] = None  # deprecated - usar series
+    observations: Optional[str] = None  # deprecated - usar series
+    series: Optional[List[Series]] = []  # nova estrutura
 
 # ============= WORKOUT ROUTINE (MACRO) =============
 
