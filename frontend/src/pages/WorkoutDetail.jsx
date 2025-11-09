@@ -368,54 +368,177 @@ const WorkoutDetail = ({ user, onLogout }) => {
                               </Button>
                             </div>
                             
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                              <div>
-                                <Label className="text-xs">Repetições</Label>
-                                <Input
-                                  value={series.reps || ''}
-                                  onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'reps', e.target.value)}
-                                  placeholder="Ex: 12"
-                                  className="h-9"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-xs">Carga</Label>
-                                <Input
-                                  value={series.load || ''}
-                                  onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'load', e.target.value)}
-                                  placeholder="Ex: 50kg"
-                                  className="h-9"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-xs">Pausa</Label>
-                                <Input
-                                  value={series.rest_time || ''}
-                                  onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'rest_time', e.target.value)}
-                                  placeholder="Ex: 60s"
-                                  className="h-9"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-xs">Tempo</Label>
-                                <Input
-                                  value={series.duration || ''}
-                                  onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'duration', e.target.value)}
-                                  placeholder="Ex: 30s"
-                                  className="h-9"
-                                />
-                              </div>
+                            {/* Active Fields */}
+                            <div className="space-y-2 mb-3">
+                              {series.reps !== undefined && series.reps !== null && (
+                                <div className="flex items-center space-x-2">
+                                  <div className="flex-1">
+                                    <Label className="text-xs">Repetições</Label>
+                                    <Input
+                                      value={series.reps || ''}
+                                      onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'reps', e.target.value)}
+                                      placeholder="Ex: 12"
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'reps', undefined)}
+                                    className="mt-5 hover:text-red-600"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
+                              
+                              {series.load !== undefined && series.load !== null && (
+                                <div className="flex items-center space-x-2">
+                                  <div className="flex-1">
+                                    <Label className="text-xs">Carga</Label>
+                                    <Input
+                                      value={series.load || ''}
+                                      onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'load', e.target.value)}
+                                      placeholder="Ex: 50kg"
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'load', undefined)}
+                                    className="mt-5 hover:text-red-600"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
+                              
+                              {series.rest_time !== undefined && series.rest_time !== null && (
+                                <div className="flex items-center space-x-2">
+                                  <div className="flex-1">
+                                    <Label className="text-xs">Pausa</Label>
+                                    <Input
+                                      value={series.rest_time || ''}
+                                      onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'rest_time', e.target.value)}
+                                      placeholder="Ex: 60s"
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'rest_time', undefined)}
+                                    className="mt-5 hover:text-red-600"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
+                              
+                              {series.duration !== undefined && series.duration !== null && (
+                                <div className="flex items-center space-x-2">
+                                  <div className="flex-1">
+                                    <Label className="text-xs">Tempo</Label>
+                                    <Input
+                                      value={series.duration || ''}
+                                      onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'duration', e.target.value)}
+                                      placeholder="Ex: 30s"
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'duration', undefined)}
+                                    className="mt-5 hover:text-red-600"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
+                              
+                              {series.observations !== undefined && series.observations !== null && (
+                                <div className="flex items-center space-x-2">
+                                  <div className="flex-1">
+                                    <Label className="text-xs">Observações</Label>
+                                    <Textarea
+                                      value={series.observations || ''}
+                                      onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'observations', e.target.value)}
+                                      placeholder="Notas sobre esta série..."
+                                      rows={2}
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'observations', undefined)}
+                                    className="mt-5 hover:text-red-600"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                             
-                            <div className="mt-3">
-                              <Label className="text-xs">Observações</Label>
-                              <Textarea
-                                value={series.observations || ''}
-                                onChange={(e) => handleUpdateSeries(exerciseIdx, seriesIdx, 'observations', e.target.value)}
-                                placeholder="Notas sobre esta série..."
-                                rows={2}
-                                className="text-sm"
-                              />
+                            {/* Add Field Buttons */}
+                            <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200">
+                              {(series.reps === undefined || series.reps === null) && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'reps', '')}
+                                  className="text-xs"
+                                >
+                                  <Plus className="w-3 h-3 mr-1" />
+                                  Repetições
+                                </Button>
+                              )}
+                              {(series.load === undefined || series.load === null) && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'load', '')}
+                                  className="text-xs"
+                                >
+                                  <Plus className="w-3 h-3 mr-1" />
+                                  Carga
+                                </Button>
+                              )}
+                              {(series.rest_time === undefined || series.rest_time === null) && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'rest_time', '')}
+                                  className="text-xs"
+                                >
+                                  <Plus className="w-3 h-3 mr-1" />
+                                  Pausa
+                                </Button>
+                              )}
+                              {(series.duration === undefined || series.duration === null) && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'duration', '')}
+                                  className="text-xs"
+                                >
+                                  <Plus className="w-3 h-3 mr-1" />
+                                  Tempo
+                                </Button>
+                              )}
+                              {(series.observations === undefined || series.observations === null) && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateSeries(exerciseIdx, seriesIdx, 'observations', '')}
+                                  className="text-xs"
+                                >
+                                  <Plus className="w-3 h-3 mr-1" />
+                                  Observações
+                                </Button>
+                              )}
                             </div>
                           </div>
                         ))}
