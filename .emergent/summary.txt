@@ -1,95 +1,57 @@
 <analysis>
-The AI engineer successfully initiated and developed a full-stack application, Personal Control, for freelance personal trainers. The work progressed through several iterative phases, starting from initial setup and core module implementation, followed by extensive debugging and feature refinement based on user feedback.
-
-Key steps included setting up the FastAPI backend and React frontend, installing necessary dependencies, and building core functionalities such as user authentication (login/registration), student management (CRUD, WhatsApp data sending), schedule management (interactive grid), attendance tracking (auto-saving, persistence), and a financial module. The AI demonstrated strong debugging capabilities, resolving frontend React errors (StrictMode, component issues), backend data handling problems, and persistent UI display inconsistencies caused by browser caching. The AI consistently used  for initial module creation and  for targeted fixes. Although external integrations (WhatsApp API, payment gateways) were acknowledged and partially planned, the AI prioritized the MVP, postponing full integration to later stages, focusing on core application logic and UI/UX. The trajectory concludes with all reported UI text and functionality issues resolved, ensuring a stable foundation.
+The AI engineer successfully initiated and developed a full-stack application for freelance personal trainers, progressing from initial setup through feature refinement and extensive debugging. Key milestones included resolving persistent UI caching issues by ensuring production builds, implementing automatic and manual class balance updates for prepaid students, and significantly enhancing UX with a card-based dashboard. A major effort was dedicated to building a comprehensive exercise library with categories, muscle targets, and a functional file upload system. Most recently, the workout module was entirely restructured into a hierarchical system (Routines > Workouts > Exercises > Series) with dynamically configurable series fields. The AI demonstrated strong problem-solving, addressing login and database context issues, and consistently adapting to user feedback. The current task involves debugging a frontend issue where dynamic series fields are not appearing in the workout module.
 </analysis>
 
 <product_requirements>
-The Personal Control application aims to centralize management for freelance personal trainers, covering students, workouts, schedules, attendance, payments, and automated reports. It features distinct interfaces for professionals (admin) and students, with direct WhatsApp integration and PDF report generation. The goal is to automate management, replacing manual spreadsheets.
-
-**Core Modules (MVP Implemented):**
-1.  **Student Management:** CRUD operations for students (name, email, phone, age, objective, contract type, photo). Integrated student creation with WhatsApp data sending option and editing.
-2.  **Schedule Management:** Weekly grid with editable cells for student names, drag-and-drop functionality (conceptualized, not explicitly confirmed functional in UI), and day names corrected.
-3.  **Attendance Management:** Table-based tracking (present/absent) with automatic saving, visual feedback, manual refresh, and persistence of changes. Integrated with financial module.
-4.  **Financial Module:** Dashboard for professionals (total received, pendencies, revenue graphs) and students (payment history, class balance, due dates). Integrated with attendance for revenue reports.
-5.  **User Access:** Professional and Student dashboards (basic structure implemented). Multi-professional support where each professional accesses their own data.
-
-**Key User Clarifications & Feedback:**
-*   WhatsApp official and business APIs; Pix and card payments (PagSeguro).
-*   Emergent LLM use if needed.
-*   All modules to be started.
-*   Multi-professional system with limited access per professional/student.
-*   Student invites via WhatsApp.
-*   BOOST theme to be maintained.
-*   UI corrections: Nomo to Nome, correct day names in agenda, + Escrivão to + Registrar.
-*   Persistent login errors were reported and resolved.
-
-**Future Versions (V2/V3 - Pending):**
-*   Full WhatsApp integration for reminders, motivational messages.
-*   Payment gateway integration (Pix/Card/PagSeguro).
-*   Automatic report generation beyond CSV export (PDF).
-*   Physical assessments, internal chat, dark theme, push notifications, cloud backup.
+The Personal Control application aims to centralize management for freelance personal trainers, covering students, workouts, schedules, attendance, payments, and automated reports, replacing manual spreadsheets. It features distinct interfaces for professionals and students, supports multi-professional data access, and maintains a BOOST theme.
+**Core Modules Implemented**: Student Management (CRUD, WhatsApp integration), Schedule Management (weekly grid), Attendance Management (tracking, persistence, financial integration), Financial Module (dashboard, reports), and User Access (Professional/Student dashboards, multi-professional support).
+**Recent Feature Additions**: Automatic class balance updates for prepaid students, manual class balance adjustment, a redesigned professional dashboard with module-specific clickable cards, a comprehensive exercise library with categories, muscle targets, image/video uploads, and a hierarchical workout module (Routines > Workouts > Exercises > Series) with customizable fields for series details.
+**Future Versions (V2/V3 - Pending)**: Full WhatsApp/payment gateway integration, advanced PDF report generation, physical assessments, internal chat, dark theme, push notifications, cloud backup.
 </product_requirements>
 
 <key_technical_concepts>
--   **Backend:** FastAPI (Python), MongoDB (NoSQL database), Pydantic (data validation/serialization), Passlib/python-jose/bcrypt (authentication/hashing).
--   **Frontend:** React (JavaScript library), Tailwind CSS (styling), Shadcn UI (component library), React Router DOM (navigation), Axios (HTTP client), Sonner (toasts).
--   **Development Practices:** Containerized environment (Kubernetes), environment variables (), bulk file writing,  for targeted changes,  for E2E testing (though primarily  and manual backend logs were used here),  for third-party integrations (WhatsApp, PagSeguro).
+-   **Backend**: FastAPI (Python), MongoDB (NoSQL), Pydantic (data validation),  (file serving).
+-   **Frontend**: React (JavaScript), Tailwind CSS, Shadcn UI, React Router DOM, Axios (HTTP client), Sonner (toasts).
+-   **Development**: Kubernetes (container environment), environment variables, , , , .
 </key_technical_concepts>
 
 <code_architecture>
-The application follows a standard full-stack architecture: React frontend, FastAPI backend, and MongoDB database.
 
 
 
 **Key Files and Changes:**
 
 *   **/app/backend/server.py**:
-    *   **Importance:** Main FastAPI application defining API endpoints, database interactions, and business logic.
-    *   **Changes:** Initial setup for authentication (login, user creation), student CRUD operations, attendance recording, and financial data aggregation. Endpoints added for , , , and . Logic improved to prevent duplicate attendance records and handle deletes.
+    *   **Importance**: Defines API endpoints, database interactions, and business logic.
+    *   **Changes**: Implemented automatic class balance updates; added ; extended  model with categories, muscle targets, video URLs, and CRUD for exercises; added  for media uploads; introduced ,  (linked to routines),  (now includes ), and  models for hierarchical workout management with corresponding CRUD endpoints.
+*   **/app/frontend/public/index.html**:
+    *   **Importance**: Entry point for the React application.
+    *   **Changes**: Added a script for global  error suppression.
 *   **/app/frontend/src/App.js**:
-    *   **Importance:** Main React component, handles routing and global state (authentication, user context).
-    *   **Changes:** Configured React Router for various pages. Added nested routes for student-related modules (Workouts, Exercises). Implemented authentication logic, token management, loading states, and redirect behavior. Updated to integrate  and the custom  component.
-*   **/app/frontend/src/index.js**:
-    *   **Importance:** React application entry point.
-    *   **Changes:**  was removed to resolve issues with Radix UI components causing double-mounting in development.
-*   **/app/frontend/src/components/ErrorBoundary.jsx**:
-    *   **Importance:** A React component to catch JavaScript errors anywhere in its child component tree, log those errors, and display a fallback UI.
-    *   **Changes:** Newly created to enhance error handling, triggered during a student registration error.
-*   **/app/frontend/src/components/ui/sonner.jsx**:
-    *   **Importance:** Custom  component for displaying notifications.
-    *   **Changes:** Simplified by removing  import and related logic to fix potential React rendering issues.
-*   **/app/frontend/src/components/Layout.jsx**:
-    *   **Importance:** Provides a consistent layout structure for application pages, including navigation elements.
-    *   **Changes:** Created to encapsulate shared UI elements (e.g., sidebar/navbar) and provide a container for page content. Updated navigation links to reflect module reorganization.
-*   **/app/frontend/src/pages/Login.jsx**:
-    *   **Importance:** Handles user authentication.
-    *   **Changes:** Implemented login form, API call to backend, token storage, and redirection on successful login. Improved error handling and UX feedback.
+    *   **Importance**: Manages frontend routing.
+    *   **Changes**: Added independent routes for  and , and new nested routes for , , and .
+*   **/app/frontend/src/pages/ProfessionalDashboard.jsx**:
+    *   **Importance**: Main dashboard for professionals.
+    *   **Changes**: Redesigned to display module-specific information in clickable card format.
 *   **/app/frontend/src/pages/StudentsManagement.jsx**:
-    *   **Importance:** Manages student data (CRUD).
-    *   **Changes:** Implemented student listing, creation (with WhatsApp option), and editing functionalities using modals and forms. Corrected data type conversion for API calls. Added Ver Treinos button to navigate to student-specific workouts.
-*   **/app/frontend/src/pages/WorkoutsManagement.jsx**:
-    *   **Importance:** Manages workout plans for students.
-    *   **Changes:** Adapted to receive  for nested routing, allowing management of workouts specific to a student.
-*   **/app/frontend/src/pages/ScheduleManagement.jsx**:
-    *   **Importance:** Displays and manages the professional's weekly schedule.
-    *   **Changes:** Implemented a grid-like calendar interface. Corrected day names (e.g., SEGUNDA YORK to Segunda).
-*   **/app/frontend/src/pages/AttendanceManagement.jsx**:
-    *   **Importance:** Tracks student attendance.
-    *   **Changes:** Implemented an interactive table for marking presence/absence with auto-saving, visual feedback, and a manual refresh button. Added CSV export. Crucially, implemented DELETE calls to the backend when an attendance mark is removed, preventing reappearing entries. Corrected NOMO to NOME.
-*   **/app/frontend/src/pages/FinancialManagement.jsx**:
-    *   **Importance:** Provides financial overview and detailed reports.
-    *   **Changes:** Implemented dashboards displaying revenue, pendencies, and payment statuses. Corrected the button text from + Escrivão to + Registrar.
-*   **/app/frontend/src/utils/axios.js**:
-    *   **Importance:** Configures the Axios HTTP client, particularly for handling authentication and error responses globally.
-    *   **Changes:** Newly created to include an interceptor that automatically handles 401 Unauthorized errors by redirecting to the login page.
+    *   **Importance**: Manages student CRUD operations.
+    *   **Changes**: Added UI for manual class balance adjustment and updated navigation to the new workout routine module.
+*   **/app/frontend/src/pages/ExercisesManagement.jsx**:
+    *   **Importance**: Manages the exercise library.
+    *   **Changes**: Rewritten to include category filters, search, card-based display (without description), and a creation/editing dialog supporting real file uploads for images and videos.
+*   **/app/frontend/src/pages/WorkoutRoutines.jsx** (New):
+    *   **Importance**: Displays and manages macro workout routines (e.g., Musculação, Aeróbico) for a student.
+*   **/app/frontend/src/pages/WorkoutsList.jsx** (New):
+    *   **Importance**: Displays and manages individual workouts (e.g., Treino A - Peito e Ombro) within a selected routine.
+*   **/app/frontend/src/pages/WorkoutDetail.jsx** (New):
+    *   **Importance**: Displays and manages exercises and their customizable series (repetitions, load, pause, time, observations) for a specific workout, including logic for dynamic field addition/removal.
 </code_architecture>
 
 <pending_tasks>
 -   Full WhatsApp integration for reminders, motivational messages, and sending student access details/reports.
 -   Payment gateway integration (Pix / Cartão / PagSeguro).
 -   Google Calendar integration.
--   Advanced PDF report generation (beyond basic CSV export for attendance).
+-   Advanced PDF report generation.
 -   Physical assessments module.
 -   Internal chat between professional and student.
 -   Dark theme and visual customization.
@@ -99,18 +61,11 @@ The application follows a standard full-stack architecture: React frontend, Fast
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was addressing UI display inconsistencies reported by the user. The user observed incorrect text (NOMO instead of NOME in Attendance, + Escrivão instead of + Registrar in Financial, and incorrect day names in Schedule) when viewing the application in a new browser tab, despite the preview window showing corrections. This indicated a browser caching issue.
+Immediately before this summary request, the AI engineer was working on the newly implemented hierarchical workout module, specifically addressing an issue reported by the user in . The user stated that after clicking Adicionar Série (Add Series) for an exercise, then clicking on individual buttons like +Repetições (Add Repetitions) or +Carga (Add Load) to dynamically add input fields, these fields did not appear on the screen.
 
-The AI's immediate action was to force a complete rebuild of the frontend and restart the frontend server. After confirming successful compilation, the AI then performed a final test by taking screenshots of the application accessed via a URL with a  parameter. The results conclusively showed that:
-*   The Attendance module's column header now correctly displays NOME.
-*   The Financial module's button text now correctly displays + Registrar.
-*   The Schedule module's day names are now correctly displayed (Segunda, Terça, etc.).
-
-This final action successfully resolved the reported UI display issues, confirming that the problem was indeed browser caching and that the underlying code corrections had been applied and were correctly rendered. The application is now fully stable regarding the implemented modules and their UI texts.
+The AI had previously implemented the backend changes to support dynamic  structures within  models, and the frontend logic was designed to display a series initially empty of these fields, allowing them to be added individually via buttons. The AI identified that the issue likely stems from a client-side state update problem within the  component, preventing the dynamically added input fields from rendering in the UI. The last action in the trajectory indicates that the AI is investigating this state update issue in the frontend to ensure that when a user attempts to add a field to a series, it is correctly reflected in the UI.
 </current_work>
 
 <optional_next_step>
-The AI should now ask the user what pending feature or module they would like to develop next, based on the original product requirements.
-
-Quer que eu adicione mais funcionalidades de exportação, como PDF ou envio direto por WhatsApp? (Chat Message 231)
+Investigate and correct the state update mechanism in  to ensure dynamic series fields appear.
 </optional_next_step>
