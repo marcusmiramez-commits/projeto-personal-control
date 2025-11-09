@@ -178,7 +178,7 @@ frontend:
   - task: "Student credentials editing functionality"
     implemented: true
     working: "testing_needed"
-    file: "frontend/src/pages/StudentDashboard.jsx, backend/server.py"
+    file: "frontend/src/pages/StudentDashboard.jsx, frontend/src/pages/StudentsManagement.jsx, backend/server.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -186,6 +186,9 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Added 'Editar Acesso' button on student dashboard that opens a modal for editing email and password. Backend endpoint PUT /students/me/credentials created with validations: checks email uniqueness, requires current password for password changes, validates password match. Frontend includes password visibility toggles and proper validation messages."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Extended functionality to professional side. StudentsManagement now allows editing student email and password. Email field is now editable input instead of read-only text. Password field added with optional update (leave empty to keep current password). Backend already supports this via existing PUT /students/{id} endpoint."
 
 metadata:
   created_by: "main_agent"
