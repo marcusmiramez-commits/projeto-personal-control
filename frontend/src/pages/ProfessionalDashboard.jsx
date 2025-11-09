@@ -45,6 +45,17 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
       }
     };
     fetchData();
+    
+    // Listen for schedule updates
+    const handleScheduleUpdate = () => {
+      setRefreshTrigger(prev => prev + 1);
+    };
+    
+    window.addEventListener('scheduleUpdated', handleScheduleUpdate);
+    
+    return () => {
+      window.removeEventListener('scheduleUpdated', handleScheduleUpdate);
+    };
   }, []);
 
   // Calculate schedule statistics from localStorage
