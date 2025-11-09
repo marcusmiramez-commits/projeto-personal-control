@@ -109,6 +109,10 @@ const App = () => {
           element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
+          path="/exercises"
+          element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+        <Route
           path="/schedule"
           element={user ? <ScheduleManagement user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
         />
