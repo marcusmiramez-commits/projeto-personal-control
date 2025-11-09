@@ -116,7 +116,7 @@ const StudentDashboard = ({ user, onLogout }) => {
       toast.success('Credenciais atualizadas com sucesso!');
       
       // Update local user data if email changed
-      if (editForm.email !== student?.email) {
+      if (editForm.email !== dashboard?.student?.email) {
         const updatedUser = { ...user, email: editForm.email };
         localStorage.setItem('user', JSON.stringify(updatedUser));
       }
