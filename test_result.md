@@ -153,17 +153,17 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "2.0"
-  test_sequence: 2
+  version: "3.0"
+  test_sequence: 3
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Dynamic series field rendering in WorkoutDetail"
+    - "Schedule dashboard card statistics update"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
-      message: "Fixed React state update issue in WorkoutDetail.jsx. The handleUpdateSeries function now updates local state immediately with setWorkout() before making API call, ensuring dynamic fields appear instantly when user clicks add buttons. Ready for testing."
+      message: "Fixed two issues: 1) WorkoutDetail dynamic fields (RESOLVED by user). 2) Schedule dashboard card now reads from localStorage and calculates statistics in real-time. Implemented event-driven update system where ScheduleManagement dispatches 'scheduleUpdated' event on changes, and ProfessionalDashboard listens and recalculates stats. Ready for user testing."
