@@ -46,6 +46,48 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
     fetchData();
   }, []);
 
+  // Calculate schedule statistics from localStorage
+  const getScheduleStats = () => {
+    try {
+      const scheduleData = localStorage.getItem(`schedule_${user?.id}`);
+      if (!scheduleData) return { today: 0, month: 0, weeklyAvg: 0 };
+      
+      const schedule = JSON.parse(scheduleData);
+      const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+      const todayIndex = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const todayName = todayIndex === 0 ? 'Domingo' : weekDays[todayIndex - 1];
+      
+      let todayClasses = 0;
+      let totalClasses = 0;
+      
+      Object.keys(schedule).forEach(time => {
+        weekDays.forEach(day => {
+          const studentName = schedule[time]?.[day]?.trim();
+          if (studentName && studentName.toLowerCase() !== 'aluno') {
+            totalClasses++;
+            if (day === todayName) {
+              todayClasses++;
+            }
+          }
+        });
+      });
+      
+      const weeklyAvg = Math.round(totalClasses / 7);
+      const monthEstimate = totalClasses * 4; // Aproximação: 4 semanas no mês
+      
+      return { 
+        today: todayClasses, 
+        month: monthEstimate, 
+        weeklyAvg: weeklyAvg 
+      };
+    } catch (error) {
+      console.error('Erro ao calcular estatísticas da agenda:', error);
+      return { today: 0, month: 0, weeklyAvg: 0 };
+    }
+  };
+
+  const scheduleStats = getScheduleStats();
+
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
 
   // Calculate additional metrics
