@@ -408,20 +408,6 @@ const ExerciseCard = ({ exercise, onEdit, onDelete }) => {
       {exercise.description && (
         <p className="text-sm text-slate-600 line-clamp-2">{exercise.description}</p>
       )}
-
-      {/* Media Indicators */}
-      <div className="flex items-center space-x-2 mt-3 text-xs text-slate-500">
-        {exercise.image_url && (
-          <span className="flex items-center">
-            <Image className="w-3 h-3 mr-1" /> Imagem
-          </span>
-        )}
-        {exercise.video_url && (
-          <span className="flex items-center">
-            <Video className="w-3 h-3 mr-1" /> Vídeo
-          </span>
-        )}
-      </div>
     </div>
   );
 };
