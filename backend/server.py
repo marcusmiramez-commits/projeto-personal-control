@@ -94,16 +94,28 @@ class Exercise(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     professional_id: str
     name: str
-    muscle_group: str
+    category: str  # musculacao, alongamento, mobilidade, domesticos
+    muscle_group: str  # músculo alvo
     description: Optional[str] = None
     image_url: Optional[str] = None
+    video_url: Optional[str] = None
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class ExerciseCreate(BaseModel):
     name: str
+    category: str
     muscle_group: str
     description: Optional[str] = None
     image_url: Optional[str] = None
+    video_url: Optional[str] = None
+
+class ExerciseUpdate(BaseModel):
+    name: Optional[str] = None
+    category: Optional[str] = None
+    muscle_group: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
+    video_url: Optional[str] = None
 
 class WorkoutExercise(BaseModel):
     exercise_id: str
