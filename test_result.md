@@ -120,11 +120,11 @@ backend:
 frontend:
   - task: "Dynamic series field rendering in WorkoutDetail"
     implemented: true
-    working: "testing_needed"
+    working: true
     file: "frontend/src/pages/WorkoutDetail.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "user"
@@ -132,6 +132,24 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Fixed handleUpdateSeries to update local state immediately with setWorkout() before API call. This ensures UI updates instantly when user clicks to add fields. Added error handling to revert state on API failure."
+        - working: true
+          agent: "user"
+          comment: "User confirmed the issue was resolved"
+  
+  - task: "Schedule dashboard card statistics update"
+    implemented: true
+    working: "testing_needed"
+    file: "frontend/src/pages/ProfessionalDashboard.jsx, frontend/src/pages/ScheduleManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "Dashboard card showing 'Aulas Hoje: 0', 'Aulas do Mês: 0' even after adding student names to schedule grid"
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Fixed by implementing getScheduleStats() function in ProfessionalDashboard that reads from localStorage and calculates real-time statistics. Added event listener for 'scheduleUpdated' event. ScheduleManagement now dispatches this event on every schedule change to trigger dashboard refresh."
 
 metadata:
   created_by: "main_agent"
