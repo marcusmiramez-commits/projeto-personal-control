@@ -22,7 +22,7 @@ const StudentsManagement = ({ user, onLogout }) => {
   const [editingStudent, setEditingStudent] = useState(null);
   const [classesToAdd, setClassesToAdd] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
-  const [editFormData, setEditFormData] = useState({ name: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
 
   useEffect(() => { fetchStudents(); }, []);
 
