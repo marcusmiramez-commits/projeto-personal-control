@@ -583,7 +583,7 @@ async def create_workout_routine(routine: WorkoutRoutineCreate, current_user: di
     await db.workout_routines.insert_one(doc)
     return routine_obj
 
-@api_router.get("/workout-routines/student/{student_id}", response_model=List[WorkoutRoutine])
+@api_router.get("/workout-routines/student/{student_id}")
 async def get_student_routines(student_id: str, current_user: dict = Depends(get_current_user)):
     if current_user["type"] == "professional":
         routines = await db.workout_routines.find({"professional_id": current_user["id"], "student_id": student_id}, {"_id": 0}).to_list(1000)
@@ -591,6 +591,12 @@ async def get_student_routines(student_id: str, current_user: dict = Depends(get
         routines = await db.workout_routines.find({"student_id": student_id}, {"_id": 0}).to_list(1000)
     else:
         raise HTTPException(status_code=403, detail="Access denied")
+    
+    # For each routine, fetch associated workouts
+    for routine in routines:
+        workouts = await db.workouts.find({"routine_id": routine["id"]}, {"_id": 0}).to_list(1000)
+        routine["workouts"] = workouts
+    
     return routines
 
 @api_router.put("/workout-routines/{routine_id}", response_model=WorkoutRoutine)
