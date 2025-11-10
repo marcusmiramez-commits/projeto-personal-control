@@ -366,6 +366,13 @@ const StudentDashboard = ({ user, onLogout }) => {
           )}
 
           {/* Card 2: Financeiro (valores e pendências) */}
+          {!financialData ? (
+            <div className="glass rounded-2xl p-6 border border-slate-100">
+              <div className="flex items-center justify-center min-h-[200px]">
+                <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            </div>
+          ) : (
           <div className="glass rounded-2xl p-6 border border-orange-100" data-testid="student-financial-stat">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
