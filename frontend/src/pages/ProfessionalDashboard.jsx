@@ -147,7 +147,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
       path: '/attendance',
       stats: [
         { label: 'Presenças Hoje', value: dashboard?.today_classes || 0 },
-        { label: 'Taxa do Mês', value: '85%' },
+        { label: 'Taxa do Mês', value: `${dashboard?.attendance_rate || 0}%` },
         { label: 'Total Registradas', value: dashboard?.month_classes || 0 },
       ],
       testId: 'module-attendance'
