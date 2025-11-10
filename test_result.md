@@ -119,15 +119,18 @@ backend:
   
   - task: "Student credentials update endpoint"
     implemented: true
-    working: "testing_needed"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "testing_needed"
           agent: "main"
           comment: "Created PUT /students/me/credentials endpoint. Validates email uniqueness, verifies current password before allowing password change, hashes new password. Returns appropriate error messages for validation failures."
+        - working: true
+          agent: "testing"
+          comment: "TESTED: Student credentials update endpoint working correctly. All validation scenarios tested: (1) Email update with uniqueness check - PASSED, (2) Password update with current password verification - PASSED, (3) Invalid current password rejection - PASSED, (4) Missing current password rejection - PASSED, (5) Duplicate email handling - PASSED. Endpoint properly validates inputs and returns appropriate success/error messages."
 
 frontend:
   - task: "Dynamic series field rendering in WorkoutDetail"
