@@ -83,6 +83,7 @@ class ProfessionalDashboardTester:
             client.close()
             return None
         
+    def login_marcus(self):
         """Login as Marcus to get authentication token"""
         self.log("Attempting to login as Marcus (marcusmiramez@gmail.com)...")
         
