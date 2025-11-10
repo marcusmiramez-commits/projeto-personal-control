@@ -189,11 +189,11 @@ frontend:
   
   - task: "Student credentials editing functionality"
     implemented: true
-    working: "testing_needed"
+    working: true
     file: "frontend/src/pages/StudentDashboard.jsx, frontend/src/pages/StudentsManagement.jsx, backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "testing_needed"
           agent: "main"
@@ -204,6 +204,9 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Fixed variable reference error in StudentDashboard. Changed student?.email to dashboard?.student?.email in handleOpenEditDialog and handleSaveCredentials functions to avoid accessing undefined variable before it's defined."
+        - working: true
+          agent: "testing"
+          comment: "TESTED: Student credentials editing backend functionality working correctly. PUT /api/students/me/credentials endpoint tested with all scenarios: (1) Email update with uniqueness validation - PASSED, (2) Password update with current password verification - PASSED, (3) Invalid current password rejection - PASSED, (4) Missing current password validation - PASSED, (5) Duplicate email handling - PASSED. All validations working as expected with proper error messages in Portuguese."
   
   - task: "Class balance data synchronization"
     implemented: true
