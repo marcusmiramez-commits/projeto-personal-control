@@ -38,6 +38,20 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
         });
         setExercises(exercisesResponse.data);
         
+        // Fetch financial report for current month to get total_expected
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        const financialResponse = await axios.get(`${API}/financial/report?month=${currentMonth}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Add financial data to dashboard state
+        setDashboard(prev => ({
+          ...prev,
+          ...dashboardResponse.data,
+          total_expected: financialResponse.data.total_expected,
+          total_received: financialResponse.data.total_received
+        }));
+        
       } catch (error) {
         toast.error('Erro ao carregar dashboard');
       } finally {
