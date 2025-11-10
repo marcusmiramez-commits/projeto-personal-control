@@ -482,6 +482,53 @@ const StudentDashboard = ({ user, onLogout }) => {
           </div>
         </div>
 
+        {/* Card: Horários das Aulas */}
+        <div className="mt-6">
+          <div className="glass rounded-2xl p-6 border border-blue-100">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>Horários das Aulas</h3>
+              </div>
+            </div>
+
+            {studentSchedule.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {studentSchedule.map((classItem, idx) => (
+                  <div key={idx} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <Calendar className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-800">{classItem.day}</p>
+                      <p className="text-sm text-slate-600">{classItem.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Clock className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <p className="text-slate-600">Nenhum horário agendado ainda</p>
+                <p className="text-sm text-slate-500 mt-1">Entre em contato com seu personal trainer para agendar suas aulas</p>
+              </div>
+            )}
+
+            {studentSchedule.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-slate-200">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600">Total de aulas semanais</span>
+                  <span className="text-lg font-bold text-blue-600">{studentSchedule.length}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Additional info section */}
         {workoutRoutines.length === 0 && (
           <div className="mt-6 glass rounded-xl p-4 border border-amber-200 bg-amber-50">
