@@ -224,24 +224,38 @@ const StudentDashboard = ({ user, onLogout }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Saldo/Aulas (depende do tipo de contrato) */}
+          {/* Card 1: Aulas (depende do tipo de contrato) */}
           {contractType === 'prepaid' ? (
-            <div className="glass rounded-2xl p-6 border border-blue-100" data-testid="student-balance-stat">
+            <div className="glass rounded-2xl p-6 border border-emerald-100" data-testid="student-balance-stat">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>Saldo de Aulas</h3>
+                <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>Aulas</h3>
               </div>
               <div className="space-y-3">
-                <div className="text-center py-3">
-                  <p className="text-sm text-slate-600 mb-2">Aulas Restantes</p>
-                  <p className="text-5xl font-bold text-blue-600">{financialData.classBalance}</p>
+                <div className="text-center py-2">
+                  <p className="text-sm text-slate-600 mb-1">Aulas Restantes</p>
+                  <p className="text-4xl font-bold text-emerald-600">{financialData.classBalance}</p>
                 </div>
-                <div className="pt-3 border-t border-slate-200">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600">Tipo</span>
-                    <span className="font-bold">{financialData.type}</span>
+                <div className="pt-3 border-t border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600">Presenças do Mês</span>
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="w-4 h-4 text-emerald-500" />
+                      <span className="text-lg font-bold text-emerald-600">{presentCount}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600">Faltas do Mês</span>
+                    <div className="flex items-center space-x-1">
+                      <XCircle className="w-4 h-4 text-red-500" />
+                      <span className="text-lg font-bold text-red-600">{absentCount}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                    <span className="text-sm text-slate-600">Tipo</span>
+                    <span className="text-sm font-bold">{financialData.type}</span>
                   </div>
                 </div>
               </div>
