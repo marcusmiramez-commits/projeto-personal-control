@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Prepaid Student Class Balance Features
-Tests the new features:
-1. Auto-update class balance on payment registration
-2. Manual class addition endpoint
+Backend API Testing for Professional Dashboard Attendance Data
+Tests the professional dashboard endpoint to verify:
+1. Correct attendance data for today
+2. Dynamic attendance rate calculation
+3. Proper data aggregation
 """
 
 import requests
 import json
 import sys
 from datetime import datetime
+import asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
+import os
+from dotenv import load_dotenv
 
 # Backend URL from environment
 BACKEND_URL = "https://fitness-manager-10.preview.emergentagent.com/api"
