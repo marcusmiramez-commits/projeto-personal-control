@@ -151,19 +151,19 @@ const ScheduleManagement = ({ user, onLogout }) => {
   return (
     <Layout user={user} onLogout={onLogout}>
       <div data-testid="schedule-management">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 md:mb-6 gap-4">
           <div>
-            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
+            <h1 className="text-2xl md:text-4xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>
               <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Agenda</span> Semanal
             </h1>
-            <p className="text-slate-600 mt-2">Grade de horários editável - clique nas células para editar</p>
+            <p className="text-slate-600 mt-1 md:mt-2 text-sm md:text-base">Grade de horários editável - clique nas células para editar</p>
           </div>
-          <div className="flex space-x-2">
-            <Button onClick={addTimeSlot} variant="outline" className="border-emerald-500 text-emerald-600 hover:bg-emerald-50" data-testid="add-timeslot-button">
+          <div className="flex flex-col md:flex-row gap-2">
+            <Button onClick={addTimeSlot} variant="outline" className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 text-sm md:text-base" data-testid="add-timeslot-button">
               <Plus className="w-4 h-4 mr-2" />
               Adicionar Horário
             </Button>
-            <Button onClick={saveSchedule} className="bg-gradient-to-r from-emerald-500 to-green-600" data-testid="save-schedule-button">
+            <Button onClick={saveSchedule} className="bg-gradient-to-r from-emerald-500 to-green-600 text-sm md:text-base" data-testid="save-schedule-button">
               <Save className="w-4 h-4 mr-2" />
               Salvar Agenda
             </Button>
