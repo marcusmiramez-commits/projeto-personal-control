@@ -254,3 +254,5 @@ test_plan:
 agent_communication:
     - agent: "main"
       message: "Implemented student credentials editing: Added 'Editar Acesso' button on student dashboard. Modal allows editing email and password with proper validations. Backend endpoint handles email uniqueness check and password verification. All previous improvements complete: WorkoutDetail (RESOLVED), Schedule dashboard (PENDING TEST), StudentDashboard with contract-specific data (PENDING TEST), Credentials editing (PENDING TEST)."
+    - agent: "main"
+      message: "CRITICAL FIX APPLIED: Fixed persistent StudentDashboard error. Root cause identified by troubleshoot_agent: Race condition where financialData calculation ran synchronously before dashboard data loaded asynchronously. Applied fix: Added null check in calculateFinancialData() to return null if dashboard/student/contractType not loaded. Added conditional rendering for financial cards with loading spinners. This addresses the fundamental timing issue causing 'Erro ao carregar dados'."
