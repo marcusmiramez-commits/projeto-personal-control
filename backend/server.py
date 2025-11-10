@@ -294,7 +294,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         return {"id": user_id, "type": user_type}
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
-    except jwt.JWTError:
+    except jwt.PyJWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 # ============= AUTH ROUTES =============
