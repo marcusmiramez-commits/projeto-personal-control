@@ -71,6 +71,61 @@ const StudentDashboard = ({ user, onLogout }) => {
     fetchData();
   }, [user.id]);
 
+  // Get schedule from localStorage - MUST be before early return to maintain hook order
+  useEffect(() => {
+    if (dashboard?.student) {
+      try {
+        const professionalId = dashboard.student?.professional_id;
+        
+        if (!professionalId) {
+          return; // Exit early if no professional_id
+        }
+        
+        const scheduleData = localStorage.getItem(`schedule_${professionalId}`);
+        
+        if (scheduleData) {
+          const schedule = JSON.parse(scheduleData);
+          
+          if (!schedule || typeof schedule !== 'object') {
+            return; // Exit if schedule is invalid
+          }
+          
+          const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+          
+          const fullName = dashboard.student?.name?.toLowerCase() || '';
+          const firstName = fullName ? fullName.split(' ')[0] : '';
+          
+          if (!firstName) {
+            return; // Exit if no name
+          }
+          
+          const classes = [];
+          
+          Object.keys(schedule).forEach(time => {
+            weekDays.forEach(day => {
+              const cellValue = schedule[time]?.[day]?.trim().toLowerCase();
+              
+              if (cellValue && (cellValue.includes(fullName) || cellValue.includes(firstName))) {
+                classes.push({ day, time });
+              }
+            });
+          });
+          
+          const dayOrder = { 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6, 'Domingo': 7 };
+          classes.sort((a, b) => {
+            const dayDiff = dayOrder[a.day] - dayOrder[b.day];
+            if (dayDiff !== 0) return dayDiff;
+            return a.time.localeCompare(b.time);
+          });
+          
+          setStudentSchedule(classes);
+        }
+      } catch (error) {
+        console.error('Error reading schedule:', error);
+      }
+    }
+  }, [dashboard]);
+
   const handleOpenEditDialog = () => {
     setEditForm({
       email: dashboard?.student?.email || '',
