@@ -188,21 +188,21 @@ const ScheduleManagement = ({ user, onLogout }) => {
               <tbody>
                 {timeSlots.map((time, timeIndex) => (
                   <tr key={time}>
-                    <td className="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-2 border border-amber-500 sticky left-0 z-10">
-                      <div className="flex items-center justify-between">
+                    <td className="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-1 md:p-2 border border-amber-500 sticky left-0 z-10">
+                      <div className="flex items-center justify-between gap-1">
                         <Input
                           type="time"
                           value={time}
                           onChange={(e) => handleTimeChange(time, e.target.value)}
-                          className="w-24 h-8 text-sm bg-white text-slate-900 border-0 font-semibold"
+                          className="w-16 md:w-24 h-7 md:h-8 text-xs md:text-sm bg-white text-slate-900 border-0 font-semibold"
                           data-testid={`time-input-${timeIndex}`}
                         />
                         <button
                           onClick={() => removeTimeSlot(time)}
-                          className="ml-2 p-1 hover:bg-red-500 rounded"
+                          className="p-1 hover:bg-red-500 rounded"
                           data-testid={`remove-timeslot-${timeIndex}`}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
                         </button>
                       </div>
                     </td>
@@ -212,7 +212,7 @@ const ScheduleManagement = ({ user, onLogout }) => {
                           value={schedule[time]?.[day] || ''}
                           onChange={(e) => handleCellChange(time, day, e.target.value)}
                           placeholder="Aluno"
-                          className="w-full h-12 border-0 text-center text-sm font-medium text-slate-700 bg-transparent hover:bg-amber-100 focus:bg-white focus:border-2 focus:border-emerald-500 transition-colors"
+                          className="w-full h-10 md:h-12 border-0 text-center text-xs md:text-sm font-medium text-slate-700 bg-transparent hover:bg-amber-100 focus:bg-white focus:border-2 focus:border-emerald-500 transition-colors"
                           data-testid={`schedule-cell-${timeIndex}-${dayIndex}`}
                         />
                       </td>
