@@ -1031,6 +1031,7 @@ async def get_student_dashboard(current_user: dict = Depends(get_current_user)):
         "next_classes": next_classes,
         "month_attendance": present_count,
         "workouts": workouts
+    }
 
 # ============= SCHEDULE GRID ROUTES =============
 
