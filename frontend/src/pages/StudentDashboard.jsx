@@ -30,6 +30,7 @@ const StudentDashboard = ({ user, onLogout }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [studentSchedule, setStudentSchedule] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
