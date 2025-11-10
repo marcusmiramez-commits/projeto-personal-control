@@ -102,12 +102,9 @@ const ScheduleManagement = ({ user, onLogout }) => {
     toast.success('Horário removido!');
   };
 
-  const saveSchedule = async () => {
-    // Save to localStorage for backward compatibility
-    localStorage.setItem(`schedule_${user?.id}`, JSON.stringify(schedule));
-    
-    // Save to backend
-    await handleSaveSchedule();
+  const saveSchedule = () => {
+    // Save to localStorage
+    handleSaveSchedule();
   };
 
   return (
