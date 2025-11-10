@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
@@ -10,6 +11,7 @@ import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
 const StudentDashboard = ({ user, onLogout }) => {
+  const navigate = useNavigate();
   const [dashboard, setDashboard] = useState(null);
   const [workoutRoutines, setWorkoutRoutines] = useState([]);
   const [attendances, setAttendances] = useState([]);
