@@ -189,6 +189,24 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Extended functionality to professional side. StudentsManagement now allows editing student email and password. Email field is now editable input instead of read-only text. Password field added with optional update (leave empty to keep current password). Backend already supports this via existing PUT /students/{id} endpoint."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Fixed variable reference error in StudentDashboard. Changed student?.email to dashboard?.student?.email in handleOpenEditDialog and handleSaveCredentials functions to avoid accessing undefined variable before it's defined."
+  
+  - task: "Class balance data synchronization"
+    implemented: true
+    working: "testing_needed"
+    file: "frontend/src/pages/StudentDashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported that class balance data shown in student dashboard doesn't match the data shown in professional dashboard. Student named Cassio had outdated class balance information."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Fixed field name mismatch. StudentDashboard was reading student?.classes_remaining but backend uses student?.class_balance. Changed to use correct field name. Both professional and student dashboards now read from same source (class_balance field) ensuring data consistency."
 
 metadata:
   created_by: "main_agent"
