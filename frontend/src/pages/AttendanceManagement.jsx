@@ -357,23 +357,28 @@ const AttendanceManagement = ({ user, onLogout }) => {
             </table>
           </div>
 
-          <div className="mt-4 flex justify-between items-center">
-            <Button onClick={addEmptyRow} variant="outline" className="border-emerald-500 text-emerald-600 hover:bg-emerald-50" data-testid="add-row-button">
+          {/* Dica de scroll para mobile */}
+          <div className="mt-3 md:hidden text-center">
+            <p className="text-xs text-slate-500">↔️ Deslize para os lados para ver todos os dias</p>
+          </div>
+
+          <div className="mt-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+            <Button onClick={addEmptyRow} variant="outline" className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 text-sm md:text-base" data-testid="add-row-button">
               <UserPlus className="w-4 h-4 mr-2" />
               Adicionar Linha
             </Button>
-            <div className="flex items-center space-x-4 text-sm">
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-green-100 border border-green-300 rounded flex items-center justify-center">✓</div>
+            <div className="flex items-center justify-center md:justify-end space-x-2 md:space-x-4 text-xs md:text-sm flex-wrap">
+              <div className="flex items-center space-x-1 md:space-x-2">
+                <div className="w-5 h-5 md:w-6 md:h-6 bg-green-100 border border-green-300 rounded flex items-center justify-center text-sm">✓</div>
                 <span>Presente</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-red-100 border border-red-300 rounded flex items-center justify-center">✗</div>
+              <div className="flex items-center space-x-1 md:space-x-2">
+                <div className="w-5 h-5 md:w-6 md:h-6 bg-red-100 border border-red-300 rounded flex items-center justify-center text-sm">✗</div>
                 <span>Falta</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-blue-50 border border-blue-200 rounded"></div>
-                <span>Não marcado</span>
+              <div className="flex items-center space-x-1 md:space-x-2">
+                <div className="w-5 h-5 md:w-6 md:h-6 bg-blue-50 border border-blue-200 rounded"></div>
+                <span>Vazio</span>
               </div>
             </div>
           </div>
