@@ -393,7 +393,7 @@ const StudentDashboard = ({ user, onLogout }) => {
           </div>
 
           {/* Card 3: Treinos */}
-          <div className="glass rounded-2xl p-6 border border-purple-100" data-testid="student-workouts-stat">
+          <div className="glass rounded-2xl p-6 border border-purple-100 hover:border-purple-300 transition-all cursor-pointer" data-testid="student-workouts-stat" onClick={() => navigate(`/students/${user.id}/routines`)}>
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
                 <Dumbbell className="w-6 h-6 text-white" />
@@ -409,15 +409,32 @@ const StudentDashboard = ({ user, onLogout }) => {
                 <span className="text-sm text-slate-600">Total de Treinos</span>
                 <span className="text-lg font-bold">{totalWorkouts}</span>
               </div>
-              {workoutRoutines.length > 0 && (
+              {workoutRoutines.length > 0 ? (
+                <>
+                  <div className="pt-2 border-t border-slate-200">
+                    <p className="text-xs text-slate-500 mb-2">Suas rotinas:</p>
+                    {workoutRoutines.slice(0, 3).map((routine, idx) => (
+                      <div key={idx} className="flex items-center space-x-2 mb-1">
+                        <CheckCircle className="w-3 h-3 text-purple-500" />
+                        <span className="text-xs text-slate-700">{routine.routine_name}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white mt-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/students/${user.id}/routines`);
+                    }}
+                  >
+                    Ver Meus Treinos
+                  </Button>
+                </>
+              ) : (
                 <div className="pt-2 border-t border-slate-200">
-                  <p className="text-xs text-slate-500 mb-2">Suas rotinas:</p>
-                  {workoutRoutines.slice(0, 3).map((routine, idx) => (
-                    <div key={idx} className="flex items-center space-x-2 mb-1">
-                      <CheckCircle className="w-3 h-3 text-purple-500" />
-                      <span className="text-xs text-slate-700">{routine.routine_name}</span>
-                    </div>
-                  ))}
+                  <p className="text-xs text-slate-500 text-center py-2">
+                    Nenhuma rotina disponível ainda
+                  </p>
                 </div>
               )}
             </div>
