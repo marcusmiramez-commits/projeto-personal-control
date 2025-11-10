@@ -286,15 +286,15 @@ const AttendanceManagement = ({ user, onLogout }) => {
             <table className="w-full border-collapse min-w-max" data-testid="attendance-table">
               <thead>
                 <tr>
-                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-2 md:p-3 border border-slate-600 font-bold sticky left-0 z-10 min-w-[120px] md:min-w-[200px] text-xs md:text-base">
+                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-1 md:p-3 border border-slate-600 font-bold sticky left-0 z-10 min-w-[80px] md:min-w-[200px] text-[10px] md:text-base leading-tight">
                     NOME
                   </th>
                   {days.map(day => (
-                    <th key={day} className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-1 md:p-3 border border-blue-500 font-bold text-center min-w-[32px] md:min-w-[40px] text-xs md:text-base">
+                    <th key={day} className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-0.5 md:p-3 border border-blue-500 font-bold text-center min-w-[26px] md:min-w-[40px] text-[10px] md:text-base">
                       {day}
                     </th>
                   ))}
-                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-2 md:p-3 border border-slate-600 font-bold text-center min-w-[50px] md:min-w-[60px] text-xs md:text-base">
+                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-1 md:p-3 border border-slate-600 font-bold text-center min-w-[40px] md:min-w-[60px] text-[10px] md:text-base">
                     Ações
                   </th>
                 </tr>
