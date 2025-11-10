@@ -745,51 +745,6 @@ async def delete_schedule(schedule_id: str, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=404, detail="Schedule not found")
     return {"message": "Schedule deleted successfully"}
 
-# Weekly schedule grid endpoints
-@api_router.post("/schedule-grid")
-async def save_schedule_grid(schedule_data: dict, current_user: dict = Depends(get_current_user)):
-    if current_user["type"] != "professional":
-        raise HTTPException(status_code=403, detail="Only professionals can save schedule grid")
-    
-    # Save or update the schedule grid for this professional
-    await db.schedule_grids.update_one(
-        {"professional_id": current_user["id"]},
-        {"$set": {
-            "professional_id": current_user["id"],
-            "grid_data": schedule_data,
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }},
-        upsert=True
-    )
-    
-    return {"message": "Schedule grid saved successfully"}
-
-@api_router.get("/schedule-grid")
-async def get_schedule_grid(current_user: dict = Depends(get_current_user)):
-    # Professional can get their own grid
-    # Student can get their professional's grid
-    
-    if current_user["type"] == "professional":
-        grid = await db.schedule_grids.find_one(
-            {"professional_id": current_user["id"]},
-            {"_id": 0}
-        )
-    else:
-        # Student - find their professional's grid
-        student = await db.students.find_one({"id": current_user["id"]}, {"_id": 0})
-        if not student:
-            raise HTTPException(status_code=404, detail="Student not found")
-        
-        grid = await db.schedule_grids.find_one(
-            {"professional_id": student["professional_id"]},
-            {"_id": 0}
-        )
-    
-    if not grid:
-        return {"grid_data": {}}
-    
-    return {"grid_data": grid.get("grid_data", {})}
-
 # ============= DELETE ATTENDANCE =============
 
 @api_router.delete("/attendance/{student_id}/{date}")
