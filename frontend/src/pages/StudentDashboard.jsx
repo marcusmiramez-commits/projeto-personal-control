@@ -154,21 +154,21 @@ const StudentDashboard = ({ user, onLogout }) => {
 
   // Calculate attendance statistics for current month
   const currentMonth = new Date().toISOString().slice(0, 7);
-  const monthAttendances = attendances.filter(a => a.date && a.date.startsWith(currentMonth));
+  const monthAttendances = (attendances || []).filter(a => a.date && a.date.startsWith(currentMonth));
   const presentCount = monthAttendances.filter(a => a.present).length;
   const absentCount = monthAttendances.filter(a => !a.present).length;
   const totalClasses = monthAttendances.length;
 
   // Count total workouts across all routines
-  const totalWorkouts = workoutRoutines.reduce((sum, routine) => {
+  const totalWorkouts = (workoutRoutines || []).reduce((sum, routine) => {
     return sum + (routine.workouts?.length || 0);
   }, 0);
 
   // Calculate financial data based on contract type
   const calculateFinancialData = () => {
     const currentMonth = new Date().toISOString().slice(0, 7);
-    const pendingPayments = payments.filter(p => p.status === 'pending');
-    const totalPending = pendingPayments.reduce((sum, p) => sum + p.amount, 0);
+    const pendingPayments = (payments || []).filter(p => p?.status === 'pending');
+    const totalPending = pendingPayments.reduce((sum, p) => sum + (p?.amount || 0), 0);
 
     if (contractType === 'prepaid') {
       // Pré-pago: calcular valor pendente de pagamentos pendentes
