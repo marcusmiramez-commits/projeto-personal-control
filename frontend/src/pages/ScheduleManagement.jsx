@@ -27,32 +27,19 @@ const ScheduleManagement = ({ user, onLogout }) => {
     return initial;
   });
 
-  // Load schedule from backend on mount
+  // Load schedule from localStorage on mount
   useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${API}/schedule-grid`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        if (response.data.grid_data && Object.keys(response.data.grid_data).length > 0) {
-          setSchedule(response.data.grid_data);
-        }
-      } catch (error) {
-        console.error('Error loading schedule:', error);
-        // Use localStorage as fallback
-        const saved = localStorage.getItem(`schedule_${user?.id}`);
-        if (saved) {
+    if (user?.id) {
+      const saved = localStorage.getItem(`schedule_${user?.id}`);
+      if (saved) {
+        try {
           setSchedule(JSON.parse(saved));
+        } catch (error) {
+          console.error('Error parsing saved schedule:', error);
         }
       }
-    };
-    
-    if (user?.id) {
-      fetchSchedule();
     }
-  }, [user?.id, timeSlots]);
+  }, [user?.id]);
 
   // Auto-save to localStorage (for backward compatibility)
   useEffect(() => {
