@@ -325,6 +325,10 @@ class ProfessionalDashboardTester:
         self.log("\n=== Verifying Database Attendance Data ===")
         
         try:
+            # First, always check Marcus's actual data from database
+            await self.verify_marcus_actual_data()
+            
+            # Then check our test professional data
             db_data = await self.get_database_data()
             if not db_data:
                 self.log("Failed to get database data", "ERROR")
@@ -364,6 +368,81 @@ class ProfessionalDashboardTester:
                 
         except Exception as e:
             self.log(f"Error verifying database data: {str(e)}", "ERROR")
+            return False
+    
+    async def verify_marcus_actual_data(self):
+        """Verify Marcus's actual data in the database matches expected values"""
+        self.log("\n=== Verifying Marcus's Actual Data in Database ===")
+        
+        load_dotenv('/app/backend/.env')
+        mongo_url = os.environ['MONGO_URL']
+        client = AsyncIOMotorClient(mongo_url)
+        db = client[os.environ['DB_NAME']]
+        
+        try:
+            # Get Marcus's actual data
+            marcus = await db.professionals.find_one({'id': self.marcus_id}, {'_id': 0})
+            if not marcus:
+                self.log("Marcus not found in database", "ERROR")
+                return False
+            
+            self.log(f"✅ Marcus found: {marcus['name']} ({marcus['email']})")
+            
+            # Get today's attendances (2025-11-10)
+            today_attendances = await db.attendances.find({
+                'professional_id': self.marcus_id,
+                'date': '2025-11-10',
+                'present': True
+            }, {'_id': 0}).to_list(100)
+            
+            self.log(f"✅ Marcus's attendances today (2025-11-10): {len(today_attendances)}")
+            for att in today_attendances:
+                self.log(f"   - {att['student_name']} (present: {att['present']})")
+            
+            # Get all November 2025 attendances for rate calculation
+            all_attendances = await db.attendances.find({
+                'professional_id': self.marcus_id
+            }, {'_id': 0}).to_list(1000)
+            
+            nov_2025 = [a for a in all_attendances if a['date'].startswith('2025-11')]
+            present_count = len([a for a in nov_2025 if a['present']])
+            total_count = len(nov_2025)
+            
+            self.log(f"✅ Marcus's November 2025 attendances:")
+            self.log(f"   - Total records: {total_count}")
+            self.log(f"   - Present: {present_count}")
+            if total_count > 0:
+                rate = round((present_count / total_count) * 100, 1)
+                self.log(f"   - Attendance rate: {rate}%")
+            
+            # Get total active students
+            total_students = await db.students.count_documents({
+                'professional_id': self.marcus_id,
+                'status': 'active'
+            })
+            
+            self.log(f"✅ Marcus's total active students: {total_students}")
+            
+            # Verify expected values from the request
+            if len(today_attendances) == 4:
+                self.log("✅ VERIFIED: Marcus has exactly 4 students with attendance today")
+            else:
+                self.log(f"❌ MISMATCH: Expected 4 attendances today, found {len(today_attendances)}", "ERROR")
+            
+            if total_count > 0:
+                expected_rate = 80.0
+                actual_rate = round((present_count / total_count) * 100, 1)
+                if actual_rate == expected_rate:
+                    self.log(f"✅ VERIFIED: Marcus's attendance rate is {actual_rate}% (matches expected)")
+                else:
+                    self.log(f"ℹ️  INFO: Marcus's attendance rate is {actual_rate}% (expected {expected_rate}%)")
+            
+            client.close()
+            return True
+            
+        except Exception as e:
+            self.log(f"Error verifying Marcus's data: {str(e)}", "ERROR")
+            client.close()
             return False
     
     def test_attendance_rate_calculation(self):
