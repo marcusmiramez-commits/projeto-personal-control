@@ -373,7 +373,7 @@ const StudentDashboard = ({ user, onLogout }) => {
               </div>
             </div>
           ) : (
-          <div className="glass rounded-2xl p-6 border border-orange-100" data-testid="student-financial-stat">
+            <div className="glass rounded-2xl p-6 border border-orange-100" data-testid="student-financial-stat">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-white" />
