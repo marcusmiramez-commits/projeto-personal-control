@@ -997,6 +997,7 @@ async def get_professional_dashboard(current_user: dict = Depends(get_current_us
     current_month = datetime.now(timezone.utc).strftime("%Y-%m")
     month_payments = await db.payments.find({"professional_id": current_user["id"], "reference_month": current_month}, {"_id": 0}).to_list(1000)
     total_revenue = sum([p["amount"] for p in month_payments])
+    paid_count = len([p for p in month_payments if p.get("status") == "paid"])
     
     # Buscar todas as presenças do mês
     month_attendances = await db.attendances.find({"professional_id": current_user["id"]}, {"_id": 0}).to_list(1000)
@@ -1013,7 +1014,8 @@ async def get_professional_dashboard(current_user: dict = Depends(get_current_us
         "today_classes": len(today_attendances),  # Presenças confirmadas hoje
         "month_revenue": total_revenue,
         "month_classes": total_classes,
-        "attendance_rate": attendance_rate
+        "attendance_rate": attendance_rate,
+        "paid_count": paid_count  # Número de pagamentos confirmados no mês
     }
 
 @api_router.get("/dashboard/student")
