@@ -159,8 +159,8 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
       path: '/financial',
       stats: [
         { label: 'Receita Mensal', value: `R$ ${(dashboard?.month_revenue || 0).toFixed(2)}` },
-        { label: 'Total Esperado', value: `R$ ${(students.filter(s => s.monthly_value).reduce((sum, s) => sum + (s.monthly_value || 0), 0)).toFixed(2)}` },
-        { label: 'Status', value: '2 pagos', icon: CheckCircle, iconColor: 'text-green-500' },
+        { label: 'Total Esperado', value: `R$ ${(students.filter(s => s.status === 'active').reduce((sum, s) => sum + (s.monthly_value || s.class_value || 0), 0)).toFixed(2)}` },
+        { label: 'Status', value: dashboard?.paid_count ? `${dashboard.paid_count} ${dashboard.paid_count === 1 ? 'pago' : 'pagos'}` : 'Nenhum pagamento', icon: dashboard?.paid_count > 0 ? CheckCircle : AlertCircle, iconColor: dashboard?.paid_count > 0 ? 'text-green-500' : 'text-orange-500' },
       ],
       testId: 'module-financial'
     },
