@@ -211,6 +211,14 @@ class ScheduleCreate(BaseModel):
     date: str
     time: str
 
+
+class ScheduleGrid(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    professional_id: str
+    grid_data: dict  # Estrutura: {time: {day: student_name}}
+    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
 class Attendance(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
