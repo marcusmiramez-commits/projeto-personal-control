@@ -118,15 +118,15 @@ const App = () => {
         />
         <Route
           path="/students/:studentId/routines"
-          element={user?.type === 'professional' ? <WorkoutRoutines user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+          element={user ? <WorkoutRoutines user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
         />
         <Route
           path="/students/:studentId/routines/:routineId/workouts"
-          element={user?.type === 'professional' ? <WorkoutsList user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+          element={user ? <WorkoutsList user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
         />
         <Route
           path="/students/:studentId/routines/:routineId/workouts/:workoutId"
-          element={user?.type === 'professional' ? <WorkoutDetail user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+          element={user ? <WorkoutDetail user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
         />
         <Route
           path="/exercises"
