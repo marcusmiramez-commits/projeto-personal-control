@@ -220,10 +220,19 @@ const StudentDashboard = ({ user, onLogout }) => {
         
         if (scheduleData) {
           const schedule = JSON.parse(scheduleData);
+          
+          if (!schedule || typeof schedule !== 'object') {
+            return; // Exit if schedule is invalid
+          }
+          
           const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
           
-          const fullName = dashboard.student.name?.toLowerCase() || '';
-          const firstName = fullName.split(' ')[0];
+          const fullName = dashboard.student?.name?.toLowerCase() || '';
+          const firstName = fullName ? fullName.split(' ')[0] : '';
+          
+          if (!firstName) {
+            return; // Exit if no name
+          }
           
           const classes = [];
           
