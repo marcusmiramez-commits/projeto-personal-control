@@ -433,38 +433,46 @@ class ProfessionalDashboardTester:
         return await self.test_database_attendance_verification()
     
     def run_all_tests(self):
-        """Run all tests"""
-        self.log("Starting Prepaid Student Class Balance Tests...")
+        """Run all professional dashboard tests"""
+        self.log("Starting Professional Dashboard Attendance Tests...")
         
-        # Setup
-        if not self.login_professional():
+        # Setup - Login as Marcus or create test professional
+        if not self.login_marcus():
             return False
         
-        if not self.create_prepaid_student():
-            return False
-        
-        # Run tests
-        tests = [
-            ("Manual Class Addition", self.test_manual_class_addition),
-            ("Invalid Manual Class Addition", self.test_invalid_manual_class_addition),
-            ("Payment Auto Class Addition", self.test_payment_auto_class_addition),
-            ("Payment Non-Prepaid Student", self.test_payment_non_prepaid_student),
-            ("Final Balance Verification", self.verify_final_balance)
+        # Run synchronous tests
+        sync_tests = [
+            ("Professional Dashboard Endpoint", self.test_professional_dashboard_endpoint),
+            ("Attendance Rate Calculation", self.test_attendance_rate_calculation)
         ]
         
         passed = 0
         failed = 0
         
-        for test_name, test_func in tests:
+        for test_name, test_func in sync_tests:
             try:
                 if test_func():
                     passed += 1
+                    self.log(f"✅ {test_name} PASSED")
                 else:
                     failed += 1
                     self.log(f"❌ {test_name} FAILED", "ERROR")
             except Exception as e:
                 failed += 1
                 self.log(f"❌ {test_name} FAILED with exception: {str(e)}", "ERROR")
+        
+        # Run async tests
+        try:
+            async_result = asyncio.run(self.run_async_tests())
+            if async_result:
+                passed += 1
+                self.log("✅ Database Verification PASSED")
+            else:
+                failed += 1
+                self.log("❌ Database Verification FAILED", "ERROR")
+        except Exception as e:
+            failed += 1
+            self.log(f"❌ Database Verification FAILED with exception: {str(e)}", "ERROR")
         
         # Summary
         self.log(f"\n=== TEST SUMMARY ===")
@@ -473,7 +481,7 @@ class ProfessionalDashboardTester:
         self.log(f"Failed: {failed}")
         
         if failed == 0:
-            self.log("🎉 ALL TESTS PASSED!")
+            self.log("🎉 ALL PROFESSIONAL DASHBOARD TESTS PASSED!")
             return True
         else:
             self.log(f"❌ {failed} TESTS FAILED")
