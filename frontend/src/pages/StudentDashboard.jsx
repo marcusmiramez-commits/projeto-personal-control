@@ -47,7 +47,7 @@ const StudentDashboard = ({ user, onLogout }) => {
         setWorkoutRoutines(routinesResponse.data);
         
         // Fetch attendances (all time for better reporting)
-        const attendancesResponse = await axios.get(`${API}/attendances`, {
+        const attendancesResponse = await axios.get(`${API}/attendance`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAttendances(attendancesResponse.data);
