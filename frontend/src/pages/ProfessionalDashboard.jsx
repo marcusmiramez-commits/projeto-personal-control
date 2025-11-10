@@ -106,6 +106,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
   // Calculate additional metrics
   const activeStudents = students.filter(s => s.status === 'active').length;
   const prepaidStudents = students.filter(s => s.contract_type === 'prepaid').length;
+  const postpaidStudents = students.filter(s => s.contract_type === 'postpaid').length;
   const monthlyStudents = students.filter(s => s.contract_type === 'monthly').length;
   const totalExercises = exercises.length;
   
