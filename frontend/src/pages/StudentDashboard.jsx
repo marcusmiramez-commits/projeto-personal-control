@@ -210,7 +210,12 @@ const StudentDashboard = ({ user, onLogout }) => {
   useEffect(() => {
     if (dashboard?.student) {
       try {
-        const professionalId = dashboard.student.professional_id;
+        const professionalId = dashboard.student?.professional_id;
+        
+        if (!professionalId) {
+          return; // Exit early if no professional_id
+        }
+        
         const scheduleData = localStorage.getItem(`schedule_${professionalId}`);
         
         if (scheduleData) {
