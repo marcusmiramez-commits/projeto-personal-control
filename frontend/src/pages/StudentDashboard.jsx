@@ -209,25 +209,49 @@ const StudentDashboard = ({ user, onLogout }) => {
   const getStudentSchedule = () => {
     try {
       const professionalId = student?.professional_id;
-      if (!professionalId) return [];
+      console.log('🔍 Looking for schedule - Professional ID:', professionalId);
+      
+      if (!professionalId) {
+        console.log('❌ No professional_id found');
+        return [];
+      }
       
       const scheduleData = localStorage.getItem(`schedule_${professionalId}`);
-      if (!scheduleData) return [];
+      console.log('📅 Schedule data found:', scheduleData ? 'Yes' : 'No');
+      
+      if (!scheduleData) {
+        console.log('❌ No schedule data in localStorage');
+        return [];
+      }
       
       const schedule = JSON.parse(scheduleData);
       const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-      const studentName = student?.name?.toLowerCase();
+      
+      // Get student's full name and first name
+      const fullName = student?.name?.toLowerCase() || '';
+      const firstName = fullName.split(' ')[0]; // Get first name only
+      
+      console.log('👤 Student full name:', fullName);
+      console.log('👤 Student first name:', firstName);
       
       const classes = [];
       
       Object.keys(schedule).forEach(time => {
         weekDays.forEach(day => {
           const cellValue = schedule[time]?.[day]?.trim().toLowerCase();
-          if (cellValue && studentName && cellValue.includes(studentName)) {
+          
+          // Check if cell contains student's first name or full name
+          if (cellValue && (
+            cellValue.includes(fullName) || 
+            cellValue.includes(firstName)
+          )) {
+            console.log(`✅ Found match: ${day} ${time} - "${cellValue}"`);
             classes.push({ day, time });
           }
         });
       });
+      
+      console.log(`📊 Total classes found: ${classes.length}`);
       
       // Sort by day of week
       const dayOrder = { 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6, 'Domingo': 7 };
@@ -239,7 +263,7 @@ const StudentDashboard = ({ user, onLogout }) => {
       
       return classes;
     } catch (error) {
-      console.error('Error reading schedule:', error);
+      console.error('❌ Error reading schedule:', error);
       return [];
     }
   };
