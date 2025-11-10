@@ -148,7 +148,7 @@ const StudentDashboard = ({ user, onLogout }) => {
     </Layout>
   );
 
-  // Get student data
+  // Get student data - with safe defaults
   const student = dashboard?.student;
   const contractType = student?.contract_type;
 
@@ -166,6 +166,11 @@ const StudentDashboard = ({ user, onLogout }) => {
 
   // Calculate financial data based on contract type
   const calculateFinancialData = () => {
+    // Return null if dashboard or student data is not loaded yet
+    if (!dashboard || !student || !contractType) {
+      return null;
+    }
+
     const currentMonth = new Date().toISOString().slice(0, 7);
     const pendingPayments = (payments || []).filter(p => p?.status === 'pending');
     const totalPending = pendingPayments.reduce((sum, p) => sum + (p?.amount || 0), 0);
@@ -204,6 +209,7 @@ const StudentDashboard = ({ user, onLogout }) => {
     };
   };
 
+  // Only calculate financial data if dashboard is loaded
   const financialData = calculateFinancialData();
 
   // Get schedule from localStorage
