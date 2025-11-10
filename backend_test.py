@@ -488,6 +488,6 @@ class ProfessionalDashboardTester:
             return False
 
 if __name__ == "__main__":
-    tester = TrainerHubTester()
+    tester = ProfessionalDashboardTester()
     success = tester.run_all_tests()
     sys.exit(0 if success else 1)
