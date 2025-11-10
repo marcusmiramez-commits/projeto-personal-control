@@ -247,33 +247,37 @@ const AttendanceManagement = ({ user, onLogout }) => {
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" onClick={() => changeMonth(-1)} data-testid="prev-month-button">
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <div className="px-4 py-2 bg-white border rounded-lg font-semibold min-w-[200px] text-center">
-              {months[currentMonth]} {currentYear}
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-2">
+            <div className="flex items-center space-x-2 justify-center">
+              <Button variant="outline" onClick={() => changeMonth(-1)} size="sm" data-testid="prev-month-button">
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <div className="px-3 md:px-4 py-2 bg-white border rounded-lg font-semibold text-sm md:text-base min-w-[160px] md:min-w-[200px] text-center">
+                {months[currentMonth]} {currentYear}
+              </div>
+              <Button variant="outline" onClick={() => changeMonth(1)} size="sm" data-testid="next-month-button">
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
-            <Button variant="outline" onClick={() => changeMonth(1)} data-testid="next-month-button">
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-            <Button 
-              onClick={() => {
-                setLoading(true);
-                fetchData();
-                toast.success('Dados atualizados!');
-              }} 
-              variant="outline" 
-              className="border-emerald-500 text-emerald-600 hover:bg-emerald-50" 
-              data-testid="refresh-button"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Atualizar
-            </Button>
-            <Button onClick={exportToCSV} variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50" data-testid="export-button">
-              <Download className="w-4 h-4 mr-2" />
-              Exportar CSV
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => {
+                  setLoading(true);
+                  fetchData();
+                  toast.success('Dados atualizados!');
+                }} 
+                variant="outline" 
+                className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 flex-1 md:flex-none text-sm" 
+                data-testid="refresh-button"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                <span className="hidden md:inline">Atualizar</span>
+              </Button>
+              <Button onClick={exportToCSV} variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50 flex-1 md:flex-none text-sm" data-testid="export-button">
+                <Download className="w-4 h-4 mr-2" />
+                <span className="hidden md:inline">Exportar CSV</span>
+              </Button>
+            </div>
           </div>
         </div>
 
