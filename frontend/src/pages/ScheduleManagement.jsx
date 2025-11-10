@@ -175,11 +175,11 @@ const ScheduleManagement = ({ user, onLogout }) => {
             <table className="w-full border-collapse min-w-max" data-testid="schedule-grid">
               <thead>
                 <tr>
-                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-3 border border-slate-600 font-bold sticky left-0 z-10 min-w-[200px]">
+                  <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-2 md:p-3 border border-slate-600 font-bold sticky left-0 z-10 min-w-[100px] md:min-w-[150px] text-xs md:text-base">
                     HORÁRIOS
                   </th>
                   {weekDays.map(day => (
-                    <th key={day} className="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-3 border border-amber-500 font-bold text-center min-w-[120px]">
+                    <th key={day} className="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-2 md:p-3 border border-amber-500 font-bold text-center min-w-[80px] md:min-w-[120px] text-xs md:text-base">
                       {day}
                     </th>
                   ))}
