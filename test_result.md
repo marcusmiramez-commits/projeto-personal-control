@@ -246,11 +246,11 @@ frontend:
   
   - task: "Workout routines data population in student dashboard"
     implemented: true
-    working: true
+    working: "testing_needed"
     file: "backend/server.py, frontend/src/pages/StudentDashboard.jsx, frontend/src/components/Layout.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: false
           agent: "user"
@@ -258,9 +258,21 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Fixed backend endpoint GET /workout-routines/student/{id} to populate workouts array for each routine. Now returns routines with their associated workouts so frontend can count total workouts correctly. Also made workout card clickable, added 'Ver Meus Treinos' button, and simplified student menu to only show 'Painel' and 'Sair'."
-        - working: true
-          agent: "testing"
-          comment: "TESTED: Workout routines data population working correctly. GET /api/workout-routines/student/{id} endpoint returns routines with populated workouts array. Test student has 1 routine ('musculação') with 1 workout ('peito') containing 1 exercise with series data. Backend properly populates workouts array for accurate frontend workout counting."
+  
+  - task: "Schedule grid cross-device synchronization"
+    implemented: true
+    working: "testing_needed"
+    file: "backend/server.py, frontend/src/pages/ScheduleManagement.jsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported schedule not saving. Later clarified that schedule updated on Edge (desktop) but not on Safari (mobile), while other modules synced correctly across devices."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Root cause: localStorage is browser-specific and doesn't sync across devices. Solution: Created backend endpoints POST/GET /schedule-grid to save/load schedule grid from MongoDB. Added ScheduleGrid model to backend. Frontend now saves to both backend (for cross-device sync) and localStorage (for local cache/performance). Schedule loads from backend first, falls back to localStorage if backend fails."
 
 metadata:
   created_by: "main_agent"
