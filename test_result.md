@@ -246,11 +246,11 @@ frontend:
   
   - task: "Workout routines data population in student dashboard"
     implemented: true
-    working: "testing_needed"
+    working: true
     file: "backend/server.py, frontend/src/pages/StudentDashboard.jsx, frontend/src/components/Layout.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "user"
@@ -258,6 +258,9 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Fixed backend endpoint GET /workout-routines/student/{id} to populate workouts array for each routine. Now returns routines with their associated workouts so frontend can count total workouts correctly. Also made workout card clickable, added 'Ver Meus Treinos' button, and simplified student menu to only show 'Painel' and 'Sair'."
+        - working: true
+          agent: "testing"
+          comment: "TESTED: Workout routines data population working correctly. GET /api/workout-routines/student/{id} endpoint returns routines with populated workouts array. Test student has 1 routine ('musculação') with 1 workout ('peito') containing 1 exercise with series data. Backend properly populates workouts array for accurate frontend workout counting."
 
 metadata:
   created_by: "main_agent"
