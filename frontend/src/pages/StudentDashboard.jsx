@@ -466,6 +466,7 @@ const StudentDashboard = ({ user, onLogout }) => {
               )}
             </div>
           </div>
+          )}
 
           {/* Card 3: Treinos */}
           <div className="glass rounded-2xl p-6 border border-purple-100 hover:border-purple-300 transition-all cursor-pointer" data-testid="student-workouts-stat" onClick={() => navigate(`/students/${user.id}/routines`)}>
