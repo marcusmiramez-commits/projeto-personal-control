@@ -207,6 +207,21 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Fixed field name mismatch. StudentDashboard was reading student?.classes_remaining but backend uses student?.class_balance. Changed to use correct field name. Both professional and student dashboards now read from same source (class_balance field) ensuring data consistency."
+  
+  - task: "Attendance data display on student dashboard"
+    implemented: true
+    working: "testing_needed"
+    file: "frontend/src/pages/StudentDashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported attendance (presence/absence) data not showing on student dashboard, showing 0 for both."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Fixed endpoint URL. StudentDashboard was calling /attendances (plural) but backend endpoint is /attendance (singular). Changed to correct endpoint. Also reorganized prepaid student card to show attendances in 'Aulas' card instead of 'Financeiro' card."
 
 metadata:
   created_by: "main_agent"
