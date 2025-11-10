@@ -170,9 +170,9 @@ const ScheduleManagement = ({ user, onLogout }) => {
           </div>
         </div>
 
-        <div className="glass rounded-2xl p-6 border border-emerald-100 overflow-x-auto">
-          <div className="min-w-[1000px]">
-            <table className="w-full border-collapse" data-testid="schedule-grid">
+        <div className="glass rounded-2xl p-2 md:p-6 border border-emerald-100 overflow-x-auto shadow-inner">
+          <div className="overflow-x-scroll md:overflow-x-auto">
+            <table className="w-full border-collapse min-w-max" data-testid="schedule-grid">
               <thead>
                 <tr>
                   <th className="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-3 border border-slate-600 font-bold sticky left-0 z-10 min-w-[200px]">
