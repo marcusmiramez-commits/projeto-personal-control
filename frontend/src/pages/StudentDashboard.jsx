@@ -205,6 +205,47 @@ const StudentDashboard = ({ user, onLogout }) => {
 
   const financialData = calculateFinancialData();
 
+  // Get schedule data from professional's localStorage
+  const getStudentSchedule = () => {
+    try {
+      const professionalId = student?.professional_id;
+      if (!professionalId) return [];
+      
+      const scheduleData = localStorage.getItem(`schedule_${professionalId}`);
+      if (!scheduleData) return [];
+      
+      const schedule = JSON.parse(scheduleData);
+      const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+      const studentName = student?.name?.toLowerCase();
+      
+      const classes = [];
+      
+      Object.keys(schedule).forEach(time => {
+        weekDays.forEach(day => {
+          const cellValue = schedule[time]?.[day]?.trim().toLowerCase();
+          if (cellValue && studentName && cellValue.includes(studentName)) {
+            classes.push({ day, time });
+          }
+        });
+      });
+      
+      // Sort by day of week
+      const dayOrder = { 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6, 'Domingo': 7 };
+      classes.sort((a, b) => {
+        const dayDiff = dayOrder[a.day] - dayOrder[b.day];
+        if (dayDiff !== 0) return dayDiff;
+        return a.time.localeCompare(b.time);
+      });
+      
+      return classes;
+    } catch (error) {
+      console.error('Error reading schedule:', error);
+      return [];
+    }
+  };
+
+  const studentSchedule = getStudentSchedule();
+
   return (
     <Layout user={user} onLogout={onLogout}>
       <div data-testid="student-dashboard">
