@@ -123,6 +123,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
         { label: 'Total de Alunos', value: students.length },
         { label: 'Ativos', value: activeStudents },
         { label: 'Pré-pagos', value: prepaidStudents },
+        { label: 'Pós-pagos', value: postpaidStudents },
         { label: 'Mensalistas', value: monthlyStudents },
       ],
       testId: 'module-students'
