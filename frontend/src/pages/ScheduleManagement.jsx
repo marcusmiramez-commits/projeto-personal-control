@@ -76,15 +76,27 @@ const ScheduleManagement = ({ user, onLogout }) => {
     window.dispatchEvent(new Event('scheduleUpdated'));
   }, [schedule, user]);
 
-  // Save schedule to localStorage
-  const handleSaveSchedule = () => {
+  // Save schedule to backend and localStorage
+  const handleSaveSchedule = async () => {
     try {
+      const token = localStorage.getItem('token');
+      
+      // Salvar no backend
+      await axios.post(`${API}/schedule-grid`, schedule, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // Também salvar no localStorage como cache
       localStorage.setItem(`schedule_${user?.id}`, JSON.stringify(schedule));
       window.dispatchEvent(new Event('scheduleUpdated'));
+      
       toast.success('Agenda salva com sucesso!');
     } catch (error) {
       console.error('Error saving schedule:', error);
-      toast.error('Erro ao salvar agenda');
+      toast.error('Erro ao salvar agenda: ' + (error.response?.data?.detail || error.message));
     }
   };
 
