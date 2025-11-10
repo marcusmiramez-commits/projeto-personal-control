@@ -441,14 +441,27 @@ class ProfessionalDashboardTester:
         if not self.login_marcus():
             return False
         
-        # Run synchronous tests
+        passed = 0
+        failed = 0
+        
+        # Run async tests first to setup data
+        try:
+            async_result = asyncio.run(self.run_async_tests())
+            if async_result:
+                passed += 1
+                self.log("✅ Database Verification PASSED")
+            else:
+                failed += 1
+                self.log("❌ Database Verification FAILED", "ERROR")
+        except Exception as e:
+            failed += 1
+            self.log(f"❌ Database Verification FAILED with exception: {str(e)}", "ERROR")
+        
+        # Run synchronous tests after data is setup
         sync_tests = [
             ("Professional Dashboard Endpoint", self.test_professional_dashboard_endpoint),
             ("Attendance Rate Calculation", self.test_attendance_rate_calculation)
         ]
-        
-        passed = 0
-        failed = 0
         
         for test_name, test_func in sync_tests:
             try:
@@ -461,19 +474,6 @@ class ProfessionalDashboardTester:
             except Exception as e:
                 failed += 1
                 self.log(f"❌ {test_name} FAILED with exception: {str(e)}", "ERROR")
-        
-        # Run async tests
-        try:
-            async_result = asyncio.run(self.run_async_tests())
-            if async_result:
-                passed += 1
-                self.log("✅ Database Verification PASSED")
-            else:
-                failed += 1
-                self.log("❌ Database Verification FAILED", "ERROR")
-        except Exception as e:
-            failed += 1
-            self.log(f"❌ Database Verification FAILED with exception: {str(e)}", "ERROR")
         
         # Summary
         self.log(f"\n=== TEST SUMMARY ===")
