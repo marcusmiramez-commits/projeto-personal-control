@@ -1031,6 +1031,51 @@ async def get_student_dashboard(current_user: dict = Depends(get_current_user)):
         "next_classes": next_classes,
         "month_attendance": present_count,
         "workouts": workouts
+
+# ============= SCHEDULE GRID ROUTES =============
+
+@api_router.post("/schedule-grid")
+async def save_schedule_grid(grid_data: dict, current_user: dict = Depends(get_current_user)):
+    """Salvar a grade de horários do profissional"""
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can save schedule grid")
+    
+    # Verificar se já existe uma agenda para este profissional
+    existing = await db.schedule_grids.find_one({"professional_id": current_user["id"]}, {"_id": 0})
+    
+    if existing:
+        # Atualizar agenda existente
+        await db.schedule_grids.update_one(
+            {"professional_id": current_user["id"]},
+            {"$set": {
+                "grid_data": grid_data,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+    else:
+        # Criar nova agenda
+        schedule_grid = ScheduleGrid(
+            professional_id=current_user["id"],
+            grid_data=grid_data
+        )
+        doc = schedule_grid.model_dump()
+        await db.schedule_grids.insert_one(doc)
+    
+    return {"message": "Schedule grid saved successfully"}
+
+@api_router.get("/schedule-grid")
+async def get_schedule_grid(current_user: dict = Depends(get_current_user)):
+    """Buscar a grade de horários do profissional"""
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can access schedule grid")
+    
+    schedule_grid = await db.schedule_grids.find_one({"professional_id": current_user["id"]}, {"_id": 0})
+    
+    if not schedule_grid:
+        return {"grid_data": {}, "professional_id": current_user["id"]}
+    
+    return schedule_grid
+
     }
 
 # ============= EVALUATIONS ROUTES =============
