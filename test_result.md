@@ -222,6 +222,21 @@ frontend:
         - working: "testing_needed"
           agent: "main"
           comment: "Fixed endpoint URL. StudentDashboard was calling /attendances (plural) but backend endpoint is /attendance (singular). Changed to correct endpoint. Also reorganized prepaid student card to show attendances in 'Aulas' card instead of 'Financeiro' card."
+  
+  - task: "Workout routines data population in student dashboard"
+    implemented: true
+    working: "testing_needed"
+    file: "backend/server.py, frontend/src/pages/StudentDashboard.jsx, frontend/src/components/Layout.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported that workout card doesn't show workout count correctly. Also requested to make cards interactive and simplify student navigation menu."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "Fixed backend endpoint GET /workout-routines/student/{id} to populate workouts array for each routine. Now returns routines with their associated workouts so frontend can count total workouts correctly. Also made workout card clickable, added 'Ver Meus Treinos' button, and simplified student menu to only show 'Painel' and 'Sair'."
 
 metadata:
   created_by: "main_agent"
