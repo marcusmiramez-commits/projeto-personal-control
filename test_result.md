@@ -297,7 +297,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Student credentials editing functionality"
+    - "Professional dashboard attendance data endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
