@@ -132,6 +132,21 @@ backend:
           agent: "testing"
           comment: "TESTED: Student credentials update endpoint working correctly. All validation scenarios tested: (1) Email update with uniqueness check - PASSED, (2) Password update with current password verification - PASSED, (3) Invalid current password rejection - PASSED, (4) Missing current password rejection - PASSED, (5) Duplicate email handling - PASSED. Endpoint properly validates inputs and returns appropriate success/error messages."
 
+  - task: "Professional dashboard attendance data endpoint"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "testing_needed"
+          agent: "user"
+          comment: "User requested testing of professional dashboard endpoint for Marcus (marcusmiramez@gmail.com) to verify attendance data: 4 students with attendance today (2025-11-10), dynamic attendance rate calculation, proper data aggregation."
+        - working: true
+          agent: "testing"
+          comment: "TESTED: Professional dashboard endpoint working correctly. Marcus's actual data verified in database: (1) Today attendances (2025-11-10): 4 students present (Leticia Braga, Cassio Ivanovo, Lucas Pimenta, Aluno Teste) - PASSED, (2) November 2025 attendance rate: 80.0% (32 present / 40 total records) - PASSED and dynamically calculated, (3) GET /api/dashboard/professional returns correct structure with today_classes=4, attendance_rate=80.0%, total_students=4, month_classes=32 - PASSED. Attendance rate calculation is dynamic, not hardcoded. All data aggregation working correctly."
+
 frontend:
   - task: "Dynamic series field rendering in WorkoutDetail"
     implemented: true
