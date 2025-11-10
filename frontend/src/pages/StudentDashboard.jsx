@@ -205,70 +205,69 @@ const StudentDashboard = ({ user, onLogout }) => {
 
   const financialData = calculateFinancialData();
 
-  // Get schedule data from professional's localStorage
-  const getStudentSchedule = () => {
-    try {
-      const professionalId = student?.professional_id;
-      console.log('🔍 Looking for schedule - Professional ID:', professionalId);
-      
-      if (!professionalId) {
-        console.log('❌ No professional_id found');
-        return [];
-      }
-      
-      const scheduleData = localStorage.getItem(`schedule_${professionalId}`);
-      console.log('📅 Schedule data found:', scheduleData ? 'Yes' : 'No');
-      
-      if (!scheduleData) {
-        console.log('❌ No schedule data in localStorage');
-        return [];
-      }
-      
-      const schedule = JSON.parse(scheduleData);
-      const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-      
-      // Get student's full name and first name
-      const fullName = student?.name?.toLowerCase() || '';
-      const firstName = fullName.split(' ')[0]; // Get first name only
-      
-      console.log('👤 Student full name:', fullName);
-      console.log('👤 Student first name:', firstName);
-      
-      const classes = [];
-      
-      Object.keys(schedule).forEach(time => {
-        weekDays.forEach(day => {
-          const cellValue = schedule[time]?.[day]?.trim().toLowerCase();
-          
-          // Check if cell contains student's first name or full name
-          if (cellValue && (
-            cellValue.includes(fullName) || 
-            cellValue.includes(firstName)
-          )) {
-            console.log(`✅ Found match: ${day} ${time} - "${cellValue}"`);
-            classes.push({ day, time });
-          }
-        });
-      });
-      
-      console.log(`📊 Total classes found: ${classes.length}`);
-      
-      // Sort by day of week
-      const dayOrder = { 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6, 'Domingo': 7 };
-      classes.sort((a, b) => {
-        const dayDiff = dayOrder[a.day] - dayOrder[b.day];
-        if (dayDiff !== 0) return dayDiff;
-        return a.time.localeCompare(b.time);
-      });
-      
-      return classes;
-    } catch (error) {
-      console.error('❌ Error reading schedule:', error);
-      return [];
-    }
-  };
+  // State for schedule
+  const [studentSchedule, setStudentSchedule] = useState([]);
 
-  const studentSchedule = getStudentSchedule();
+  // Fetch schedule from backend
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/schedule-grid`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        console.log('📅 Schedule data received:', response.data);
+        
+        if (response.data.grid_data) {
+          const schedule = response.data.grid_data;
+          const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+          
+          // Get student's full name and first name
+          const fullName = dashboard?.student?.name?.toLowerCase() || '';
+          const firstName = fullName.split(' ')[0];
+          
+          console.log('👤 Student full name:', fullName);
+          console.log('👤 Student first name:', firstName);
+          
+          const classes = [];
+          
+          Object.keys(schedule).forEach(time => {
+            weekDays.forEach(day => {
+              const cellValue = schedule[time]?.[day]?.trim().toLowerCase();
+              
+              // Check if cell contains student's first name or full name
+              if (cellValue && (
+                cellValue.includes(fullName) || 
+                cellValue.includes(firstName)
+              )) {
+                console.log(`✅ Found match: ${day} ${time} - "${cellValue}"`);
+                classes.push({ day, time });
+              }
+            });
+          });
+          
+          console.log(`📊 Total classes found: ${classes.length}`);
+          
+          // Sort by day of week
+          const dayOrder = { 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6, 'Domingo': 7 };
+          classes.sort((a, b) => {
+            const dayDiff = dayOrder[a.day] - dayOrder[b.day];
+            if (dayDiff !== 0) return dayDiff;
+            return a.time.localeCompare(b.time);
+          });
+          
+          setStudentSchedule(classes);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching schedule:', error);
+      }
+    };
+    
+    if (dashboard?.student) {
+      fetchSchedule();
+    }
+  }, [dashboard]);
 
   return (
     <Layout user={user} onLogout={onLogout}>
