@@ -206,9 +206,6 @@ const StudentDashboard = ({ user, onLogout }) => {
 
   const financialData = calculateFinancialData();
 
-  // State for schedule
-  const [studentSchedule, setStudentSchedule] = useState([]);
-
   // Fetch schedule from backend
   useEffect(() => {
     const fetchSchedule = async () => {
