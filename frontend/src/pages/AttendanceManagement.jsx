@@ -298,12 +298,12 @@ const AttendanceManagement = ({ user, onLogout }) => {
               <tbody>
                 {attendanceRows.map((row, rowIndex) => (
                   <tr key={rowIndex}>
-                    <td className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-2 border border-blue-500 sticky left-0 z-10">
+                    <td className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-1 md:p-2 border border-blue-500 sticky left-0 z-10">
                       {row.studentId ? (
-                        <div className="font-semibold px-2">{row.studentName}</div>
+                        <div className="font-semibold px-1 md:px-2 text-xs md:text-base">{row.studentName}</div>
                       ) : (
                         <Select onValueChange={(value) => handleStudentNameChange(rowIndex, value)}>
-                          <SelectTrigger className="bg-white text-slate-900 border-0 h-8">
+                          <SelectTrigger className="bg-white text-slate-900 border-0 h-7 md:h-8 text-xs md:text-base">
                             <SelectValue placeholder="Selecionar aluno..." />
                           </SelectTrigger>
                           <SelectContent>
@@ -330,7 +330,7 @@ const AttendanceManagement = ({ user, onLogout }) => {
                       return (
                         <td
                           key={day}
-                          className={`${bgColor} p-2 border border-blue-200 text-center cursor-pointer hover:opacity-70 transition-opacity`}
+                          className={`${bgColor} p-1 md:p-2 border border-blue-200 text-center cursor-pointer hover:opacity-70 transition-opacity`}
                           onClick={() => handleCellClick(rowIndex, day, false)}
                           onContextMenu={(e) => {
                             e.preventDefault();
@@ -338,17 +338,17 @@ const AttendanceManagement = ({ user, onLogout }) => {
                           }}
                           data-testid={`attendance-cell-${rowIndex}-${day}`}
                         >
-                          <span className="text-lg font-bold">{content}</span>
+                          <span className="text-sm md:text-lg font-bold">{content}</span>
                         </td>
                       );
                     })}
-                    <td className="bg-slate-50 p-2 border border-slate-200 text-center">
+                    <td className="bg-slate-50 p-1 md:p-2 border border-slate-200 text-center">
                       <button
                         onClick={() => removeRow(rowIndex)}
                         className="p-1 hover:bg-red-100 rounded"
                         data-testid={`remove-row-${rowIndex}`}
                       >
-                        <Trash2 className="w-4 h-4 text-red-600" />
+                        <Trash2 className="w-3 h-3 md:w-4 md:h-4 text-red-600" />
                       </button>
                     </td>
                   </tr>
