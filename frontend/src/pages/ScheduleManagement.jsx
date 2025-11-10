@@ -27,18 +27,47 @@ const ScheduleManagement = ({ user, onLogout }) => {
     return initial;
   });
 
-  // Load schedule from localStorage on mount
+  // Load schedule from backend on mount
   useEffect(() => {
-    if (user?.id) {
-      const saved = localStorage.getItem(`schedule_${user?.id}`);
-      if (saved) {
-        try {
-          setSchedule(JSON.parse(saved));
-        } catch (error) {
-          console.error('Error parsing saved schedule:', error);
+    const fetchSchedule = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/schedule-grid`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (response.data.grid_data && Object.keys(response.data.grid_data).length > 0) {
+          setSchedule(response.data.grid_data);
+          // Também salvar no localStorage como cache
+          localStorage.setItem(`schedule_${user.id}`, JSON.stringify(response.data.grid_data));
+        } else {
+          // Se não houver dados no backend, tentar carregar do localStorage
+          const saved = localStorage.getItem(`schedule_${user.id}`);
+          if (saved) {
+            try {
+              setSchedule(JSON.parse(saved));
+            } catch (error) {
+              console.error('Error parsing saved schedule:', error);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading schedule:', error);
+        // Fallback para localStorage
+        const saved = localStorage.getItem(`schedule_${user.id}`);
+        if (saved) {
+          try {
+            setSchedule(JSON.parse(saved));
+          } catch (error) {
+            console.error('Error parsing saved schedule:', error);
+          }
         }
       }
-    }
+    };
+    
+    fetchSchedule();
   }, [user?.id]);
 
   // Auto-save to localStorage (for backward compatibility)
