@@ -170,7 +170,7 @@ const StudentDashboard = ({ user, onLogout }) => {
     if (contractType === 'prepaid') {
       // Pré-pago: calcular valor pendente de pagamentos pendentes
       return {
-        classBalance: student?.classes_remaining || 0,
+        classBalance: student?.class_balance || 0,
         pendingAmount: totalPending,
         showClassBalance: true,
         type: 'Pré-pago'
