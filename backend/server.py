@@ -1077,8 +1077,6 @@ async def get_schedule_grid(current_user: dict = Depends(get_current_user)):
     
     return schedule_grid
 
-    }
-
 # ============= EVALUATIONS ROUTES =============
 
 @api_router.post("/evaluations", response_model=Evaluation)
