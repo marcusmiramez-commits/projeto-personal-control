@@ -985,25 +985,32 @@ async def get_professional_dashboard(current_user: dict = Depends(get_current_us
     
     total_students = await db.students.count_documents({"professional_id": current_user["id"], "status": "active"})
     
+    # Buscar presenças de hoje
     today = datetime.now(timezone.utc).date().isoformat()
-    today_schedules = await db.schedules.find({"professional_id": current_user["id"], "date": today}, {"_id": 0}).to_list(1000)
+    today_attendances = await db.attendances.find({
+        "professional_id": current_user["id"], 
+        "date": today,
+        "present": True
+    }, {"_id": 0}).to_list(1000)
     
+    # Buscar pagamentos do mês atual
     current_month = datetime.now(timezone.utc).strftime("%Y-%m")
     month_payments = await db.payments.find({"professional_id": current_user["id"], "reference_month": current_month}, {"_id": 0}).to_list(1000)
     total_revenue = sum([p["amount"] for p in month_payments])
     
+    # Buscar todas as presenças do mês
     month_attendances = await db.attendances.find({"professional_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     month_attendances = [a for a in month_attendances if a["date"].startswith(current_month)]
     total_classes = len([a for a in month_attendances if a["present"]])
     
-    # Calcular taxa de presença
+    # Calcular taxa de presença do mês (presentes / total registrado)
     attendance_rate = 0
     if len(month_attendances) > 0:
         attendance_rate = round((total_classes / len(month_attendances)) * 100, 1)
     
     return {
         "total_students": total_students,
-        "today_classes": len(today_schedules),
+        "today_classes": len(today_attendances),  # Presenças confirmadas hoje
         "month_revenue": total_revenue,
         "month_classes": total_classes,
         "attendance_rate": attendance_rate
