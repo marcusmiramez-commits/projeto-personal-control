@@ -18,10 +18,7 @@ const Layout = ({ children, user, onLogout }) => {
   ];
 
   const studentMenuItems = [
-    { path: '/', icon: Home, label: 'Dashboard' },
-    { path: '/workouts', icon: Activity, label: 'Meus Treinos' },
-    { path: '/schedule', icon: Calendar, label: 'Aulas' },
-    { path: '/financial', icon: DollarSign, label: 'Pagamentos' },
+    { path: '/', icon: Home, label: 'Painel' },
   ];
 
   const menuItems = isProfessional ? professionalMenuItems : studentMenuItems;
