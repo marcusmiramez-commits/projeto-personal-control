@@ -167,13 +167,19 @@ frontend:
     implemented: true
     working: "testing_needed"
     file: "frontend/src/pages/StudentDashboard.jsx"
-    stuck_count: 0
-    priority: "high"
+    stuck_count: 3
+    priority: "critical"
     needs_retesting: true
     status_history:
         - working: "testing_needed"
           agent: "main"
           comment: "Redesigned StudentDashboard with contract-specific layouts. PRE-PAID: Card 1 shows class balance, Card 2 shows pending amount + attendance report. POST-PAID: Card 1 shows attendance report (presence/absence), Card 2 shows amount to pay based on classes given. MONTHLY: Card 1 shows attendance report, Card 2 shows pending monthly payment. All cards fetch real data from payments and attendances APIs."
+        - working: false
+          agent: "user"
+          comment: "User reported PERSISTENT error: Student dashboard fails to load after login, showing 'Erro ao carregar dados'. Error persisted despite multiple JWT and null-checking fixes."
+        - working: "testing_needed"
+          agent: "main"
+          comment: "CRITICAL FIX: troubleshoot_agent identified root cause as race condition. financialData calculated synchronously at line 207 before dashboard loaded asynchronously. Fixed by: (1) Added null check in calculateFinancialData() to return null if dashboard/student/contractType undefined, (2) Added conditional rendering for Card 1 and Card 2 with loading spinners when financialData is null. This addresses the core timing issue."
   
   - task: "Student credentials editing functionality"
     implemented: true
