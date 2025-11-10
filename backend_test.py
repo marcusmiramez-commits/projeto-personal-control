@@ -19,18 +19,71 @@ from dotenv import load_dotenv
 # Backend URL from environment
 BACKEND_URL = "https://fitness-manager-10.preview.emergentagent.com/api"
 
-class TrainerHubTester:
+class ProfessionalDashboardTester:
     def __init__(self):
         self.token = None
         self.professional_id = None
-        self.test_student_id = None
         self.session = requests.Session()
+        self.marcus_id = "90b60b6b-d322-4bb2-a326-ebfbd74aa52f"
         
     def log(self, message, level="INFO"):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{timestamp}] {level}: {message}")
         
-    def login_professional(self):
+    async def get_database_data(self):
+        """Get data directly from database for verification"""
+        load_dotenv('/app/backend/.env')
+        mongo_url = os.environ['MONGO_URL']
+        client = AsyncIOMotorClient(mongo_url)
+        db = client[os.environ['DB_NAME']]
+        
+        try:
+            # Get Marcus's data
+            marcus = await db.professionals.find_one({'id': self.marcus_id}, {'_id': 0})
+            if not marcus:
+                self.log("Marcus not found in database", "ERROR")
+                return None
+            
+            # Get today's attendances (2025-11-10)
+            today_attendances = await db.attendances.find({
+                'professional_id': self.marcus_id,
+                'date': '2025-11-10',
+                'present': True
+            }, {'_id': 0}).to_list(100)
+            
+            # Get all November 2025 attendances for rate calculation
+            all_attendances = await db.attendances.find({
+                'professional_id': self.marcus_id
+            }, {'_id': 0}).to_list(1000)
+            
+            nov_2025 = [a for a in all_attendances if a['date'].startswith('2025-11')]
+            present_count = len([a for a in nov_2025 if a['present']])
+            total_count = len(nov_2025)
+            
+            # Get total active students
+            total_students = await db.students.count_documents({
+                'professional_id': self.marcus_id,
+                'status': 'active'
+            })
+            
+            client.close()
+            
+            return {
+                'marcus': marcus,
+                'today_attendances': today_attendances,
+                'today_count': len(today_attendances),
+                'nov_present': present_count,
+                'nov_total': total_count,
+                'attendance_rate': round((present_count / total_count) * 100, 1) if total_count > 0 else 0,
+                'total_students': total_students
+            }
+            
+        except Exception as e:
+            self.log(f"Database error: {str(e)}", "ERROR")
+            client.close()
+            return None
+        
+    def login_marcus(self):
         """Login as a professional to get authentication token"""
         self.log("Attempting to login as professional...")
         
