@@ -289,7 +289,13 @@ const StudentDashboard = ({ user, onLogout }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Aulas (depende do tipo de contrato) */}
-          {contractType === 'prepaid' ? (
+          {!financialData ? (
+            <div className="glass rounded-2xl p-6 border border-slate-100">
+              <div className="flex items-center justify-center min-h-[200px]">
+                <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            </div>
+          ) : contractType === 'prepaid' ? (
             <div className="glass rounded-2xl p-6 border border-emerald-100" data-testid="student-balance-stat">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
