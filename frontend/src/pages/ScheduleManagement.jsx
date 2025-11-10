@@ -17,9 +17,6 @@ const ScheduleManagement = ({ user, onLogout }) => {
   const weekDays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
   
   const [schedule, setSchedule] = useState(() => {
-    const saved = localStorage.getItem(`schedule_${user?.id}`);
-    if (saved) return JSON.parse(saved);
-    
     const initial = {};
     timeSlots.forEach(time => {
       initial[time] = {};
@@ -30,11 +27,53 @@ const ScheduleManagement = ({ user, onLogout }) => {
     return initial;
   });
 
+  // Load schedule from backend on mount
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/schedule-grid`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (response.data.grid_data && Object.keys(response.data.grid_data).length > 0) {
+          setSchedule(response.data.grid_data);
+        }
+      } catch (error) {
+        console.error('Error loading schedule:', error);
+        // Use localStorage as fallback
+        const saved = localStorage.getItem(`schedule_${user?.id}`);
+        if (saved) {
+          setSchedule(JSON.parse(saved));
+        }
+      }
+    };
+    
+    if (user?.id) {
+      fetchSchedule();
+    }
+  }, [user?.id, timeSlots]);
+
+  // Auto-save to localStorage (for backward compatibility)
   useEffect(() => {
     localStorage.setItem(`schedule_${user?.id}`, JSON.stringify(schedule));
-    // Dispatch event to notify dashboard of schedule changes
     window.dispatchEvent(new Event('scheduleUpdated'));
   }, [schedule, user]);
+
+  // Save schedule to backend
+  const handleSaveSchedule = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/schedule-grid`, schedule, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success('Agenda salva com sucesso!');
+    } catch (error) {
+      console.error('Error saving schedule:', error);
+      toast.error('Erro ao salvar agenda');
+    }
+  };
 
   const handleCellChange = (time, day, value) => {
     setSchedule(prev => ({
