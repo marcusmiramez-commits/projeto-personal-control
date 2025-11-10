@@ -490,7 +490,7 @@ const StudentDashboard = ({ user, onLogout }) => {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
                   <Clock className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>Horários das Aulas</h3>
+                <h3 className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>Agenda do Aluno</h3>
               </div>
             </div>
 
