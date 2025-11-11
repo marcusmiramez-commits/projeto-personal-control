@@ -411,13 +411,13 @@ const StudentDashboard = ({ user, onLogout }) => {
               
               {contractType === 'postpaid' && (
                 <>
-                  <div className="text-center py-2">
+                  <div className="text-center py-3">
                     <p className="text-sm text-slate-600 mb-1">Valor a Pagar</p>
-                    <p className="text-3xl font-bold text-orange-600">
+                    <p className="text-4xl font-bold text-orange-600">
                       R$ {financialData.amountToPay.toFixed(2)}
                     </p>
                   </div>
-                  <div className="pt-2 border-t border-slate-200 space-y-2">
+                  <div className="pt-3 border-t border-slate-200 space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-slate-600">Aulas Dadas</span>
                       <span className="font-bold">{presentCount}</span>
@@ -425,10 +425,6 @@ const StudentDashboard = ({ user, onLogout }) => {
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-slate-600">Valor/Aula</span>
                       <span className="font-bold">R$ {financialData.classValue.toFixed(2)}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-600">Faltas</span>
-                      <span className="font-bold text-red-600">{absentCount}</span>
                     </div>
                   </div>
                 </>
