@@ -361,6 +361,48 @@ const StudentDashboard = ({ user, onLogout }) => {
                   <span className="text-sm text-slate-600">Tipo</span>
                   <span className="text-sm font-bold">{financialData.type}</span>
                 </div>
+                
+                {/* Lista de Datas com Presença */}
+                {monthAttendances.filter(a => a.present).length > 0 && (
+                  <div className="pt-3 border-t border-slate-200">
+                    <p className="text-xs text-slate-600 mb-2 flex items-center">
+                      <CheckCircle className="w-3 h-3 text-emerald-500 mr-1" />
+                      Datas com Presença:
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {monthAttendances
+                        .filter(a => a.present)
+                        .sort((a, b) => a.date.localeCompare(b.date))
+                        .map((attendance, idx) => (
+                          <span key={idx} className="text-[10px] px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
+                            {new Date(attendance.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                          </span>
+                        ))
+                      }
+                    </div>
+                  </div>
+                )}
+                
+                {/* Lista de Datas com Falta */}
+                {monthAttendances.filter(a => !a.present).length > 0 && (
+                  <div className="pt-2">
+                    <p className="text-xs text-slate-600 mb-2 flex items-center">
+                      <XCircle className="w-3 h-3 text-red-500 mr-1" />
+                      Datas com Falta:
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {monthAttendances
+                        .filter(a => !a.present)
+                        .sort((a, b) => a.date.localeCompare(b.date))
+                        .map((attendance, idx) => (
+                          <span key={idx} className="text-[10px] px-2 py-0.5 bg-red-100 text-red-700 rounded-full">
+                            {new Date(attendance.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                          </span>
+                        ))
+                      }
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
