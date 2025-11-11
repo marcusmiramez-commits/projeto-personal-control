@@ -436,30 +436,27 @@ const StudentDashboard = ({ user, onLogout }) => {
               
               {contractType === 'monthly' && (
                 <>
-                  <div className="text-center py-2">
+                  <div className="text-center py-3">
                     <p className="text-sm text-slate-600 mb-1">Valor Pendente</p>
-                    <p className={`text-3xl font-bold ${financialData.pendingAmount > 0 ? 'text-orange-600' : 'text-emerald-600'}`}>
+                    <p className={`text-4xl font-bold ${financialData.pendingAmount > 0 ? 'text-orange-600' : 'text-emerald-600'}`}>
                       R$ {financialData.pendingAmount.toFixed(2)}
                     </p>
                   </div>
-                  {financialData.pendingAmount > 0 && (
-                    <div className="flex items-center justify-center space-x-1 text-orange-600 text-xs">
-                      <AlertCircle className="w-3 h-3" />
+                  {financialData.pendingAmount > 0 ? (
+                    <div className="flex items-center justify-center space-x-1 text-orange-600 text-sm">
+                      <AlertCircle className="w-4 h-4" />
                       <span>Mensalidade pendente</span>
                     </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-1 text-emerald-600 text-sm">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Sem pendências</span>
+                    </div>
                   )}
-                  <div className="pt-2 border-t border-slate-200 space-y-2">
+                  <div className="pt-3 border-t border-slate-200">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-slate-600">Valor Mensal</span>
                       <span className="font-bold">R$ {financialData.monthlyValue.toFixed(2)}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-600">Presenças do Mês</span>
-                      <span className="font-bold text-emerald-600">{presentCount}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-600">Faltas do Mês</span>
-                      <span className="font-bold text-red-600">{absentCount}</span>
                     </div>
                   </div>
                 </>
