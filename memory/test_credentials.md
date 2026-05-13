@@ -2,7 +2,7 @@
 
 ## Profissional
 - Email: marcusmiramez@gmail.com
-- Senha: (definida pelo usuário no cadastro)
+- Senha: test123  ⚠️ (resetada para teste durante otimização — você pode alterar pelo cadastro)
 
 ## Aluno
 - Email: lucasmapel@gmail.com

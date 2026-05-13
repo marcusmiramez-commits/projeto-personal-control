@@ -601,10 +601,16 @@ async def get_student_routines(student_id: str, current_user: dict = Depends(get
     else:
         raise HTTPException(status_code=403, detail="Access denied")
     
-    # For each routine, fetch associated workouts
+    # Batch fetch all workouts for these routines in a single query
+    routine_ids = [r["id"] for r in routines]
+    workouts_by_routine = {}
+    if routine_ids:
+        all_workouts = await db.workouts.find({"routine_id": {"$in": routine_ids}}, {"_id": 0}).to_list(10000)
+        for w in all_workouts:
+            workouts_by_routine.setdefault(w["routine_id"], []).append(w)
+    
     for routine in routines:
-        workouts = await db.workouts.find({"routine_id": routine["id"]}, {"_id": 0}).to_list(1000)
-        routine["workouts"] = workouts
+        routine["workouts"] = workouts_by_routine.get(routine["id"], [])
     
     return routines
 
@@ -999,9 +1005,11 @@ async def get_professional_dashboard(current_user: dict = Depends(get_current_us
     total_revenue = sum([p["amount"] for p in month_payments])
     paid_count = len([p for p in month_payments if p.get("status") == "paid"])
     
-    # Buscar todas as presenças do mês
-    month_attendances = await db.attendances.find({"professional_id": current_user["id"]}, {"_id": 0}).to_list(1000)
-    month_attendances = [a for a in month_attendances if a["date"].startswith(current_month)]
+    # Buscar todas as presenças do mês (filtrar direto no MongoDB)
+    month_attendances = await db.attendances.find({
+        "professional_id": current_user["id"],
+        "date": {"$regex": f"^{current_month}"}
+    }, {"_id": 0}).to_list(10000)
     total_classes = len([a for a in month_attendances if a["present"]])
     
     # Calcular taxa de presença do mês (presentes / total registrado)
