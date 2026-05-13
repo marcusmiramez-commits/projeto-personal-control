@@ -337,12 +337,8 @@ async def login_professional(credentials: ProfessionalLogin):
 
 @api_router.post("/auth/login/student")
 async def login_student(credentials: ProfessionalLogin):
-    student = await db.students.find_one({"email": credentials.email}, {"_id": 0})
-    if not student or not verify_password(credentials.password, student["password_hash"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    access_token = create_access_token(data={"sub": student["id"], "type": "student"})
-    return {"access_token": access_token, "token_type": "bearer", "user": {"id": student["id"], "name": student["name"], "email": student["email"], "type": "student", "professional_id": student["professional_id"]}}
+    # Student login disabled — access removed by professional's request
+    raise HTTPException(status_code=403, detail="Acesso de aluno desativado")
 
 # ============= STUDENTS ROUTES =============
 

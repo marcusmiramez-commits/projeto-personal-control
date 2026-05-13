@@ -103,47 +103,6 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const handleStudentLogin = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.email || !formData.password) {
-      toast.error('Preencha email e senha');
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API}/auth/login/student`, { 
-        email: formData.email.trim().toLowerCase(), 
-        password: formData.password 
-      });
-      
-      if (response.data && response.data.access_token && response.data.user) {
-        toast.success(`Bem-vindo, ${response.data.user.name}!`);
-        onLogin(response.data.user, response.data.access_token);
-      } else {
-        toast.error('Resposta inválida do servidor');
-      }
-    } catch (error) {
-      console.error('Erro no login:', error);
-      let errorMsg = 'Erro ao fazer login';
-      
-      if (error.response?.status === 401) {
-        errorMsg = 'Email ou senha incorretos';
-      } else if (error.response?.status === 500) {
-        errorMsg = 'Erro no servidor. Tente novamente.';
-      } else if (error.response?.data?.detail) {
-        errorMsg = error.response.data.detail;
-      } else if (!error.response) {
-        errorMsg = 'Erro de conexão. Verifique sua internet.';
-      }
-      
-      toast.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-slate-50 p-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -164,15 +123,12 @@ const Login = ({ onLogin }) => {
 
         <div className="glass rounded-3xl shadow-2xl p-8 border border-emerald-100">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8 bg-slate-100 p-1 rounded-xl">
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-slate-100 p-1 rounded-xl">
               <TabsTrigger value="professional-login" className="rounded-lg" data-testid="tab-professional-login">
                 <UserCircle className="w-4 h-4 mr-2" />Login Personal
               </TabsTrigger>
               <TabsTrigger value="professional-register" className="rounded-lg" data-testid="tab-professional-register">
                 <UserPlus className="w-4 h-4 mr-2" />Cadastro
-              </TabsTrigger>
-              <TabsTrigger value="student-login" className="rounded-lg" data-testid="tab-student-login">
-                <Dumbbell className="w-4 h-4 mr-2" />Login Aluno
               </TabsTrigger>
             </TabsList>
 
@@ -207,14 +163,6 @@ const Login = ({ onLogin }) => {
                 <div><Label>Email</Label><Input name="email" type="email" value={formData.email} onChange={handleChange} required data-testid="professional-register-email-input" /></div>
                 <div><Label>Senha</Label><Input name="password" type="password" value={formData.password} onChange={handleChange} required data-testid="professional-register-password-input" /></div>
                 <Button type="submit" disabled={loading} className="w-full h-12 bg-gradient-to-r from-emerald-500 to-green-600" data-testid="professional-register-button">Criar Conta</Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="student-login">
-              <form onSubmit={handleStudentLogin} className="space-y-6">
-                <div><Label>Email</Label><Input name="email" type="email" value={formData.email} onChange={handleChange} required data-testid="student-email-input" /></div>
-                <div><Label>Senha</Label><Input name="password" type="password" value={formData.password} onChange={handleChange} required data-testid="student-password-input" /></div>
-                <Button type="submit" disabled={loading} className="w-full h-12 bg-gradient-to-r from-emerald-500 to-green-600" data-testid="student-login-button">Entrar como Aluno</Button>
               </form>
             </TabsContent>
           </Tabs>

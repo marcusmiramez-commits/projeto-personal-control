@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import '@/App.css';
 import Login from '@/pages/Login';
 import ProfessionalDashboard from '@/pages/ProfessionalDashboard';
-import StudentDashboard from '@/pages/StudentDashboard';
 import StudentsManagement from '@/pages/StudentsManagement';
 import WorkoutRoutines from '@/pages/WorkoutRoutines';
 import WorkoutsList from '@/pages/WorkoutsList';
@@ -88,11 +87,7 @@ const App = () => {
           path="/"
           element={
             user ? (
-              user.type === 'professional' ? (
-                <ProfessionalDashboard user={user} onLogout={handleLogout} />
-              ) : (
-                <StudentDashboard user={user} onLogout={handleLogout} />
-              )
+              <ProfessionalDashboard user={user} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" />
             )
@@ -102,11 +97,7 @@ const App = () => {
           path="/dashboard"
           element={
             user ? (
-              user.type === 'professional' ? (
-                <ProfessionalDashboard user={user} onLogout={handleLogout} />
-              ) : (
-                <StudentDashboard user={user} onLogout={handleLogout} />
-              )
+              <ProfessionalDashboard user={user} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" />
             )
