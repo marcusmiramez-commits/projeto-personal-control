@@ -15,7 +15,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from environment
-BACKEND_URL = "https://fitness-manager-10.preview.emergentagent.com/api"
+BACKEND_URL = "https://trainer-portal-demo.preview.emergentagent.com/api"
 
 class StudentLoginTester:
     def __init__(self):

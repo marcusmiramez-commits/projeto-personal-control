@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
-import { Users, Calendar, DollarSign, UserPlus, CalendarDays, CreditCard, ClipboardList, Dumbbell, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { Users, CalendarDays, CreditCard, ClipboardList, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
@@ -11,7 +11,6 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const [dashboard, setDashboard] = useState(null);
   const [students, setStudents] = useState([]);
-  const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -31,12 +30,6 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
           headers: { Authorization: `Bearer ${token}` } 
         });
         setStudents(studentsResponse.data);
-        
-        // Fetch exercises
-        const exercisesResponse = await axios.get(`${API}/exercises`, { 
-          headers: { Authorization: `Bearer ${token}` } 
-        });
-        setExercises(exercisesResponse.data);
         
         // Fetch financial report for current month to get total_expected
         const currentMonth = new Date().toISOString().slice(0, 7);
@@ -122,10 +115,6 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
   const prepaidStudents = students.filter(s => s.contract_type === 'prepaid').length;
   const postpaidStudents = students.filter(s => s.contract_type === 'postpaid').length;
   const monthlyStudents = students.filter(s => s.contract_type === 'monthly').length;
-  const totalExercises = exercises.length;
-  
-  // Get unique muscle groups
-  const muscleGroups = [...new Set(exercises.map(e => e.muscle_group))].length;
 
   const moduleCards = [
     {
@@ -177,18 +166,6 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
         { label: 'Status', value: dashboard?.paid_count ? `${dashboard.paid_count} ${dashboard.paid_count === 1 ? 'pago' : 'pagos'}` : 'Nenhum pagamento', icon: dashboard?.paid_count > 0 ? CheckCircle : AlertCircle, iconColor: dashboard?.paid_count > 0 ? 'text-green-500' : 'text-orange-500' },
       ],
       testId: 'module-financial'
-    },
-    {
-      icon: Dumbbell,
-      title: 'Exercícios',
-      color: 'from-red-500 to-red-600',
-      path: '/exercises',
-      stats: [
-        { label: 'Total de Exercícios', value: totalExercises },
-        { label: 'Grupos Musculares', value: muscleGroups },
-        { label: 'Biblioteca', value: 'Ativa', icon: CheckCircle, iconColor: 'text-green-500' },
-      ],
-      testId: 'module-exercises'
     },
   ];
 
