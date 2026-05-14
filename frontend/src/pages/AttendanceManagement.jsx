@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 import Layout from '../components/Layout';
@@ -16,6 +16,27 @@ const AttendanceManagement = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
+  const clickStateRef = useRef({ cellKey: null, timer: null });
+
+  const handleCellTap = (rowIndex, day) => {
+    const cellKey = `${rowIndex}-${day}`;
+    const state = clickStateRef.current;
+
+    if (state.cellKey === cellKey && state.timer) {
+      // Segundo clique na mesma célula dentro do intervalo => FALTA
+      clearTimeout(state.timer);
+      clickStateRef.current = { cellKey: null, timer: null };
+      handleCellClick(rowIndex, day, true);
+    } else {
+      // Cancela timer pendente em outra célula (se houver)
+      if (state.timer) clearTimeout(state.timer);
+      const timer = setTimeout(() => {
+        clickStateRef.current = { cellKey: null, timer: null };
+        handleCellClick(rowIndex, day, false);
+      }, 280);
+      clickStateRef.current = { cellKey, timer };
+    }
+  };
 
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -230,7 +251,7 @@ const AttendanceManagement = ({ user, onLogout }) => {
               Controle de <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Presenças</span>
             </h1>
             <div className="flex items-center space-x-4 mt-2">
-              <p className="text-slate-600">Click esquerdo: ✓ Presença | Click direito: ✗ Falta</p>
+              <p className="text-slate-600">1 clique: ✓ Presença | 2 cliques: ✗ Falta</p>
               <div className="flex items-center space-x-2">
                 {saving ? (
                   <div className="flex items-center space-x-2 text-blue-600">
@@ -334,12 +355,10 @@ const AttendanceManagement = ({ user, onLogout }) => {
                       return (
                         <td
                           key={day}
-                          className={`${bgColor} p-0.5 md:p-2 border border-blue-200 text-center cursor-pointer hover:opacity-70 transition-opacity`}
-                          onClick={() => handleCellClick(rowIndex, day, false)}
-                          onContextMenu={(e) => {
-                            e.preventDefault();
-                            handleCellClick(rowIndex, day, true);
-                          }}
+                          className={`${bgColor} p-0.5 md:p-2 border border-blue-200 text-center cursor-pointer hover:opacity-70 transition-opacity select-none`}
+                          style={{ touchAction: 'manipulation', WebkitUserSelect: 'none', userSelect: 'none' }}
+                          onClick={() => handleCellTap(rowIndex, day)}
+                          onContextMenu={(e) => e.preventDefault()}
                           data-testid={`attendance-cell-${rowIndex}-${day}`}
                         >
                           <span className="text-[11px] md:text-lg font-bold">{content}</span>
@@ -391,11 +410,11 @@ const AttendanceManagement = ({ user, onLogout }) => {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="glass rounded-xl p-4 border border-emerald-100">
             <h3 className="font-bold text-emerald-700 mb-2">💡 Dica 1</h3>
-            <p className="text-sm text-slate-600">Click esquerdo marca presença (✓), click novamente para desmarcar</p>
+            <p className="text-sm text-slate-600">1 clique marca presença (✓). Clique novamente na mesma célula para desmarcar.</p>
           </div>
           <div className="glass rounded-xl p-4 border border-emerald-100">
-            <h3 className="font-bold text-emerald-700 mb-2">🖱️ Dica 2</h3>
-            <p className="text-sm text-slate-600">Click direito marca falta (✗), click novamente para desmarcar</p>
+            <h3 className="font-bold text-emerald-700 mb-2">📱 Dica 2</h3>
+            <p className="text-sm text-slate-600">2 cliques rápidos marcam falta (✗). Funciona no computador e no celular (toque duplo).</p>
           </div>
           <div className="glass rounded-xl p-4 border border-emerald-100">
             <h3 className="font-bold text-emerald-700 mb-2">💾 Dica 3</h3>
