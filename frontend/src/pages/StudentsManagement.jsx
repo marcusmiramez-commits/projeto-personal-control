@@ -47,7 +47,6 @@ const StudentsManagement = ({ user, onLogout }) => {
       const studentData = {
         name: formData.name,
         email: formData.email,
-        password: formData.password,
         phone: formData.phone,
         age: formData.age ? parseInt(formData.age) : null,
         goal: formData.goal || null,
@@ -61,9 +60,9 @@ const StudentsManagement = ({ user, onLogout }) => {
       
       await axios.post(`${API}/students`, studentData, { headers: { Authorization: `Bearer ${token}` } });
       
-      // Ask if user wants to send credentials via WhatsApp
+      // Ask if user wants to send welcome message via WhatsApp
       const sendWhatsApp = window.confirm(
-        `Aluno cadastrado com sucesso!\n\nDeseja enviar os dados de acesso via WhatsApp para ${formData.name}?`
+        `Aluno cadastrado com sucesso!\n\nDeseja enviar uma mensagem de boas-vindas via WhatsApp para ${formData.name}?`
       );
       
       if (sendWhatsApp) {
@@ -73,7 +72,7 @@ const StudentsManagement = ({ user, onLogout }) => {
       }
       
       setIsDialogOpen(false);
-      setFormData({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+      setFormData({ name: '', email: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
       fetchStudents();
     } catch (error) {
       console.error('Erro detalhado:', error.response?.data);
@@ -83,7 +82,7 @@ const StudentsManagement = ({ user, onLogout }) => {
   };
 
   const sendAccessDataViaWhatsApp = (studentData) => {
-    const message = `Olá ${studentData.name}! 👋\n\nSeu cadastro no Personal Control foi realizado com sucesso! ✅\n\n📱 *Dados de Acesso:*\n\n🔹 Email: ${studentData.email}\n🔹 Senha: ${studentData.password}\n\n🌐 *Link de acesso:*\n${window.location.origin}/login\n\n⚠️ *Importante:* Use a aba "Login Aluno" para acessar o sistema.\n\nQualquer dúvida, estou à disposição! 💪`;
+    const message = `Olá ${studentData.name}! 👋\n\nBem-vindo(a) ao acompanhamento personalizado! ✅\n\nA partir de agora seu Personal Trainer vai te enviar treinos, lembretes de aulas e cobranças por aqui mesmo, pelo WhatsApp. 💪\n\nQualquer dúvida, é só me chamar!`;
     
     // Remove formatting from phone number
     const cleanPhone = studentData.phone.replace(/\D/g, '');
@@ -112,7 +111,6 @@ const StudentsManagement = ({ user, onLogout }) => {
     setEditFormData({
       name: student.name,
       email: student.email,
-      password: '', // Empty by default, only fill if changing
       phone: student.phone,
       age: student.age || '',
       goal: student.goal || '',
@@ -129,7 +127,6 @@ const StudentsManagement = ({ user, onLogout }) => {
     try {
       const token = localStorage.getItem('token');
       
-      // Prepare data with proper type conversion
       const updateData = {
         name: editFormData.name,
         email: editFormData.email,
@@ -141,11 +138,6 @@ const StudentsManagement = ({ user, onLogout }) => {
         class_balance: editFormData.class_balance ? parseInt(editFormData.class_balance) : 0,
         class_value: editFormData.class_value ? parseFloat(editFormData.class_value) : null
       };
-      
-      // Only include password if it was changed (not empty)
-      if (editFormData.password && editFormData.password.trim() !== '') {
-        updateData.password = editFormData.password;
-      }
       
       await axios.put(`${API}/students/${editingStudent.id}`, updateData, { 
         headers: { Authorization: `Bearer ${token}` } 
@@ -211,7 +203,6 @@ const StudentsManagement = ({ user, onLogout }) => {
               setFormData({ 
                 name: '', 
                 email: '', 
-                password: '', 
                 phone: '', 
                 age: '', 
                 goal: '', 
@@ -245,17 +236,6 @@ const StudentsManagement = ({ user, onLogout }) => {
                       onChange={(e) => setFormData({...formData, email: e.target.value})} 
                       required 
                       data-testid="student-email-input" 
-                    />
-                  </div>
-                  <div>
-                    <Label>Senha *</Label>
-                    <Input 
-                      type="password" 
-                      value={formData.password} 
-                      onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                      required 
-                      minLength={6}
-                      data-testid="student-password-input" 
                     />
                   </div>
                   <div>
@@ -412,7 +392,7 @@ const StudentsManagement = ({ user, onLogout }) => {
                 <Button 
                   variant="outline"
                   onClick={() => {
-                    const message = `Olá ${student.name}! 👋\n\n📱 *Lembrete - Dados de Acesso Personal Control*\n\n🔹 Email: ${student.email}\n🔹 Senha: (use a senha cadastrada)\n\n🌐 *Link de acesso:*\n${window.location.origin}/login\n\n⚠️ Use a aba "Login Aluno" para acessar.\n\nNos vemos no treino! 💪`;
+                    const message = `Olá ${student.name}! 👋\n\n💪 *Mensagem do seu Personal Trainer*\n\nQualquer informação sobre treinos, aulas, lembretes ou pagamentos será enviada por aqui.\n\nNos vemos no treino!`;
                     const cleanPhone = student.phone.replace(/\D/g, '');
                     const whatsappUrl = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
@@ -469,18 +449,6 @@ const StudentsManagement = ({ user, onLogout }) => {
                   placeholder="11999999999"
                   data-testid="edit-student-phone-input"
                 />
-              </div>
-              <div>
-                <Label>Nova Senha</Label>
-                <Input
-                  type="password"
-                  value={editFormData.password}
-                  onChange={(e) => setEditFormData({...editFormData, password: e.target.value})}
-                  placeholder="Deixe vazio para manter a senha atual"
-                  minLength={6}
-                  data-testid="edit-student-password-input"
-                />
-                <p className="text-xs text-slate-500 mt-1">Preencha apenas se quiser alterar a senha (mínimo 6 caracteres)</p>
               </div>
               <div>
                 <Label>Idade</Label>

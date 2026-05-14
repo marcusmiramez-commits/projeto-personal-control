@@ -11,6 +11,7 @@ import ScheduleManagement from '@/pages/ScheduleManagement';
 import AttendanceManagement from '@/pages/AttendanceManagement';
 import FinancialManagement from '@/pages/FinancialManagement';
 import ExercisesManagement from '@/pages/ExercisesManagement';
+import ProfileSettings from '@/pages/ProfileSettings';
 import { Toaster } from '@/components/ui/sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -134,6 +135,10 @@ const App = () => {
         <Route
           path="/financial"
           element={user ? <FinancialManagement user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile"
+          element={user ? <ProfileSettings user={user} onLogout={handleLogout} onUserUpdate={setUser} /> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>

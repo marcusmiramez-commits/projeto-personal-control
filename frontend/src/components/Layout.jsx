@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Home, Users, Dumbbell, Calendar, CheckCircle, DollarSign, Activity, LogOut, Menu, X } from 'lucide-react';
+import { Home, Users, Dumbbell, Calendar, CheckCircle, DollarSign, LogOut, Menu, X, UserCog } from 'lucide-react';
 import { useState } from 'react';
 
 const Layout = ({ children, user, onLogout }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isProfessional = user?.type === 'professional';
 
@@ -28,7 +29,12 @@ const Layout = ({ children, user, onLogout }) => {
       {/* Header */}
       <header className="glass border-b border-emerald-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div
+            className={`flex items-center space-x-3 ${isProfessional ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+            onClick={isProfessional ? () => navigate('/profile') : undefined}
+            data-testid="profile-header-link"
+            role={isProfessional ? 'button' : undefined}
+          >
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
               <Dumbbell className="w-6 h-6 text-white" />
             </div>
@@ -58,6 +64,18 @@ const Layout = ({ children, user, onLogout }) => {
                 </Link>
               );
             })}
+            {isProfessional && (
+              <Link to="/profile">
+                <Button
+                  variant={location.pathname === '/profile' ? 'default' : 'ghost'}
+                  className={location.pathname === '/profile' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}
+                  data-testid="nav-profile"
+                >
+                  <UserCog className="w-4 h-4 mr-2" />
+                  Perfil
+                </Button>
+              </Link>
+            )}
             <Button
               variant="ghost"
               onClick={onLogout}
@@ -94,6 +112,14 @@ const Layout = ({ children, user, onLogout }) => {
                   </Link>
                 );
               })}
+              {isProfessional && (
+                <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                  <div className={`flex items-center space-x-3 p-3 rounded-lg ${location.pathname === '/profile' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}`}>
+                    <UserCog className="w-5 h-5" />
+                    <span>Perfil</span>
+                  </div>
+                </Link>
+              )}
               <button
                 onClick={() => { onLogout(); setMobileMenuOpen(false); }}
                 className="flex items-center space-x-3 p-3 rounded-lg hover:bg-red-50 text-red-600 w-full"

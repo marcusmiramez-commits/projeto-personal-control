@@ -88,7 +88,7 @@ class Student(BaseModel):
 class StudentCreate(BaseModel):
     name: str
     email: EmailStr
-    password: str
+    password: Optional[str] = None
     phone: str
     age: Optional[int] = None
     goal: Optional[str] = None
@@ -340,6 +340,62 @@ async def login_student(credentials: ProfessionalLogin):
     # Student login disabled — access removed by professional's request
     raise HTTPException(status_code=403, detail="Acesso de aluno desativado")
 
+# ============= PROFILE ROUTES (Professional) =============
+
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    logo_url: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+@api_router.get("/profile/me")
+async def get_my_profile(current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can access this endpoint")
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0, "password_hash": 0, "password": 0})
+    if not prof:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return prof
+
+@api_router.put("/profile/me")
+async def update_my_profile(updates: ProfileUpdate, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can update profile")
+
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
+
+    # If email is being changed, ensure it's not already taken
+    if "email" in update_data:
+        existing = await db.professionals.find_one({"email": update_data["email"], "id": {"$ne": current_user["id"]}}, {"_id": 0})
+        if existing:
+            raise HTTPException(status_code=400, detail="Este email já está em uso")
+
+    await db.professionals.update_one({"id": current_user["id"]}, {"$set": update_data})
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0, "password_hash": 0, "password": 0})
+    return prof
+
+@api_router.put("/profile/me/password")
+async def change_my_password(payload: PasswordChange, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Only professionals can change password")
+
+    if len(payload.new_password) < 6:
+        raise HTTPException(status_code=400, detail="A nova senha deve ter no mínimo 6 caracteres")
+
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0})
+    if not prof or not verify_password(payload.current_password, prof.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="Senha atual incorreta")
+
+    new_hash = hash_password(payload.new_password)
+    await db.professionals.update_one({"id": current_user["id"]}, {"$set": {"password_hash": new_hash}, "$unset": {"password": ""}})
+    return {"message": "Senha alterada com sucesso"}
+
 # ============= STUDENTS ROUTES =============
 
 @api_router.post("/students", response_model=Student)
@@ -355,7 +411,7 @@ async def create_student(student: StudentCreate, current_user: dict = Depends(ge
         professional_id=current_user["id"],
         name=student.name,
         email=student.email,
-        password_hash=hash_password(student.password),
+        password_hash=hash_password(student.password) if student.password else "",
         phone=student.phone,
         age=student.age,
         goal=student.goal,
