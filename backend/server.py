@@ -74,6 +74,7 @@ class Student(BaseModel):
     password_hash: str
     phone: str
     age: Optional[int] = None
+    birth_date: Optional[str] = None
     goal: Optional[str] = None
     anamnesis: Optional[str] = None
     observations: Optional[str] = None
@@ -91,6 +92,7 @@ class StudentCreate(BaseModel):
     password: Optional[str] = None
     phone: str
     age: Optional[int] = None
+    birth_date: Optional[str] = None
     goal: Optional[str] = None
     anamnesis: Optional[str] = None
     observations: Optional[str] = None
@@ -414,6 +416,7 @@ async def create_student(student: StudentCreate, current_user: dict = Depends(ge
         password_hash=hash_password(student.password) if student.password else "",
         phone=student.phone,
         age=student.age,
+        birth_date=student.birth_date,
         goal=student.goal,
         anamnesis=student.anamnesis,
         observations=student.observations,

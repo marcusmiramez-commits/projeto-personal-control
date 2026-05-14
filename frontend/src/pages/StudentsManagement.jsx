@@ -21,8 +21,8 @@ const StudentsManagement = ({ user, onLogout }) => {
   const [isAddClassesDialogOpen, setIsAddClassesDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [classesToAdd, setClassesToAdd] = useState('');
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
-  const [editFormData, setEditFormData] = useState({ name: '', email: '', password: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', birth_date: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', phone: '', birth_date: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
 
   useEffect(() => { fetchStudents(); }, []);
 
@@ -48,7 +48,7 @@ const StudentsManagement = ({ user, onLogout }) => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        age: formData.age ? parseInt(formData.age) : null,
+        birth_date: formData.birth_date || null,
         goal: formData.goal || null,
         anamnesis: formData.anamnesis || null,
         observations: formData.observations || null,
@@ -72,7 +72,7 @@ const StudentsManagement = ({ user, onLogout }) => {
       }
       
       setIsDialogOpen(false);
-      setFormData({ name: '', email: '', phone: '', age: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+      setFormData({ name: '', email: '', phone: '', birth_date: '', goal: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
       fetchStudents();
     } catch (error) {
       console.error('Erro detalhado:', error.response?.data);
@@ -112,7 +112,7 @@ const StudentsManagement = ({ user, onLogout }) => {
       name: student.name,
       email: student.email,
       phone: student.phone,
-      age: student.age || '',
+      birth_date: student.birth_date || '',
       goal: student.goal || '',
       contract_type: student.contract_type,
       monthly_value: student.monthly_value || '',
@@ -131,7 +131,7 @@ const StudentsManagement = ({ user, onLogout }) => {
         name: editFormData.name,
         email: editFormData.email,
         phone: editFormData.phone,
-        age: editFormData.age ? parseInt(editFormData.age) : null,
+        birth_date: editFormData.birth_date || null,
         goal: editFormData.goal || null,
         contract_type: editFormData.contract_type,
         monthly_value: editFormData.monthly_value ? parseFloat(editFormData.monthly_value) : null,
@@ -204,7 +204,7 @@ const StudentsManagement = ({ user, onLogout }) => {
                 name: '', 
                 email: '', 
                 phone: '', 
-                age: '', 
+                birth_date: '', 
                 goal: '', 
                 contract_type: 'monthly', 
                 monthly_value: '', 
@@ -249,14 +249,13 @@ const StudentsManagement = ({ user, onLogout }) => {
                     />
                   </div>
                   <div>
-                    <Label>Idade</Label>
+                    <Label>Data de Nascimento</Label>
                     <Input 
-                      type="number" 
-                      value={formData.age} 
-                      onChange={(e) => setFormData({...formData, age: e.target.value})} 
-                      min="1"
-                      max="120"
-                      data-testid="student-age-input" 
+                      type="date" 
+                      value={formData.birth_date} 
+                      onChange={(e) => setFormData({...formData, birth_date: e.target.value})} 
+                      max={new Date().toISOString().split('T')[0]}
+                      data-testid="student-birth-date-input" 
                     />
                   </div>
                   <div>
@@ -451,14 +450,13 @@ const StudentsManagement = ({ user, onLogout }) => {
                 />
               </div>
               <div>
-                <Label>Idade</Label>
+                <Label>Data de Nascimento</Label>
                 <Input
-                  type="number"
-                  value={editFormData.age}
-                  onChange={(e) => setEditFormData({...editFormData, age: e.target.value})}
-                  min="1"
-                  max="120"
-                  data-testid="edit-student-age-input"
+                  type="date"
+                  value={editFormData.birth_date}
+                  onChange={(e) => setEditFormData({...editFormData, birth_date: e.target.value})}
+                  max={new Date().toISOString().split('T')[0]}
+                  data-testid="edit-student-birth-date-input"
                 />
               </div>
               <div>
