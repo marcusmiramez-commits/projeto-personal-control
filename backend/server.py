@@ -70,7 +70,7 @@ class Student(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     professional_id: str
     name: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     password_hash: str
     phone: str
     age: Optional[int] = None
@@ -88,7 +88,7 @@ class Student(BaseModel):
 
 class StudentCreate(BaseModel):
     name: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     password: Optional[str] = None
     phone: str
     age: Optional[int] = None
@@ -405,9 +405,11 @@ async def create_student(student: StudentCreate, current_user: dict = Depends(ge
     if current_user["type"] != "professional":
         raise HTTPException(status_code=403, detail="Only professionals can create students")
     
-    existing = await db.students.find_one({"email": student.email}, {"_id": 0})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    # Only check email uniqueness when provided
+    if student.email:
+        existing = await db.students.find_one({"email": student.email}, {"_id": 0})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
     
     student_obj = Student(
         professional_id=current_user["id"],

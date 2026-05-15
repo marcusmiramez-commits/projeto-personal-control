@@ -21,8 +21,8 @@ const StudentsManagement = ({ user, onLogout }) => {
   const [isAddClassesDialogOpen, setIsAddClassesDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [classesToAdd, setClassesToAdd] = useState('');
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
-  const [editFormData, setEditFormData] = useState({ name: '', email: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+  const [editFormData, setEditFormData] = useState({ name: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
 
   useEffect(() => { fetchStudents(); }, []);
 
@@ -46,7 +46,6 @@ const StudentsManagement = ({ user, onLogout }) => {
       // Prepare data with proper type conversion
       const studentData = {
         name: formData.name,
-        email: formData.email,
         phone: formData.phone,
         anamnesis: formData.anamnesis || null,
         observations: formData.observations || null,
@@ -70,7 +69,7 @@ const StudentsManagement = ({ user, onLogout }) => {
       }
       
       setIsDialogOpen(false);
-      setFormData({ name: '', email: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+      setFormData({ name: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
       fetchStudents();
     } catch (error) {
       console.error('Erro detalhado:', error.response?.data);
@@ -108,7 +107,6 @@ const StudentsManagement = ({ user, onLogout }) => {
     setEditingStudent(student);
     setEditFormData({
       name: student.name,
-      email: student.email,
       phone: student.phone,
       contract_type: student.contract_type,
       monthly_value: student.monthly_value || '',
@@ -125,7 +123,6 @@ const StudentsManagement = ({ user, onLogout }) => {
       
       const updateData = {
         name: editFormData.name,
-        email: editFormData.email,
         phone: editFormData.phone,
         contract_type: editFormData.contract_type,
         monthly_value: editFormData.monthly_value ? parseFloat(editFormData.monthly_value) : null,
@@ -181,7 +178,7 @@ const StudentsManagement = ({ user, onLogout }) => {
     }
   };
 
-  const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.email.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()) || (s.phone || '').includes(searchTerm));
 
   if (loading) return <Layout user={user} onLogout={onLogout}><div className="flex items-center justify-center min-h-[400px]"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div></Layout>;
 
@@ -196,7 +193,6 @@ const StudentsManagement = ({ user, onLogout }) => {
               // Limpar formulário ao abrir
               setFormData({ 
                 name: '', 
-                email: '', 
                 phone: '', 
                 contract_type: 'monthly', 
                 monthly_value: '', 
@@ -218,16 +214,6 @@ const StudentsManagement = ({ user, onLogout }) => {
                       required 
                       minLength={3}
                       data-testid="student-name-input" 
-                    />
-                  </div>
-                  <div>
-                    <Label>Email *</Label>
-                    <Input 
-                      type="email" 
-                      value={formData.email} 
-                      onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                      required 
-                      data-testid="student-email-input" 
                     />
                   </div>
                   <div>
@@ -295,6 +281,21 @@ const StudentsManagement = ({ user, onLogout }) => {
                     </div>
                   </div>
                 )}
+                {formData.contract_type === 'postpaid' && (
+                  <div>
+                    <Label>Valor por Aula (R$)</Label>
+                    <Input 
+                      type="number" 
+                      step="0.01" 
+                      min="0"
+                      value={formData.class_value} 
+                      onChange={(e) => setFormData({...formData, class_value: e.target.value})} 
+                      placeholder="50.00"
+                      data-testid="student-postpaid-class-value-input" 
+                    />
+                    <p className="text-xs text-slate-500 mt-1">Cobrado ao final do mês conforme aulas realizadas</p>
+                  </div>
+                )}
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700" 
@@ -313,7 +314,7 @@ const StudentsManagement = ({ user, onLogout }) => {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-lg font-bold">{student.name}</h3>
-                  <p className="text-sm text-slate-600">{student.email}</p>
+                  <p className="text-sm text-slate-600">{student.phone}</p>
                 </div>
                 <div className="flex space-x-1">
                   <Button 
@@ -399,17 +400,6 @@ const StudentsManagement = ({ user, onLogout }) => {
                   required
                   minLength={3}
                   data-testid="edit-student-name-input"
-                />
-              </div>
-              <div>
-                <Label>Email *</Label>
-                <Input
-                  type="email"
-                  value={editFormData.email}
-                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
-                  required
-                  placeholder="aluno@email.com"
-                  data-testid="edit-student-email-input"
                 />
               </div>
               <div>
