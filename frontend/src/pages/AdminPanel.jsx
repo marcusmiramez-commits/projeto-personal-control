@@ -8,8 +8,42 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
 import { Textarea } from '../components/ui/textarea';
-import { Shield, CheckCircle2, AlertOctagon, Ban, KeyRound, Trash2, RefreshCw, Users } from 'lucide-react';
+import { Shield, CheckCircle2, AlertOctagon, Ban, KeyRound, Trash2, RefreshCw, Users, Send } from 'lucide-react';
 import { toast } from 'sonner';
+
+const APP_URL = (typeof window !== 'undefined' && window.location?.origin) || 'https://personalcontrol.com';
+
+const buildWhatsAppUrl = (phone, message) => {
+  const clean = (phone || '').replace(/\D/g, '');
+  // se já tiver 55 no início mantém, senão prefixa
+  const withCountry = clean.startsWith('55') ? clean : `55${clean}`;
+  return `https://wa.me/${withCountry}?text=${encodeURIComponent(message)}`;
+};
+
+const messageForStatus = (prof, status, reason, tempPassword) => {
+  const greeting = `Olá ${prof.name}! 👋`;
+  switch (status) {
+    case 'active':
+      return `${greeting}\n\n✅ *Cadastro aprovado no Personal Control!*\n\nVocê já pode acessar:\n🌐 ${APP_URL}\n\n🔹 Email: ${prof.email}${tempPassword ? `\n🔹 Senha: ${tempPassword}` : ''}\n\nBons treinos! 💪`;
+    case 'suspended':
+      return `${greeting}\n\n⚠️ *Sua conta no Personal Control foi suspensa.*\n\n${reason ? `Motivo: ${reason}\n\n` : ''}Entre em contato comigo para resolver. 🤝`;
+    case 'blocked':
+      return `${greeting}\n\n🔒 *Acesso ao Personal Control bloqueado por inadimplência.*\n\n${reason ? `${reason}\n\n` : ''}Regularize o pagamento para reativar seu acesso. Qualquer dúvida, me chame.`;
+    case 'password':
+      return `${greeting}\n\n🔑 *Sua senha do Personal Control foi redefinida.*\n\n🌐 ${APP_URL}\n🔹 Email: ${prof.email}\n🔹 Nova senha: ${tempPassword}\n\nRecomendo trocar a senha após o primeiro login em "Perfil → Senha".`;
+    default:
+      return `${greeting}\n\nAtualização sobre sua conta no Personal Control.`;
+  }
+};
+
+const openWhatsApp = (prof, status, reason, tempPassword) => {
+  if (!prof.phone) {
+    toast.error('Profissional sem telefone cadastrado');
+    return;
+  }
+  const url = buildWhatsAppUrl(prof.phone, messageForStatus(prof, status, reason, tempPassword));
+  window.open(url, '_blank');
+};
 
 const statusMeta = {
   pending: { label: 'Aguardando aprovação', cls: 'bg-amber-100 text-amber-800 border-amber-300' },
@@ -58,6 +92,14 @@ const AdminPanel = ({ user, onLogout }) => {
       toast.success('Status atualizado com sucesso');
       setStatusDialog({ open: false, prof: null, newStatus: '', reason: '' });
       fetchProfessionals();
+
+      // Oferece envio de notificação por WhatsApp
+      if (prof.phone) {
+        const shouldNotify = window.confirm(`Deseja avisar ${prof.name} pelo WhatsApp sobre essa mudança?`);
+        if (shouldNotify) {
+          openWhatsApp(prof, newStatus, reason);
+        }
+      }
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Erro ao atualizar status');
     }
@@ -78,6 +120,13 @@ const AdminPanel = ({ user, onLogout }) => {
       );
       toast.success(`Senha de ${prof.name} redefinida`);
       setPwdDialog({ open: false, prof: null, newPassword: '' });
+
+      if (prof.phone) {
+        const shouldNotify = window.confirm(`Deseja enviar a nova senha para ${prof.name} pelo WhatsApp?`);
+        if (shouldNotify) {
+          openWhatsApp(prof, 'password', null, newPassword);
+        }
+      }
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Erro ao redefinir senha');
     }
@@ -206,6 +255,11 @@ const AdminPanel = ({ user, onLogout }) => {
                     {!isMe && (
                       <Button size="sm" variant="outline" onClick={() => setPwdDialog({ open: true, prof, newPassword: '' })} data-testid={`reset-pwd-${prof.id}`}>
                         <KeyRound className="w-4 h-4 mr-1" /> Senha
+                      </Button>
+                    )}
+                    {prof.phone && (
+                      <Button size="sm" variant="outline" onClick={() => openWhatsApp(prof, prof.status, prof.status_reason)} className="border-green-500 text-green-700 hover:bg-green-50" data-testid={`whatsapp-${prof.id}`}>
+                        <Send className="w-4 h-4 mr-1" /> WhatsApp
                       </Button>
                     )}
                     {!isMe && (
