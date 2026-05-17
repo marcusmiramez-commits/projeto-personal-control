@@ -12,6 +12,7 @@ import AttendanceManagement from '@/pages/AttendanceManagement';
 import FinancialManagement from '@/pages/FinancialManagement';
 import ExercisesManagement from '@/pages/ExercisesManagement';
 import ProfileSettings from '@/pages/ProfileSettings';
+import UpdateNotifier from '@/components/UpdateNotifier';
 import { Toaster } from '@/components/ui/sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -79,6 +80,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Toaster position="top-right" richColors />
+      <UpdateNotifier />
       <Routes>
         <Route
           path="/login"
