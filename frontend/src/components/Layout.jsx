@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Home, Users, Dumbbell, Calendar, CheckCircle, DollarSign, LogOut, Menu, X, UserCog } from 'lucide-react';
+import { Home, Users, Dumbbell, Calendar, CheckCircle, DollarSign, LogOut, Menu, X, UserCog, Shield } from 'lucide-react';
 import { useState } from 'react';
 
 const Layout = ({ children, user, onLogout }) => {
@@ -9,6 +9,7 @@ const Layout = ({ children, user, onLogout }) => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isProfessional = user?.type === 'professional';
+  const isAdmin = user?.role === 'admin';
 
   const professionalMenuItems = [
     { path: '/', icon: Home, label: 'Dashboard' },
@@ -76,6 +77,18 @@ const Layout = ({ children, user, onLogout }) => {
                 </Button>
               </Link>
             )}
+            {isAdmin && (
+              <Link to="/admin">
+                <Button
+                  variant={location.pathname === '/admin' ? 'default' : 'ghost'}
+                  className={location.pathname === '/admin' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}
+                  data-testid="nav-admin"
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin
+                </Button>
+              </Link>
+            )}
             <Button
               variant="ghost"
               onClick={onLogout}
@@ -117,6 +130,14 @@ const Layout = ({ children, user, onLogout }) => {
                   <div className={`flex items-center space-x-3 p-3 rounded-lg ${location.pathname === '/profile' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}`}>
                     <UserCog className="w-5 h-5" />
                     <span>Perfil</span>
+                  </div>
+                </Link>
+              )}
+              {isAdmin && (
+                <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                  <div className={`flex items-center space-x-3 p-3 rounded-lg ${location.pathname === '/admin' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}`}>
+                    <Shield className="w-5 h-5" />
+                    <span>Admin</span>
                   </div>
                 </Link>
               )}

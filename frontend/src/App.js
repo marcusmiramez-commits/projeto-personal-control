@@ -12,6 +12,7 @@ import AttendanceManagement from '@/pages/AttendanceManagement';
 import FinancialManagement from '@/pages/FinancialManagement';
 import ExercisesManagement from '@/pages/ExercisesManagement';
 import ProfileSettings from '@/pages/ProfileSettings';
+import AdminPanel from '@/pages/AdminPanel';
 import UpdateNotifier from '@/components/UpdateNotifier';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -141,6 +142,10 @@ const App = () => {
         <Route
           path="/profile"
           element={user ? <ProfileSettings user={user} onLogout={handleLogout} onUserUpdate={setUser} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin"
+          element={user?.role === 'admin' ? <AdminPanel user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
       </Routes>
     </BrowserRouter>

@@ -79,7 +79,11 @@ const Login = ({ onLogin }) => {
         phone: formData.phone.trim() 
       });
       
-      if (response.data && response.data.access_token && response.data.user) {
+      if (response.data?.pending_activation) {
+        toast.success('Cadastro enviado! Aguarde a aprovação do administrador.', { duration: 7000 });
+        setFormData({ email: '', password: '', name: '', phone: '' });
+        setActiveTab('professional-login');
+      } else if (response.data && response.data.access_token && response.data.user) {
         toast.success(`Cadastro realizado! Bem-vindo, ${response.data.user.name}!`);
         onLogin(response.data.user, response.data.access_token);
       } else {

@@ -53,6 +53,9 @@ class Professional(BaseModel):
     password_hash: str
     phone: str
     logo_url: Optional[str] = None
+    role: str = "user"  # "user" | "admin"
+    status: str = "pending"  # "pending" | "active" | "suspended" | "blocked"
+    status_reason: Optional[str] = None  # razão da suspensão/bloqueio
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class ProfessionalCreate(BaseModel):
@@ -320,22 +323,47 @@ async def register_professional(professional: ProfessionalCreate):
         name=professional.name,
         email=professional.email,
         password_hash=hash_password(professional.password),
-        phone=professional.phone
+        phone=professional.phone,
+        status="pending"
     )
     doc = prof_obj.model_dump()
     await db.professionals.insert_one(doc)
     
-    access_token = create_access_token(data={"sub": prof_obj.id, "type": "professional"})
-    return {"access_token": access_token, "token_type": "bearer", "user": {"id": prof_obj.id, "name": prof_obj.name, "email": prof_obj.email, "type": "professional"}}
+    # Não retornar token — aguardar ativação pelo admin
+    return {
+        "pending_activation": True,
+        "message": "Cadastro recebido! Aguarde a aprovação do administrador para acessar o sistema.",
+        "user": {"id": prof_obj.id, "name": prof_obj.name, "email": prof_obj.email}
+    }
 
 @api_router.post("/auth/login/professional")
 async def login_professional(credentials: ProfessionalLogin):
     prof = await db.professionals.find_one({"email": credentials.email}, {"_id": 0})
     if not prof or not verify_password(credentials.password, prof.get("password_hash", "")):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
+        raise HTTPException(status_code=401, detail="Email ou senha incorretos")
+
+    status_val = prof.get("status", "active")
+    if status_val == "pending":
+        raise HTTPException(status_code=403, detail="Seu cadastro está aguardando aprovação do administrador.")
+    if status_val == "suspended":
+        reason = prof.get("status_reason") or "Entre em contato com o administrador."
+        raise HTTPException(status_code=403, detail=f"Conta suspensa. {reason}")
+    if status_val == "blocked":
+        reason = prof.get("status_reason") or "Por inadimplência. Regularize seu pagamento para reativar o acesso."
+        raise HTTPException(status_code=403, detail=f"Conta bloqueada. {reason}")
+
     access_token = create_access_token(data={"sub": prof["id"], "type": "professional"})
-    return {"access_token": access_token, "token_type": "bearer", "user": {"id": prof["id"], "name": prof["name"], "email": prof["email"], "type": "professional"}}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "id": prof["id"],
+            "name": prof["name"],
+            "email": prof["email"],
+            "type": "professional",
+            "role": prof.get("role", "user")
+        }
+    }
 
 @api_router.post("/auth/login/student")
 async def login_student(credentials: ProfessionalLogin):
@@ -397,6 +425,83 @@ async def change_my_password(payload: PasswordChange, current_user: dict = Depen
     new_hash = hash_password(payload.new_password)
     await db.professionals.update_one({"id": current_user["id"]}, {"$set": {"password_hash": new_hash}, "$unset": {"password": ""}})
     return {"message": "Senha alterada com sucesso"}
+
+# ============= ADMIN ROUTES (Master User Only) =============
+
+ALLOWED_STATUS = {"pending", "active", "suspended", "blocked"}
+
+async def require_admin(current_user: dict = Depends(get_current_user)):
+    if current_user.get("type") != "professional":
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0})
+    if not prof or prof.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Apenas administradores podem acessar este recurso")
+    return prof
+
+class StatusUpdate(BaseModel):
+    status: str
+    reason: Optional[str] = None
+
+class AdminPasswordReset(BaseModel):
+    new_password: str
+
+@api_router.get("/admin/professionals")
+async def admin_list_professionals(admin: dict = Depends(require_admin)):
+    profs = await db.professionals.find({}, {"_id": 0, "password_hash": 0, "password": 0}).to_list(1000)
+    # Adiciona contagem de alunos por profissional (sem expor dados dos alunos)
+    for p in profs:
+        p["student_count"] = await db.students.count_documents({"professional_id": p["id"]})
+    return profs
+
+@api_router.put("/admin/professionals/{professional_id}/status")
+async def admin_update_status(professional_id: str, payload: StatusUpdate, admin: dict = Depends(require_admin)):
+    if payload.status not in ALLOWED_STATUS:
+        raise HTTPException(status_code=400, detail=f"Status inválido. Use: {', '.join(sorted(ALLOWED_STATUS))}")
+
+    if professional_id == admin["id"] and payload.status != "active":
+        raise HTTPException(status_code=400, detail="Você não pode suspender/bloquear sua própria conta de administrador")
+
+    target = await db.professionals.find_one({"id": professional_id}, {"_id": 0})
+    if not target:
+        raise HTTPException(status_code=404, detail="Profissional não encontrado")
+
+    update_data = {"status": payload.status, "status_reason": payload.reason}
+    await db.professionals.update_one({"id": professional_id}, {"$set": update_data})
+    return {"message": f"Status atualizado para '{payload.status}'", "id": professional_id, "status": payload.status, "status_reason": payload.reason}
+
+@api_router.put("/admin/professionals/{professional_id}/password")
+async def admin_reset_password(professional_id: str, payload: AdminPasswordReset, admin: dict = Depends(require_admin)):
+    if len(payload.new_password) < 6:
+        raise HTTPException(status_code=400, detail="A nova senha deve ter no mínimo 6 caracteres")
+
+    target = await db.professionals.find_one({"id": professional_id}, {"_id": 0})
+    if not target:
+        raise HTTPException(status_code=404, detail="Profissional não encontrado")
+
+    new_hash = hash_password(payload.new_password)
+    await db.professionals.update_one({"id": professional_id}, {"$set": {"password_hash": new_hash}, "$unset": {"password": ""}})
+    return {"message": "Senha redefinida com sucesso"}
+
+@api_router.delete("/admin/professionals/{professional_id}")
+async def admin_delete_professional(professional_id: str, admin: dict = Depends(require_admin)):
+    if professional_id == admin["id"]:
+        raise HTTPException(status_code=400, detail="Você não pode excluir sua própria conta")
+
+    target = await db.professionals.find_one({"id": professional_id}, {"_id": 0})
+    if not target:
+        raise HTTPException(status_code=404, detail="Profissional não encontrado")
+
+    # Cascade delete: remove dados vinculados ao profissional
+    await db.students.delete_many({"professional_id": professional_id})
+    await db.attendances.delete_many({"professional_id": professional_id})
+    await db.payments.delete_many({"professional_id": professional_id})
+    await db.workout_routines.delete_many({"professional_id": professional_id})
+    await db.workouts.delete_many({"professional_id": professional_id})
+    await db.schedules.delete_many({"professional_id": professional_id})
+    await db.schedule_grids.delete_many({"professional_id": professional_id})
+    await db.exercises.delete_many({"professional_id": professional_id})
+    await db.professionals.delete_one({"id": professional_id})
+    return {"message": "Profissional e todos os dados vinculados foram excluídos"}
 
 # ============= STUDENTS ROUTES =============
 
