@@ -1297,6 +1297,23 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+MASTER_ADMIN_EMAIL = "marcusmiramez@gmail.com"
+
+@app.on_event("startup")
+async def ensure_master_admin():
+    """Garante que o usuário master sempre tenha role=admin e status=active."""
+    try:
+        result = await db.professionals.update_one(
+            {"email": MASTER_ADMIN_EMAIL},
+            {"$set": {"role": "admin", "status": "active"}}
+        )
+        if result.matched_count > 0:
+            logging.info(f"Master admin '{MASTER_ADMIN_EMAIL}' configurado: role=admin, status=active")
+        else:
+            logging.info(f"Master admin '{MASTER_ADMIN_EMAIL}' ainda não cadastrado.")
+    except Exception as e:
+        logging.error(f"Erro ao configurar master admin: {e}")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
