@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = "https://projeto-personal-control.onrender.com";
 export const API = `${BACKEND_URL}/api`;
 
 // Create axios instance
