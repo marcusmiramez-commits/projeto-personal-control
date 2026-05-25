@@ -33,7 +33,7 @@ api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
 # Create uploads directory
-UPLOAD_DIR = Path("/app/backend/uploads")
+UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # Mount static files
