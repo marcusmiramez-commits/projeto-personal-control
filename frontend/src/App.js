@@ -16,9 +16,8 @@ import AdminPanel from '@/pages/AdminPanel';
 import UpdateNotifier from '@/components/UpdateNotifier';
 import { Toaster } from '@/components/ui/sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = "https://projeto-personal-control.onrender.com";
 export const API = `${BACKEND_URL}/api`;
-
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
