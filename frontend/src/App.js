@@ -4,13 +4,9 @@ import '@/App.css';
 import Login from '@/pages/Login';
 import ProfessionalDashboard from '@/pages/ProfessionalDashboard';
 import StudentsManagement from '@/pages/StudentsManagement';
-import WorkoutRoutines from '@/pages/WorkoutRoutines';
-import WorkoutsList from '@/pages/WorkoutsList';
-import WorkoutDetail from '@/pages/WorkoutDetail';
 import ScheduleManagement from '@/pages/ScheduleManagement';
 import AttendanceManagement from '@/pages/AttendanceManagement';
 import FinancialManagement from '@/pages/FinancialManagement';
-import ExercisesManagement from '@/pages/ExercisesManagement';
 import ProfileSettings from '@/pages/ProfileSettings';
 import AdminPanel from '@/pages/AdminPanel';
 import UpdateNotifier from '@/components/UpdateNotifier';
@@ -110,22 +106,6 @@ const App = () => {
         <Route
           path="/students"
           element={user?.type === 'professional' ? <StudentsManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/students/:studentId/routines"
-          element={user ? <WorkoutRoutines user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/students/:studentId/routines/:routineId/workouts"
-          element={user ? <WorkoutsList user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/students/:studentId/routines/:routineId/workouts/:workoutId"
-          element={user ? <WorkoutDetail user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/exercises"
-          element={user?.type === 'professional' ? <ExercisesManagement user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
           path="/schedule"

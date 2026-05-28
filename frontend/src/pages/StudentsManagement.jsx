@@ -7,12 +7,10 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { UserPlus, Search, Trash2, Dumbbell, Send, Edit, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { UserPlus, Search, Trash2, FileText, Send, Edit, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const StudentsManagement = ({ user, onLogout }) => {
-  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,6 +21,92 @@ const StudentsManagement = ({ user, onLogout }) => {
   const [classesToAdd, setClassesToAdd] = useState('');
   const [formData, setFormData] = useState({ name: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
   const [editFormData, setEditFormData] = useState({ name: '', phone: '', contract_type: 'monthly', monthly_value: '', class_balance: 0, class_value: '' });
+
+  // Relatório
+  const [reportDialog, setReportDialog] = useState({ open: false, student: null, month: new Date().toISOString().slice(0, 7), loading: false, data: null });
+
+  const openReportDialog = (student) => {
+    setReportDialog({ open: true, student, month: new Date().toISOString().slice(0, 7), loading: false, data: null });
+  };
+
+  useEffect(() => {
+    const fetchReport = async () => {
+      if (!reportDialog.open || !reportDialog.student) return;
+      setReportDialog(s => ({ ...s, loading: true }));
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(
+          `${API}/students/${reportDialog.student.id}/monthly-report?month=${reportDialog.month}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setReportDialog(s => ({ ...s, data: res.data, loading: false }));
+      } catch (err) {
+        toast.error('Erro ao gerar relatório');
+        setReportDialog(s => ({ ...s, loading: false }));
+      }
+    };
+    fetchReport();
+  }, [reportDialog.open, reportDialog.student, reportDialog.month]);
+
+  const formatReportText = (data) => {
+    if (!data) return '';
+    const monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+    const [year, mon] = data.month.split('-');
+    const monthLabel = `${monthNames[parseInt(mon, 10) - 1]}/${year}`;
+    const name = (data.student.name || '').toUpperCase();
+    const contractType = data.student.contract_type;
+
+    let header;
+    if (contractType === 'postpaid') {
+      header = `📋 *RELATÓRIO DE AULAS — ${monthLabel}*\n*Aluno:* ${name}\n*Aulas realizadas no mês:*`;
+    } else if (contractType === 'prepaid') {
+      header = `📋 *RELATÓRIO DE AULAS — ${monthLabel}*\n*Aluno:* ${name}\n*Aulas previstas (pagamento antecipado):*`;
+    } else {
+      header = `📋 *RELATÓRIO DE AULAS — ${monthLabel}*\n*Aluno:* ${name}\n*Aulas previstas do mês:*`;
+    }
+
+    // Datas em colunas de 2 ✓
+    const formatDay = (iso) => {
+      const [, m, d] = iso.split('-');
+      return `${d}/${m} ✅`;
+    };
+    const datesLines = [];
+    for (let i = 0; i < data.dates.length; i += 2) {
+      const left = formatDay(data.dates[i]);
+      const right = data.dates[i + 1] ? formatDay(data.dates[i + 1]) : '';
+      datesLines.push(right ? `${left}    ${right}` : left);
+    }
+
+    let footer;
+    if (contractType === 'monthly') {
+      footer = `\n🧮 *${data.class_count} aulas previstas*\n💰 *Mensalidade: R$ ${data.monthly_value.toFixed(2).replace('.', ',')}*\n_Pagamento antecipado_`;
+    } else if (contractType === 'prepaid') {
+      footer = `\n🧮 *${data.class_count} aulas × R$ ${data.class_value.toFixed(2).replace('.', ',')} = R$ ${data.total.toFixed(2).replace('.', ',')}*\n_Pagamento antecipado_`;
+    } else {
+      footer = `\n🧮 *${data.class_count} aulas × R$ ${data.class_value.toFixed(2).replace('.', ',')} = R$ ${data.total.toFixed(2).replace('.', ',')}*\n_Valor a ser pago_`;
+    }
+
+    return `${header}\n\n${datesLines.join('\n')}\n${footer}`;
+  };
+
+  const sendReportWhatsApp = () => {
+    const { student, data } = reportDialog;
+    if (!data || !student?.phone) return;
+    const text = formatReportText(data);
+    const clean = student.phone.replace(/\D/g, '');
+    window.open(`https://wa.me/55${clean}?text=${encodeURIComponent(text)}`, '_blank');
+    toast.success('WhatsApp aberto com o relatório!');
+  };
+
+  const copyReportToClipboard = async () => {
+    const text = formatReportText(reportDialog.data);
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success('Relatório copiado!');
+    } catch {
+      toast.error('Não foi possível copiar');
+    }
+  };
 
   useEffect(() => { fetchStudents(); }, []);
 
@@ -355,12 +439,12 @@ const StudentsManagement = ({ user, onLogout }) => {
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <Button 
-                  onClick={() => navigate(`/students/${student.id}/routines`)} 
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                  data-testid="view-workouts-button"
+                  onClick={() => openReportDialog(student)} 
+                  className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
+                  data-testid="generate-report-button"
                 >
-                  <Dumbbell className="w-4 h-4 mr-2" />
-                  Treinos
+                  <FileText className="w-4 h-4 mr-2" />
+                  Relatório
                 </Button>
                 <Button 
                   variant="outline"
@@ -562,6 +646,65 @@ const StudentsManagement = ({ user, onLogout }) => {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Diálogo de Relatório */}
+      <Dialog open={reportDialog.open} onOpenChange={(open) => setReportDialog(s => ({ ...s, open }))}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-orange-600" />
+              Relatório — {reportDialog.student?.name}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label>Mês de referência</Label>
+              <Input
+                type="month"
+                value={reportDialog.month}
+                onChange={(e) => setReportDialog(s => ({ ...s, month: e.target.value }))}
+                data-testid="report-month-input"
+              />
+            </div>
+
+            {reportDialog.loading && (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+
+            {reportDialog.data && !reportDialog.loading && (
+              <>
+                <div className="bg-slate-900 text-white rounded-xl p-5 font-mono text-sm whitespace-pre-wrap" data-testid="report-preview">
+                  {formatReportText(reportDialog.data)}
+                </div>
+                <div className="text-xs text-slate-500 italic">
+                  💡 Dica: depois de abrir o WhatsApp, só clicar em "Enviar".
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={copyReportToClipboard}
+                    data-testid="copy-report-button"
+                  >
+                    Copiar texto
+                  </Button>
+                  <Button
+                    onClick={sendReportWhatsApp}
+                    className="bg-green-600 hover:bg-green-700"
+                    disabled={!reportDialog.student?.phone}
+                    data-testid="send-report-whatsapp-button"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    Enviar WhatsApp
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </Layout>
