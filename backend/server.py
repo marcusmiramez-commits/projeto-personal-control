@@ -712,6 +712,99 @@ async def delete_exercise(exercise_id: str, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=404, detail="Exercise not found")
     return {"message": "Exercise deleted successfully"}
 
+@api_router.get("/students/{student_id}/monthly-report")
+async def student_monthly_report(student_id: str, month: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """
+    Gera relatório mensal de aulas para um aluno.
+    - Pós-pago: aulas JÁ REALIZADAS no mês (present=true)
+    - Pré-pago: aulas AGENDADAS para o mês (a partir do schedule_grid)
+    - Mensalista: aulas AGENDADAS para o mês (valor mensalidade)
+    """
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Apenas profissionais")
+
+    student = await db.students.find_one({"id": student_id, "professional_id": current_user["id"]}, {"_id": 0})
+    if not student:
+        raise HTTPException(status_code=404, detail="Aluno não encontrado")
+
+    if not month:
+        month = datetime.now(timezone.utc).strftime("%Y-%m")
+    try:
+        year_i, month_i = map(int, month.split("-"))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Mês inválido. Use formato YYYY-MM.")
+
+    from calendar import monthrange
+    contract_type = student.get("contract_type", "monthly")
+    dates = []
+
+    if contract_type == "postpaid":
+        # aulas realizadas (present=true) no mês
+        atts = await db.attendances.find({
+            "professional_id": current_user["id"],
+            "student_id": student_id,
+            "present": True,
+            "date": {"$regex": f"^{month}"}
+        }, {"_id": 0}).to_list(1000)
+        dates = sorted({a["date"] for a in atts})
+    else:
+        # pré-pago e mensalista: gerar agendas do mês via schedule_grid
+        grid_doc = await db.schedule_grids.find_one({"professional_id": current_user["id"]}, {"_id": 0})
+        grid = (grid_doc or {}).get("grid_data", {}) or {}
+
+        # nome (chave do grid) — comparação tolerante a espaços/caixa
+        target_name = (student.get("name") or "").strip().lower()
+
+        # Mapear dia da semana -> dias do mês
+        DAY_TO_WEEKDAY = {"Segunda": 0, "Terça": 1, "Quarta": 2, "Quinta": 3, "Sexta": 4, "Sábado": 5, "Domingo": 6}
+        # contar quantas aulas o aluno tem em cada dia da semana
+        weekday_count = {}  # weekday -> int (slots no dia)
+        for time_slot, days_map in grid.items():
+            if not isinstance(days_map, dict):
+                continue
+            for day_label, name_val in days_map.items():
+                if not name_val:
+                    continue
+                if (str(name_val).strip().lower() == target_name) and day_label in DAY_TO_WEEKDAY:
+                    weekday_count[DAY_TO_WEEKDAY[day_label]] = weekday_count.get(DAY_TO_WEEKDAY[day_label], 0) + 1
+
+        # Para cada dia do mês, se cair em um weekday agendado, adiciona N vezes
+        from datetime import date as _date
+        last_day = monthrange(year_i, month_i)[1]
+        for day in range(1, last_day + 1):
+            d = _date(year_i, month_i, day)
+            wd = d.weekday()  # 0=Mon
+            n = weekday_count.get(wd, 0)
+            for _ in range(n):
+                dates.append(d.isoformat())
+
+    class_count = len(dates)
+    class_value = student.get("class_value") or 0
+    monthly_value = student.get("monthly_value") or 0
+
+    if contract_type == "monthly":
+        total = float(monthly_value)
+        context = "Aulas previstas do mês (mensalidade fixa)"
+    else:
+        total = class_count * float(class_value or 0)
+        context = "Aulas realizadas no mês" if contract_type == "postpaid" else "Aulas previstas do mês"
+
+    return {
+        "student": {
+            "id": student["id"],
+            "name": student["name"],
+            "phone": student.get("phone"),
+            "contract_type": contract_type,
+        },
+        "month": month,
+        "dates": dates,
+        "class_count": class_count,
+        "class_value": float(class_value or 0),
+        "monthly_value": float(monthly_value or 0),
+        "total": total,
+        "context": context,
+    }
+
 @api_router.post("/upload")
 async def upload_file(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     """Upload image or video file"""

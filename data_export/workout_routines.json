@@ -1,0 +1,26 @@
+[
+  {
+    "id": "5f92d731-a75c-4ed1-896f-4df24860dc65",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "routine_name": "Musculação",
+    "created_at": "2025-11-09T01:44:02.424211+00:00",
+    "updated_at": "2025-11-09T01:44:02.424219+00:00"
+  },
+  {
+    "id": "77dead70-bfae-48dd-9e75-83b4d30ad31f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "routine_name": "musculação",
+    "created_at": "2025-11-09T19:00:41.883582+00:00",
+    "updated_at": "2025-11-09T19:00:41.883590+00:00"
+  },
+  {
+    "id": "606dbb85-fbf4-484b-b298-b8f8a3709c74",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "routine_name": "musculação",
+    "created_at": "2025-11-10T02:03:46.391660+00:00",
+    "updated_at": "2025-11-10T02:03:46.391667+00:00"
+  }
+]

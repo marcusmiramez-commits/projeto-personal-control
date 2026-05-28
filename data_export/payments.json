@@ -1,0 +1,98 @@
+[
+  {
+    "id": "3520e28d-21cf-429c-a922-86deea92b612",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "amount": 600.0,
+    "payment_date": "2025-11-08",
+    "reference_month": "2025-11",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2025-11-08T20:36:05.326103+00:00"
+  },
+  {
+    "id": "37ee8d8b-a79d-4cb4-b02c-307109f6e14b",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "amount": 300.0,
+    "payment_date": "2025-11-08",
+    "reference_month": "2025-11",
+    "status": "paid",
+    "payment_method": "pix",
+    "created_at": "2025-11-08T21:16:40.895030+00:00"
+  },
+  {
+    "id": "4b24b633-4d67-4628-8c77-75b7c63486a2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "amount": 400.0,
+    "payment_date": "2025-11-10",
+    "reference_month": "2025-11",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2025-11-10T01:53:34.461583+00:00"
+  },
+  {
+    "id": "ad8615bb-fc89-4b2d-8ac7-7548a15d96a9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "amount": 180.0,
+    "payment_date": "2025-11-10",
+    "reference_month": "2025-11",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2025-11-10T01:53:51.855627+00:00"
+  },
+  {
+    "id": "8b0481d8-d1fc-49f8-89f6-2ca2796fca7c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "amount": 540.0,
+    "payment_date": "2025-11-10",
+    "reference_month": "2025-11",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2025-11-10T18:18:51.944482+00:00"
+  },
+  {
+    "id": "ed9aa7fd-caa7-409c-bbac-317a9d523a99",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "amount": 720.0,
+    "payment_date": "2025-11-10",
+    "reference_month": "2025-11",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2025-11-10T18:38:40.282307+00:00"
+  },
+  {
+    "id": "17e3b9ae-1cab-4169-a206-ec0994f09c95",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "amount": 400.0,
+    "payment_date": "2026-05-13",
+    "reference_month": "2026-05",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2026-05-13T15:00:50.275062+00:00"
+  },
+  {
+    "id": "d991c830-c552-4f65-83dd-b74c93f43b22",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "amount": 120.0,
+    "payment_date": "2026-05-13",
+    "reference_month": "2026-05",
+    "status": "paid",
+    "payment_method": "manual",
+    "created_at": "2026-05-13T15:00:59.344315+00:00"
+  }
+]
