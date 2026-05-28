@@ -1,0 +1,14 @@
+[
+  {
+    "id": "d5fd84a0-7e39-4a6e-b5f5-1355ce0c67b0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "routine_id": "7df28427-8564-4960-b07e-9c72d88e0d38",
+    "workout_name": "Peito",
+    "division": "Segunda ",
+    "exercises": [],
+    "progress_notes": "",
+    "created_at": "2026-05-28T16:54:12.080895+00:00",
+    "updated_at": "2026-05-28T16:54:12.080908+00:00"
+  }
+]

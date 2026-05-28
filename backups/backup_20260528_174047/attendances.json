@@ -1,0 +1,1604 @@
+[
+  {
+    "id": "48ca7a98-3bf3-4f9f-831f-2d7d921a1375",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-01",
+    "present": true,
+    "created_at": "2025-11-10T01:45:21.318629+00:00"
+  },
+  {
+    "id": "3aec45d7-e6cc-464a-9205-085986033d29",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-05",
+    "present": true,
+    "created_at": "2025-11-10T01:45:22.989152+00:00"
+  },
+  {
+    "id": "33742337-bc26-4ef0-b362-779696b83df0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-06",
+    "present": false,
+    "created_at": "2025-11-10T01:45:23.665354+00:00"
+  },
+  {
+    "id": "7f8d0cb6-35d2-48f3-b45f-90e83558ac13",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-02",
+    "present": true,
+    "created_at": "2025-11-10T01:52:20.321079+00:00"
+  },
+  {
+    "id": "5c44885a-26fb-41cc-ae42-58b0b9f2525c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-04",
+    "present": false,
+    "created_at": "2025-11-10T01:52:24.255805+00:00"
+  },
+  {
+    "id": "14065c79-86b1-4f2d-8282-d3ed7fd973a8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-08",
+    "present": true,
+    "created_at": "2025-11-10T13:23:12.666421+00:00"
+  },
+  {
+    "id": "800296f1-20da-4fad-bc92-bc41ccfa31a9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-11",
+    "present": true,
+    "created_at": "2025-11-10T18:17:22.056716+00:00"
+  },
+  {
+    "id": "bd4911ee-4edb-475a-9d2a-c04be9021535",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-12",
+    "present": true,
+    "created_at": "2025-11-10T18:17:27.268493+00:00"
+  },
+  {
+    "id": "cb5331b1-6c20-46ba-bfc9-ab461b13f717",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-13",
+    "present": true,
+    "created_at": "2025-11-10T18:36:13.205800+00:00"
+  },
+  {
+    "id": "9b04b841-099b-49e6-95c6-3e0ee259b065",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-14",
+    "present": true,
+    "created_at": "2025-11-10T18:36:55.088485+00:00"
+  },
+  {
+    "id": "c10a9e44-928f-40f1-ad43-086824c6813c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-13",
+    "present": true,
+    "created_at": "2025-11-10T18:52:07.771313+00:00"
+  },
+  {
+    "id": "e152a297-c793-4b92-8e94-7ab22d828e3d",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-01",
+    "present": true,
+    "created_at": "2025-11-10T01:52:21.482082+00:00"
+  },
+  {
+    "id": "058a88cd-628c-4fea-b82e-3e25ebb1e7cd",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-05",
+    "present": false,
+    "created_at": "2025-11-10T01:52:24.955747+00:00"
+  },
+  {
+    "id": "4805edaa-9a2f-47dd-85ad-5318453cd640",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-04",
+    "present": false,
+    "created_at": "2025-11-10T01:52:25.739326+00:00"
+  },
+  {
+    "id": "2d152f29-54a8-401e-88c1-584a967db2d3",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-05",
+    "present": false,
+    "created_at": "2025-11-10T01:52:26.256656+00:00"
+  },
+  {
+    "id": "831d58fb-940e-48fb-b745-07861adb4c19",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-06",
+    "present": false,
+    "created_at": "2025-11-10T01:52:26.788813+00:00"
+  },
+  {
+    "id": "69582014-9cd1-4356-88d0-06b704c8f27d",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-07",
+    "present": true,
+    "created_at": "2025-11-10T13:23:11.495590+00:00"
+  },
+  {
+    "id": "535cb76f-7ae3-4eab-a9b3-a930dd8a624f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-09",
+    "present": true,
+    "created_at": "2025-11-10T13:23:56.873192+00:00"
+  },
+  {
+    "id": "f14af45b-85e6-4ad3-8296-7064b1b606e5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-07",
+    "present": true,
+    "created_at": "2025-11-10T13:23:59.993578+00:00"
+  },
+  {
+    "id": "6cc7fe20-5704-405a-8b38-4fb415d799d0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-06",
+    "present": true,
+    "created_at": "2025-11-10T13:24:00.979274+00:00"
+  },
+  {
+    "id": "791b2553-6a6f-4735-b0b3-7615e39ad780",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-07",
+    "present": true,
+    "created_at": "2025-11-10T13:24:01.750525+00:00"
+  },
+  {
+    "id": "b1b2623f-204e-4036-9774-d9f7727cb840",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-08",
+    "present": true,
+    "created_at": "2025-11-10T13:24:03.566999+00:00"
+  },
+  {
+    "id": "00e6401b-9599-463e-81f1-805267fb265b",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-10",
+    "present": true,
+    "created_at": "2025-11-10T13:25:55.520853+00:00"
+  },
+  {
+    "id": "038cced2-a231-434e-93b8-eb6b86571ce6",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-10",
+    "present": true,
+    "created_at": "2025-11-10T13:25:57.653640+00:00"
+  },
+  {
+    "id": "1ffc0c5d-6db4-43a1-a489-a7a2777fb560",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-12",
+    "present": true,
+    "created_at": "2025-11-10T18:17:23.226038+00:00"
+  },
+  {
+    "id": "e5081785-4505-4e04-b540-0d0a14e42a06",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-12",
+    "present": true,
+    "created_at": "2025-11-10T18:17:25.280303+00:00"
+  },
+  {
+    "id": "0e758706-b14e-431e-957c-d0c4f4efd888",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-12",
+    "present": true,
+    "created_at": "2025-11-10T18:17:28.156037+00:00"
+  },
+  {
+    "id": "bd456f90-ecbc-4154-9f4f-7c7c448f8830",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-14",
+    "present": true,
+    "created_at": "2025-11-10T18:52:08.931644+00:00"
+  },
+  {
+    "id": "f1b3e973-8774-437c-9410-39fd86566bec",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-15",
+    "present": true,
+    "created_at": "2025-11-10T18:53:00.821127+00:00"
+  },
+  {
+    "id": "bec08906-d6ec-40d1-b159-68d85fdb920b",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-04",
+    "present": true,
+    "created_at": "2025-11-10T01:45:22.563653+00:00"
+  },
+  {
+    "id": "1a41194c-98a1-46b0-a602-047853a1bbb7",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-07",
+    "present": false,
+    "created_at": "2025-11-10T01:45:24.101949+00:00"
+  },
+  {
+    "id": "b333a820-45b9-45b6-9a29-1659dab860b3",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-01",
+    "present": true,
+    "created_at": "2025-11-10T01:52:19.782440+00:00"
+  },
+  {
+    "id": "bac1a556-12d0-441e-b6a5-a552287e4a25",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-03",
+    "present": true,
+    "created_at": "2025-11-10T01:52:20.875325+00:00"
+  },
+  {
+    "id": "32b86ae5-f2e5-4dbd-b5d5-a418a4c48acc",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-03",
+    "present": true,
+    "created_at": "2025-11-10T01:52:22.632427+00:00"
+  },
+  {
+    "id": "d9609c34-f666-4a9f-a3d0-cf186d48316e",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-03",
+    "present": true,
+    "created_at": "2025-11-10T13:23:04.801202+00:00"
+  },
+  {
+    "id": "afb117d9-c629-4393-a66e-b06908b2bb60",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-09",
+    "present": true,
+    "created_at": "2025-11-10T13:23:58.348158+00:00"
+  },
+  {
+    "id": "04e8116e-8b5b-4d5a-bbfc-3560e0e4761a",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-08",
+    "present": true,
+    "created_at": "2025-11-10T13:23:59.450449+00:00"
+  },
+  {
+    "id": "04adc7c1-9099-407a-8506-2dfca004c8b9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-10",
+    "present": true,
+    "created_at": "2025-11-10T13:25:58.579135+00:00"
+  },
+  {
+    "id": "8a08c320-8dc0-48b5-a260-b4017e76cb07",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-11",
+    "present": true,
+    "created_at": "2025-11-10T18:17:24.213896+00:00"
+  },
+  {
+    "id": "9b7bfaee-d097-43c1-9fed-ef58b2155afd",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-17",
+    "present": true,
+    "created_at": "2025-11-10T18:53:13.720466+00:00"
+  },
+  {
+    "id": "746979f5-53ea-449c-854b-1b05cf336a49",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-18",
+    "present": true,
+    "created_at": "2025-11-10T18:53:17.919538+00:00"
+  },
+  {
+    "id": "1dd21437-d034-4397-a327-7f30d38506a6",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-02",
+    "present": true,
+    "created_at": "2025-11-10T01:45:21.767806+00:00"
+  },
+  {
+    "id": "e53de596-f57b-42e4-afee-e335bbe0da75",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-03",
+    "present": true,
+    "created_at": "2025-11-10T01:45:22.170610+00:00"
+  },
+  {
+    "id": "38a4d061-e232-4664-b9c8-b92cf88bb157",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-08",
+    "present": false,
+    "created_at": "2025-11-10T01:47:12.894808+00:00"
+  },
+  {
+    "id": "e3d8a7f2-a9b3-490e-ba8a-8f78cc96732f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "18575899-198c-4d0d-b41d-3a7b190c1e8c",
+    "student_name": "Lucas Pimenta",
+    "date": "2025-11-02",
+    "present": true,
+    "created_at": "2025-11-10T01:52:22.130970+00:00"
+  },
+  {
+    "id": "cb3b2ece-b5cb-4b77-816d-acde3d090994",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-01",
+    "present": true,
+    "created_at": "2025-11-10T13:23:01.005370+00:00"
+  },
+  {
+    "id": "711c6bbd-873c-4bb2-b1ac-f62a95281413",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-02",
+    "present": true,
+    "created_at": "2025-11-10T13:23:02.369531+00:00"
+  },
+  {
+    "id": "b7f3822c-4bcb-4de0-8ec7-872f19304859",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-04",
+    "present": true,
+    "created_at": "2025-11-10T13:23:03.454479+00:00"
+  },
+  {
+    "id": "6b751039-7521-4f00-a999-a5b1ecb6b943",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-05",
+    "present": true,
+    "created_at": "2025-11-10T13:23:09.008827+00:00"
+  },
+  {
+    "id": "db59fdc9-a491-4e70-b5ff-291fca3d2c02",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-06",
+    "present": true,
+    "created_at": "2025-11-10T13:23:10.126938+00:00"
+  },
+  {
+    "id": "fef9979c-644d-4af5-bb09-f34be88d1d9f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-09",
+    "present": true,
+    "created_at": "2025-11-10T13:23:56.754930+00:00"
+  },
+  {
+    "id": "4bab189a-1e92-4384-ab88-f14164080c0e",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-09",
+    "present": true,
+    "created_at": "2025-11-10T13:24:04.588636+00:00"
+  },
+  {
+    "id": "f26d4bd6-6fbe-41f0-902f-c318b640d9f0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-10",
+    "present": true,
+    "created_at": "2025-11-10T13:25:56.683540+00:00"
+  },
+  {
+    "id": "e5775823-1fc7-4857-9aa4-dabf22bf306c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "34ce87bd-f0e9-4515-b4af-4382c9ad5d96",
+    "student_name": "Aluno Teste",
+    "date": "2025-11-11",
+    "present": true,
+    "created_at": "2025-11-10T18:17:21.818319+00:00"
+  },
+  {
+    "id": "9d6c5dac-bfe0-406e-b6dc-fcd38dfb1d33",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-11",
+    "present": true,
+    "created_at": "2025-11-10T18:17:26.404590+00:00"
+  },
+  {
+    "id": "32b7241c-bd02-4974-b139-7f31c6231c0a",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "893fd440-bae4-4245-916b-9f5204a17460",
+    "student_name": "Leticia Braga",
+    "date": "2025-11-15",
+    "present": true,
+    "created_at": "2025-11-10T18:52:45.765587+00:00"
+  },
+  {
+    "id": "07081eb4-4382-4350-9633-f637166125db",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "148cc152-80f3-489d-9fb5-e3af4f8068c5",
+    "student_name": "Cassio Ivanovo",
+    "date": "2025-11-16",
+    "present": true,
+    "created_at": "2025-11-10T18:53:10.801857+00:00"
+  },
+  {
+    "id": "8bdae907-0c41-4177-ad11-2b01b49480b2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "1cae9044-9467-45c9-b192-b1c4c580aead",
+    "student_name": "Fabiana Pimenta",
+    "date": "2026-05-13",
+    "present": true,
+    "created_at": "2026-05-14T23:19:33.993297+00:00"
+  },
+  {
+    "id": "2031e2c7-ada6-4ba9-8804-a1fea5705f43",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "1cae9044-9467-45c9-b192-b1c4c580aead",
+    "student_name": "Fabiana Pimenta",
+    "date": "2026-05-14",
+    "present": true,
+    "created_at": "2026-05-14T23:19:42.498509+00:00"
+  },
+  {
+    "id": "3b3b59d8-5cf1-4f23-85b9-d75202a0d7b3",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "1cae9044-9467-45c9-b192-b1c4c580aead",
+    "student_name": "Fabiana Pimenta",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-14T23:23:08.710427+00:00"
+  },
+  {
+    "id": "5008191d-1fb9-4ec1-b8b2-445cd49e8fdb",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "1cae9044-9467-45c9-b192-b1c4c580aead",
+    "student_name": "Fabiana Pimenta",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-14T23:43:25.567606+00:00"
+  },
+  {
+    "id": "eefc9494-0ef0-4091-b6d4-327b5169e41e",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-05",
+    "present": true,
+    "created_at": "2026-05-17T13:24:24.239213+00:00"
+  },
+  {
+    "id": "4b23eae0-0976-4b4a-972e-e30b09f6b198",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-07",
+    "present": true,
+    "created_at": "2026-05-17T13:24:28.102290+00:00"
+  },
+  {
+    "id": "308eef80-a8ac-42f3-9ea1-1d27a5befc06",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-08",
+    "present": true,
+    "created_at": "2026-05-17T13:24:30.339773+00:00"
+  },
+  {
+    "id": "a7339576-4584-488e-bc38-c146f2a94797",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-17T13:24:40.988700+00:00"
+  },
+  {
+    "id": "4e996825-fb08-407f-8111-68ceecb004d5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T13:24:42.318387+00:00"
+  },
+  {
+    "id": "9f2dd7f6-4bd1-4356-9109-892b67fb705c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-14",
+    "present": true,
+    "created_at": "2026-05-17T13:24:45.128798+00:00"
+  },
+  {
+    "id": "2e7c57a5-4bfe-47f6-8b7d-f9943b4f86c5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-15",
+    "present": true,
+    "created_at": "2026-05-17T13:24:46.421601+00:00"
+  },
+  {
+    "id": "5d6d4a02-bbce-4b95-8679-fc256a9ff638",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-04",
+    "present": true,
+    "created_at": "2026-05-17T13:25:29.751835+00:00"
+  },
+  {
+    "id": "ac680eb8-41ae-407a-9543-34650264c8e4",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-05",
+    "present": true,
+    "created_at": "2026-05-17T13:25:31.469516+00:00"
+  },
+  {
+    "id": "08f1dcc9-ce31-4b48-baae-30cfecee508a",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-06",
+    "present": true,
+    "created_at": "2026-05-17T13:25:32.788323+00:00"
+  },
+  {
+    "id": "c9f674c9-1f7b-4fed-812d-4e58db7c83ae",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-17T13:27:18.719292+00:00"
+  },
+  {
+    "id": "0b3e88ee-115f-40ec-ac58-7e865981d792",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T13:27:20.173658+00:00"
+  },
+  {
+    "id": "b0327caa-4347-43fb-bcce-1f3f74338566",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-13",
+    "present": true,
+    "created_at": "2026-05-17T13:27:21.535465+00:00"
+  },
+  {
+    "id": "11bd29ba-8b32-487d-bd5a-40244b9e00e2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-08",
+    "present": true,
+    "created_at": "2026-05-17T13:27:49.993086+00:00"
+  },
+  {
+    "id": "599b5b2c-3d2b-4fdd-ab6b-f5302ab628de",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-17T13:27:51.339458+00:00"
+  },
+  {
+    "id": "a8b75678-aecd-49d6-a27e-98c1a4aae5c9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-15",
+    "present": true,
+    "created_at": "2026-05-17T13:27:53.993320+00:00"
+  },
+  {
+    "id": "3a18a1ad-4066-425f-a8c5-87d7a4f71caf",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-04",
+    "present": true,
+    "created_at": "2026-05-17T13:28:14.491273+00:00"
+  },
+  {
+    "id": "09e74f97-e1cb-42a4-a9e0-fecb21351bc7",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-05",
+    "present": true,
+    "created_at": "2026-05-17T13:28:15.920005+00:00"
+  },
+  {
+    "id": "46c701c6-63da-4960-b148-0733168b4407",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-07",
+    "present": true,
+    "created_at": "2026-05-17T13:28:17.853776+00:00"
+  },
+  {
+    "id": "e44aff42-99d1-4b95-98ea-052838094480",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-17T13:28:22.068967+00:00"
+  },
+  {
+    "id": "3bce1d9a-c362-4210-ae01-a60b15dbd7c4",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T13:28:23.408844+00:00"
+  },
+  {
+    "id": "c9f28c0b-0c27-4cb0-8b09-0b4a6a73e1dc",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-14",
+    "present": true,
+    "created_at": "2026-05-17T13:28:25.071707+00:00"
+  },
+  {
+    "id": "e6a4853d-9ecf-4eb3-9900-3972fb4bc0f8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-07",
+    "present": true,
+    "created_at": "2026-05-17T13:28:45.266585+00:00"
+  },
+  {
+    "id": "20829c32-3a72-4d32-a6bb-267c275e3dca",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-08",
+    "present": true,
+    "created_at": "2026-05-17T13:28:47.201533+00:00"
+  },
+  {
+    "id": "05a4a279-8b02-4802-be8f-6e8c0b80e6e6",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T13:28:49.823592+00:00"
+  },
+  {
+    "id": "e52f4f1b-7cce-4851-b485-ed511b796547",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-14",
+    "present": true,
+    "created_at": "2026-05-17T13:28:51.727342+00:00"
+  },
+  {
+    "id": "96112c3e-22fa-44e3-85ae-71b76d24d9c7",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-15",
+    "present": true,
+    "created_at": "2026-05-17T13:28:53.276424+00:00"
+  },
+  {
+    "id": "b1754a5b-6dbe-4b73-8f74-df9bbadfccd0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-05",
+    "present": true,
+    "created_at": "2026-05-17T13:29:12.758491+00:00"
+  },
+  {
+    "id": "00bb0fd1-9914-45ae-874a-0d38b6312dd8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-06",
+    "present": true,
+    "created_at": "2026-05-17T13:29:14.159803+00:00"
+  },
+  {
+    "id": "7cc56de7-c3c5-4cf7-accb-073665506df3",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-08",
+    "present": true,
+    "created_at": "2026-05-17T13:29:16.582221+00:00"
+  },
+  {
+    "id": "85dc8716-e77f-457b-9e20-12414410dd93",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T13:29:43.745493+00:00"
+  },
+  {
+    "id": "ff5fb354-921f-4ccb-95a3-341aee356324",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-14",
+    "present": false,
+    "created_at": "2026-05-17T13:29:49.975009+00:00"
+  },
+  {
+    "id": "75de2229-ecfd-4e4a-b1a3-ea05eb92e773",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-15",
+    "present": true,
+    "created_at": "2026-05-17T13:29:51.581973+00:00"
+  },
+  {
+    "id": "baa6e03e-dc12-4aba-a7a6-91dacc9d0c26",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-05",
+    "present": false,
+    "created_at": "2026-05-17T13:30:06.248236+00:00"
+  },
+  {
+    "id": "27e2e837-6d5c-4176-9b13-b130a58b6c39",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-07",
+    "present": true,
+    "created_at": "2026-05-17T13:30:29.141199+00:00"
+  },
+  {
+    "id": "04d89662-87a6-49da-b362-37e61eaddfb8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-17T13:30:56.591657+00:00"
+  },
+  {
+    "id": "babc06e2-5001-4297-b1f6-91beadfa8b55",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-04",
+    "present": true,
+    "created_at": "2026-05-17T13:31:12.931332+00:00"
+  },
+  {
+    "id": "ed195963-5ccf-42f4-a228-92414b657e76",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-06",
+    "present": true,
+    "created_at": "2026-05-17T13:31:16.278938+00:00"
+  },
+  {
+    "id": "df639309-ab1e-424d-bd2e-c9b57161fbc2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-08",
+    "present": false,
+    "created_at": "2026-05-17T13:31:19.304517+00:00"
+  },
+  {
+    "id": "cf9d53d6-6b98-48f8-9cf5-9c618fc082ba",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-13",
+    "present": false,
+    "created_at": "2026-05-17T13:31:24.280447+00:00"
+  },
+  {
+    "id": "60ae2b2e-f856-48bd-a031-875a705f46c3",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-14",
+    "present": true,
+    "created_at": "2026-05-17T13:31:51.420634+00:00"
+  },
+  {
+    "id": "78bb770f-9501-403a-898f-fddb67a0e990",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-15",
+    "present": true,
+    "created_at": "2026-05-17T13:31:53.869329+00:00"
+  },
+  {
+    "id": "a2cb87fb-9bee-4d34-bbc6-5b858a825807",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-05",
+    "present": false,
+    "created_at": "2026-05-17T13:32:33.470530+00:00"
+  },
+  {
+    "id": "06078dc1-5f90-45a7-8b66-efc273121d43",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-07",
+    "present": false,
+    "created_at": "2026-05-17T13:32:35.204388+00:00"
+  },
+  {
+    "id": "44fc840f-16eb-451a-af2f-84941de509a5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T13:32:56.316393+00:00"
+  },
+  {
+    "id": "4082422f-82a7-4e45-8164-7e84b23f0948",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-13",
+    "present": true,
+    "created_at": "2026-05-17T13:32:57.673393+00:00"
+  },
+  {
+    "id": "6934facf-48fa-4151-b8d2-bfb921b2dca6",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-14",
+    "present": false,
+    "created_at": "2026-05-17T13:32:58.885227+00:00"
+  },
+  {
+    "id": "82330b1d-7244-4817-a412-38b4fee42dcb",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-05",
+    "present": true,
+    "created_at": "2026-05-17T15:39:10.440903+00:00"
+  },
+  {
+    "id": "cf5bb57d-c3e7-41f1-a682-21a2abbe89b2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-07",
+    "present": false,
+    "created_at": "2026-05-17T15:39:13.907395+00:00"
+  },
+  {
+    "id": "40f5956d-f918-4be7-8a88-6c429f0c4ab3",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-12",
+    "present": true,
+    "created_at": "2026-05-17T15:39:23.612659+00:00"
+  },
+  {
+    "id": "edb0d06a-b028-49d6-bb88-6f80b92b032f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-13",
+    "present": true,
+    "created_at": "2026-05-17T15:39:24.898542+00:00"
+  },
+  {
+    "id": "110c080d-e520-4b0f-960d-c7e26674e8f8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-14",
+    "present": true,
+    "created_at": "2026-05-17T15:39:26.390376+00:00"
+  },
+  {
+    "id": "6301fc35-576f-46a0-8ce5-bbf394224490",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-05",
+    "present": true,
+    "created_at": "2026-05-17T15:39:37.649991+00:00"
+  },
+  {
+    "id": "54458d6c-4037-4550-b3b3-bb60a69534a0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-07",
+    "present": true,
+    "created_at": "2026-05-17T15:39:38.910948+00:00"
+  },
+  {
+    "id": "d3ffe964-97cf-4c61-99f2-a407386c43e4",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-11",
+    "present": true,
+    "created_at": "2026-05-17T15:39:42.096584+00:00"
+  },
+  {
+    "id": "228fa5ad-03f6-4880-9400-a3332f1c5707",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-13",
+    "present": true,
+    "created_at": "2026-05-17T15:39:43.425597+00:00"
+  },
+  {
+    "id": "eaaae333-42fe-4803-b732-68e6afc8caf8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-15",
+    "present": true,
+    "created_at": "2026-05-17T15:39:44.934695+00:00"
+  },
+  {
+    "id": "0951e4aa-df8c-433e-ac41-444875960f2f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "13506ddc-97ef-4d07-84b5-af250ede000a",
+    "student_name": "Alexandre Ansaloni ",
+    "date": "2026-05-04",
+    "present": false,
+    "created_at": "2026-05-17T15:40:05.474587+00:00"
+  },
+  {
+    "id": "7205dcdd-c2bf-424c-8d75-11f47826496c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "13506ddc-97ef-4d07-84b5-af250ede000a",
+    "student_name": "Alexandre Ansaloni ",
+    "date": "2026-05-06",
+    "present": false,
+    "created_at": "2026-05-17T15:40:10.699599+00:00"
+  },
+  {
+    "id": "887087f9-2be5-4cf6-ac3c-ca1952f664a6",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "13506ddc-97ef-4d07-84b5-af250ede000a",
+    "student_name": "Alexandre Ansaloni ",
+    "date": "2026-05-11",
+    "present": false,
+    "created_at": "2026-05-17T15:40:14.932487+00:00"
+  },
+  {
+    "id": "4d738e6b-eb29-462f-ab59-16055c55a4c9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "13506ddc-97ef-4d07-84b5-af250ede000a",
+    "student_name": "Alexandre Ansaloni ",
+    "date": "2026-05-13",
+    "present": false,
+    "created_at": "2026-05-17T15:40:16.189414+00:00"
+  },
+  {
+    "id": "cc04ef20-3277-4ca2-80f9-805c31e7521f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "b9624676-9a32-44a5-b59e-01a4543aa43a",
+    "student_name": "Marília Áurea ",
+    "date": "2026-05-04",
+    "present": false,
+    "created_at": "2026-05-17T15:40:30.383382+00:00"
+  },
+  {
+    "id": "7a362b58-db60-4e0e-aa17-98cf0bc0d7b8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "b9624676-9a32-44a5-b59e-01a4543aa43a",
+    "student_name": "Marília Áurea ",
+    "date": "2026-05-05",
+    "present": false,
+    "created_at": "2026-05-17T15:40:31.552682+00:00"
+  },
+  {
+    "id": "6d717540-867c-46f1-bd1d-fff12340ffc2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "b9624676-9a32-44a5-b59e-01a4543aa43a",
+    "student_name": "Marília Áurea ",
+    "date": "2026-05-07",
+    "present": false,
+    "created_at": "2026-05-17T15:40:33.182379+00:00"
+  },
+  {
+    "id": "c95df7b0-1c19-47de-b4d0-765caf61911b",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "b9624676-9a32-44a5-b59e-01a4543aa43a",
+    "student_name": "Marília Áurea ",
+    "date": "2026-05-11",
+    "present": false,
+    "created_at": "2026-05-17T15:40:36.650314+00:00"
+  },
+  {
+    "id": "123878d3-18f4-4e93-84d8-227e037974ad",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "b9624676-9a32-44a5-b59e-01a4543aa43a",
+    "student_name": "Marília Áurea ",
+    "date": "2026-05-12",
+    "present": false,
+    "created_at": "2026-05-17T15:40:37.676473+00:00"
+  },
+  {
+    "id": "8f97adc4-83bb-433a-85b0-23e9e85b86c2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "b9624676-9a32-44a5-b59e-01a4543aa43a",
+    "student_name": "Marília Áurea ",
+    "date": "2026-05-14",
+    "present": false,
+    "created_at": "2026-05-17T15:40:39.027469+00:00"
+  },
+  {
+    "id": "a18a7693-6b0a-4bbe-b93f-51aca4cbb2ca",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "cc6a81fa-13c3-4514-875d-ddc985c31b16",
+    "student_name": "Rafael Braga ",
+    "date": "2026-05-06",
+    "present": true,
+    "created_at": "2026-05-17T15:46:29.768789+00:00"
+  },
+  {
+    "id": "ae1fef8b-669a-4e83-842b-1c72ed636ee5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "cc6a81fa-13c3-4514-875d-ddc985c31b16",
+    "student_name": "Rafael Braga ",
+    "date": "2026-05-13",
+    "present": true,
+    "created_at": "2026-05-17T15:46:35.486686+00:00"
+  },
+  {
+    "id": "d6247543-6682-4e75-94ff-c8ec4f656626",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-18T11:02:10.521402+00:00"
+  },
+  {
+    "id": "28954ccb-570c-4298-8c9f-b4cd55cef57c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-19T10:44:07.340133+00:00"
+  },
+  {
+    "id": "66222f04-bfaa-42b3-8844-8ab0415316b4",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-19T10:44:08.877574+00:00"
+  },
+  {
+    "id": "c0901add-930a-4714-bafb-6e173ed68dd8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-19T10:44:11.134630+00:00"
+  },
+  {
+    "id": "8c6a9bbf-cff4-4829-9fea-8f9bd98e7ee9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-19T10:44:15.163354+00:00"
+  },
+  {
+    "id": "1a840c36-dd4b-4d16-85c7-931dcadc27d5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-19T10:44:18.022220+00:00"
+  },
+  {
+    "id": "9c08dfdf-4be2-474c-91c4-2247309f41e8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-18",
+    "present": true,
+    "created_at": "2026-05-19T10:44:29.188236+00:00"
+  },
+  {
+    "id": "4814ba0d-2156-477f-8722-0093803831c0",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-19",
+    "present": true,
+    "created_at": "2026-05-19T10:46:29.530759+00:00"
+  },
+  {
+    "id": "cdae73ca-05f8-4e8b-bd89-c370feb13682",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-19",
+    "present": true,
+    "created_at": "2026-05-19T10:46:37.098026+00:00"
+  },
+  {
+    "id": "8f4decd1-b76d-4793-a796-706a81dd683f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-19",
+    "present": true,
+    "created_at": "2026-05-20T00:19:20.243959+00:00"
+  },
+  {
+    "id": "cf39ac7c-0205-4783-97f4-d60cc41c0451",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-19",
+    "present": true,
+    "created_at": "2026-05-20T00:19:42.770486+00:00"
+  },
+  {
+    "id": "2cca91f7-8c4c-45a8-b6a2-dbf80dcf3bf4",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-19",
+    "present": true,
+    "created_at": "2026-05-20T00:19:49.010186+00:00"
+  },
+  {
+    "id": "80e2693a-d280-4dba-9272-4e1fc83af5d7",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-19",
+    "present": false,
+    "created_at": "2026-05-20T00:19:52.616971+00:00"
+  },
+  {
+    "id": "87a8c8bd-7bb6-44dc-a473-3803e5e896f6",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:22:39.073798+00:00"
+  },
+  {
+    "id": "25da6a3a-8302-4d13-9763-68a48e6b6e40",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:22:42.324474+00:00"
+  },
+  {
+    "id": "12c8b499-ae64-45e3-b0fc-c715d399454d",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "cc6a81fa-13c3-4514-875d-ddc985c31b16",
+    "student_name": "Rafael Braga ",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:22:55.167052+00:00"
+  },
+  {
+    "id": "7dbf7011-aefd-4f29-a6dd-b58f89a10e35",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:23:02.194421+00:00"
+  },
+  {
+    "id": "cd7338b7-7e40-4182-ab35-7aa3f6ead7a1",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:23:08.887713+00:00"
+  },
+  {
+    "id": "10eb0c32-3d6c-47a5-80e8-1aff1159f4e4",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:23:11.082732+00:00"
+  },
+  {
+    "id": "771136be-9bf7-443f-a493-5e397ec085d2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-20",
+    "present": true,
+    "created_at": "2026-05-21T13:23:13.321438+00:00"
+  },
+  {
+    "id": "fc9571d2-d7cd-487c-8985-5b7b9edf6762",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-21",
+    "present": true,
+    "created_at": "2026-05-21T13:23:24.745377+00:00"
+  },
+  {
+    "id": "74cfba94-6e66-41d3-a8fb-90ed8cdaf2ec",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-21",
+    "present": true,
+    "created_at": "2026-05-21T13:23:30.588303+00:00"
+  },
+  {
+    "id": "381cf53d-11db-487a-8ab2-8bddc61117e9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dacd52f5-bdd5-4a41-8b0d-55ebd429d40b",
+    "student_name": "Jacqueline ",
+    "date": "2026-05-21",
+    "present": true,
+    "created_at": "2026-05-21T13:38:26.403679+00:00"
+  },
+  {
+    "id": "b3244ff2-d487-42f3-a12a-9e5ecc84c1d2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-21",
+    "present": true,
+    "created_at": "2026-05-21T13:38:41.728086+00:00"
+  },
+  {
+    "id": "75f7efc0-4d7c-421f-b91c-86172400f291",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-21",
+    "present": true,
+    "created_at": "2026-05-22T08:27:44.601603+00:00"
+  },
+  {
+    "id": "b5706c94-d783-4f16-b995-950ab134a613",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-21",
+    "present": true,
+    "created_at": "2026-05-22T08:27:48.900790+00:00"
+  },
+  {
+    "id": "7e232b48-87cb-417d-b75e-5c4852ed5017",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-22",
+    "present": true,
+    "created_at": "2026-05-22T20:22:42.496738+00:00"
+  },
+  {
+    "id": "4e6e1bfe-fc8c-4bab-90e2-993968388e49",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-22",
+    "present": true,
+    "created_at": "2026-05-22T20:22:45.266977+00:00"
+  },
+  {
+    "id": "b17e14ca-7bd5-4aa2-941b-bb635f5ca9bb",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-22",
+    "present": true,
+    "created_at": "2026-05-22T20:22:55.515576+00:00"
+  },
+  {
+    "id": "3be9e6f9-0313-4ede-8f22-04430e1d7a73",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-25",
+    "present": true,
+    "created_at": "2026-05-25T20:41:30.337533+00:00"
+  },
+  {
+    "id": "c711167b-d9d2-41e6-a4b6-66b89812b6c8",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-25",
+    "present": true,
+    "created_at": "2026-05-25T20:41:31.329014+00:00"
+  },
+  {
+    "id": "e9de48ce-5861-4724-aa1c-d6f018cddb8a",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "453f1f54-7b87-4ea9-9d8d-84a17bd9017b",
+    "student_name": "Daniel Castro",
+    "date": "2026-05-25",
+    "present": true,
+    "created_at": "2026-05-25T20:41:33.935024+00:00"
+  },
+  {
+    "id": "823b7382-7cb6-410c-bd3c-97eab4375da7",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-25",
+    "present": true,
+    "created_at": "2026-05-25T20:42:11.232581+00:00"
+  },
+  {
+    "id": "d3980327-87b5-41ee-bf86-b382235bad99",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-25",
+    "present": true,
+    "created_at": "2026-05-25T20:42:16.083545+00:00"
+  },
+  {
+    "id": "4e0ffb8d-1ae4-4721-a87d-ef73e6da1fb5",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-25",
+    "present": true,
+    "created_at": "2026-05-25T20:42:21.261081+00:00"
+  },
+  {
+    "id": "da096b20-2078-4897-8662-86b6ceaf375d",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "c71debd5-d052-4209-aa54-5527cf67f048",
+    "student_name": "Giovanni Pimenta",
+    "date": "2026-05-26",
+    "present": true,
+    "created_at": "2026-05-26T01:16:13.955784+00:00"
+  },
+  {
+    "id": "eab6aa28-bce7-4c02-8d8f-49003cbf5f06",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-26",
+    "present": true,
+    "created_at": "2026-05-26T01:16:15.470071+00:00"
+  },
+  {
+    "id": "5ba30ac1-7230-4c79-9cbd-ab8c23ea0155",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-26",
+    "present": true,
+    "created_at": "2026-05-26T01:16:31.745253+00:00"
+  },
+  {
+    "id": "4e2842ee-200e-42e7-81a9-db4bfe4807ae",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-26",
+    "present": true,
+    "created_at": "2026-05-26T01:16:48.206875+00:00"
+  },
+  {
+    "id": "b06c605d-a335-4305-b257-a6ed41326eaf",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-26",
+    "present": true,
+    "created_at": "2026-05-26T01:17:01.978249+00:00"
+  },
+  {
+    "id": "7dc3d7c2-215e-432c-9463-2c3f34000dd9",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "49b0b1e8-2d8c-42c1-b183-ad6a14a1583f",
+    "student_name": "Matheus Willer",
+    "date": "2026-05-26",
+    "present": true,
+    "created_at": "2026-05-26T01:17:06.197352+00:00"
+  },
+  {
+    "id": "de184b0e-9d56-4ed7-905e-052d464185c2",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "dd033947-88cb-416b-9397-db66c4a48e25",
+    "student_name": "Cássio Ivanovo ",
+    "date": "2026-05-27",
+    "present": true,
+    "created_at": "2026-05-28T00:40:42.180625+00:00"
+  },
+  {
+    "id": "d8b837a2-e0e8-40f9-bd84-bcf6e623907f",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "cc6a81fa-13c3-4514-875d-ddc985c31b16",
+    "student_name": "Rafael Braga ",
+    "date": "2026-05-27",
+    "present": true,
+    "created_at": "2026-05-28T00:40:50.814825+00:00"
+  },
+  {
+    "id": "f67c0a8a-5d33-403a-a8cd-25122b51a56c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "70e8f337-86fa-4b77-b7c6-6ce7e062602c",
+    "student_name": "Jubert ",
+    "date": "2026-05-27",
+    "present": true,
+    "created_at": "2026-05-28T00:40:55.033854+00:00"
+  },
+  {
+    "id": "3dd26e72-308d-4aba-8156-4b8b19922e65",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "6bff650e-215e-4816-9d7b-5a64f041025d",
+    "student_name": "Julia Santarem ",
+    "date": "2026-05-27",
+    "present": true,
+    "created_at": "2026-05-28T00:41:01.215633+00:00"
+  },
+  {
+    "id": "d8f6bf0a-e551-466b-b712-55bc1d5fe30d",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "79d88c1d-a8dd-4ec4-83cc-1e70aaa85163",
+    "student_name": "Geraldo Henrique",
+    "date": "2026-05-27",
+    "present": true,
+    "created_at": "2026-05-28T00:41:10.428421+00:00"
+  },
+  {
+    "id": "0fe886e7-954e-4d16-892e-5b1795ca0761",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "9a8812ca-4b9f-4e85-ab1f-52d4a8229785",
+    "student_name": "Letícia Braga ",
+    "date": "2026-05-22",
+    "present": false,
+    "created_at": "2026-05-28T09:16:24.624779+00:00"
+  },
+  {
+    "id": "480928c7-acba-49bc-b397-873181d1697c",
+    "professional_id": "90b60b6b-d322-4bb2-a326-ebfbd74aa52f",
+    "student_id": "53a1ed58-65b9-4f8d-aab8-c7c01d2560b4",
+    "student_name": "Margarida Moura ",
+    "date": "2026-05-28",
+    "present": true,
+    "created_at": "2026-05-28T12:24:47.545940+00:00"
+  }
+]
