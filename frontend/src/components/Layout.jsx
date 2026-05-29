@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Home, Users, Dumbbell, Calendar, CheckCircle, DollarSign, LogOut, Menu, X, UserCog, Shield } from 'lucide-react';
+import { Home, Users, Dumbbell, Calendar, CheckCircle, DollarSign, LogOut, Menu, X, UserCog, Shield, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 
 const Layout = ({ children, user, onLogout }) => {
@@ -66,6 +66,18 @@ const Layout = ({ children, user, onLogout }) => {
               );
             })}
             {isProfessional && (
+              <Link to="/billing">
+                <Button
+                  variant={location.pathname === '/billing' ? 'default' : 'ghost'}
+                  className={location.pathname === '/billing' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}
+                  data-testid="nav-billing"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Plano
+                </Button>
+              </Link>
+            )}
+            {isProfessional && (
               <Link to="/profile">
                 <Button
                   variant={location.pathname === '/profile' ? 'default' : 'ghost'}
@@ -125,6 +137,14 @@ const Layout = ({ children, user, onLogout }) => {
                   </Link>
                 );
               })}
+              {isProfessional && (
+                <Link to="/billing" onClick={() => setMobileMenuOpen(false)}>
+                  <div className={`flex items-center space-x-3 p-3 rounded-lg ${location.pathname === '/billing' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}`}>
+                    <CreditCard className="w-5 h-5" />
+                    <span>Plano</span>
+                  </div>
+                </Link>
+              )}
               {isProfessional && (
                 <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
                   <div className={`flex items-center space-x-3 p-3 rounded-lg ${location.pathname === '/profile' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'hover:bg-emerald-50'}`}>

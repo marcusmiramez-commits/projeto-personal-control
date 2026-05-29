@@ -86,6 +86,8 @@ const Login = ({ onLogin }) => {
       } else if (response.data && response.data.access_token && response.data.user) {
         toast.success(`Cadastro realizado! Bem-vindo, ${response.data.user.name}!`);
         onLogin(response.data.user, response.data.access_token);
+        // Após cadastro novo, sempre vai pra billing escolher plano
+        setTimeout(() => { window.location.href = '/billing'; }, 200);
       } else {
         toast.error('Resposta inválida do servidor');
       }
