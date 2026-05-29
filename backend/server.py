@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -13,6 +13,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 from passlib.context import CryptContext
 import jwt
+import stripe
 from jwt.exceptions import PyJWTError, DecodeError, InvalidTokenError, ExpiredSignatureError
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -31,6 +32,12 @@ db = client[os.environ['DB_NAME']]
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
+
+# Stripe config
+stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_PRICE_MONTHLY = os.environ.get("STRIPE_PRICE_ID_MONTHLY", "")
+STRIPE_PRICE_YEARLY = os.environ.get("STRIPE_PRICE_ID_YEARLY", "")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 
 # Create uploads directory
 UPLOAD_DIR = Path("uploads")
@@ -55,7 +62,14 @@ class Professional(BaseModel):
     logo_url: Optional[str] = None
     role: str = "user"  # "user" | "admin"
     status: str = "pending"  # "pending" | "active" | "suspended" | "blocked"
-    status_reason: Optional[str] = None  # razão da suspensão/bloqueio
+    status_reason: Optional[str] = None
+    # Stripe subscription
+    stripe_customer_id: Optional[str] = None
+    subscription_id: Optional[str] = None
+    subscription_status: Optional[str] = None  # "trialing" | "active" | "past_due" | "canceled" | "unpaid" | "incomplete" | "lifetime_admin"
+    subscription_plan: Optional[str] = None  # "monthly" | "yearly" | "lifetime"
+    trial_ends_at: Optional[str] = None
+    current_period_end: Optional[str] = None
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class ProfessionalCreate(BaseModel):
@@ -324,16 +338,25 @@ async def register_professional(professional: ProfessionalCreate):
         email=professional.email,
         password_hash=hash_password(professional.password),
         phone=professional.phone,
-        status="pending"
+        status="pending"  # vira active após assinar
     )
     doc = prof_obj.model_dump()
     await db.professionals.insert_one(doc)
     
-    # Não retornar token — aguardar ativação pelo admin
+    # Gera token para o usuário poder acessar a tela de billing
+    access_token = create_access_token(data={"sub": prof_obj.id, "type": "professional"})
     return {
-        "pending_activation": True,
-        "message": "Cadastro recebido! Aguarde a aprovação do administrador para acessar o sistema.",
-        "user": {"id": prof_obj.id, "name": prof_obj.name, "email": prof_obj.email}
+        "access_token": access_token,
+        "token_type": "bearer",
+        "needs_subscription": True,
+        "user": {
+            "id": prof_obj.id,
+            "name": prof_obj.name,
+            "email": prof_obj.email,
+            "type": "professional",
+            "role": "user",
+            "status": "pending",
+        }
     }
 
 @api_router.post("/auth/login/professional")
@@ -343,25 +366,31 @@ async def login_professional(credentials: ProfessionalLogin):
         raise HTTPException(status_code=401, detail="Email ou senha incorretos")
 
     status_val = prof.get("status", "active")
-    if status_val == "pending":
-        raise HTTPException(status_code=403, detail="Seu cadastro está aguardando aprovação do administrador.")
-    if status_val == "suspended":
+    sub_status = prof.get("subscription_status")
+    is_admin = prof.get("role") == "admin"
+
+    # Admin/lifetime sempre passa
+    # Status "pending" agora permite login (será redirecionado para /billing)
+    if status_val == "suspended" and not is_admin:
         reason = prof.get("status_reason") or "Entre em contato com o administrador."
         raise HTTPException(status_code=403, detail=f"Conta suspensa. {reason}")
-    if status_val == "blocked":
-        reason = prof.get("status_reason") or "Por inadimplência. Regularize seu pagamento para reativar o acesso."
+    if status_val == "blocked" and not is_admin:
+        reason = prof.get("status_reason") or "Por inadimplência. Atualize seu pagamento."
         raise HTTPException(status_code=403, detail=f"Conta bloqueada. {reason}")
 
     access_token = create_access_token(data={"sub": prof["id"], "type": "professional"})
+    needs_subscription = (status_val == "pending") and (sub_status not in ("trialing", "active", "lifetime_admin")) and not is_admin
     return {
         "access_token": access_token,
         "token_type": "bearer",
+        "needs_subscription": needs_subscription,
         "user": {
             "id": prof["id"],
             "name": prof["name"],
             "email": prof["email"],
             "type": "professional",
-            "role": prof.get("role", "user")
+            "role": prof.get("role", "user"),
+            "status": status_val,
         }
     }
 
@@ -425,6 +454,171 @@ async def change_my_password(payload: PasswordChange, current_user: dict = Depen
     new_hash = hash_password(payload.new_password)
     await db.professionals.update_one({"id": current_user["id"]}, {"$set": {"password_hash": new_hash}, "$unset": {"password": ""}})
     return {"message": "Senha alterada com sucesso"}
+
+# ============= BILLING (Stripe Subscriptions) =============
+
+PLAN_PRICE_MAP = {
+    "monthly": (STRIPE_PRICE_MONTHLY, "monthly"),
+    "yearly": (STRIPE_PRICE_YEARLY, "yearly"),
+}
+
+class CheckoutRequest(BaseModel):
+    plan: str  # "monthly" | "yearly"
+    origin_url: str  # ex: "https://personalcontrol.app"
+
+class PortalRequest(BaseModel):
+    origin_url: str
+
+@api_router.get("/billing/status")
+async def billing_status(current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Apenas profissionais")
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0, "password_hash": 0, "password": 0})
+    if not prof:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return {
+        "subscription_status": prof.get("subscription_status"),
+        "subscription_plan": prof.get("subscription_plan"),
+        "trial_ends_at": prof.get("trial_ends_at"),
+        "current_period_end": prof.get("current_period_end"),
+        "has_stripe_customer": bool(prof.get("stripe_customer_id")),
+        "is_lifetime_admin": prof.get("subscription_status") == "lifetime_admin",
+    }
+
+@api_router.post("/billing/checkout")
+async def billing_checkout(payload: CheckoutRequest, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Apenas profissionais")
+    if payload.plan not in PLAN_PRICE_MAP:
+        raise HTTPException(status_code=400, detail="Plano inválido. Use 'monthly' ou 'yearly'.")
+    if not stripe.api_key:
+        raise HTTPException(status_code=500, detail="Stripe não configurado no servidor")
+
+    price_id, plan_label = PLAN_PRICE_MAP[payload.plan]
+    if not price_id:
+        raise HTTPException(status_code=500, detail=f"Price ID do plano '{plan_label}' não configurado")
+
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0})
+    if not prof:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    customer_id = prof.get("stripe_customer_id")
+    if not customer_id:
+        customer = stripe.Customer.create(
+            email=prof["email"],
+            name=prof.get("name"),
+            phone=prof.get("phone"),
+            metadata={"professional_id": prof["id"]},
+        )
+        customer_id = customer.id
+        await db.professionals.update_one({"id": prof["id"]}, {"$set": {"stripe_customer_id": customer_id}})
+
+    origin = payload.origin_url.rstrip("/")
+    session = stripe.checkout.Session.create(
+        mode="subscription",
+        customer=customer_id,
+        line_items=[{"price": price_id, "quantity": 1}],
+        subscription_data={
+            "trial_period_days": 31,
+            "metadata": {"professional_id": prof["id"], "plan": plan_label},
+        },
+        success_url=f"{origin}/billing?status=success&session_id={{CHECKOUT_SESSION_ID}}",
+        cancel_url=f"{origin}/billing?status=cancel",
+        allow_promotion_codes=True,
+        metadata={"professional_id": prof["id"], "plan": plan_label},
+    )
+
+    return {"checkout_url": session.url, "session_id": session.id}
+
+@api_router.post("/billing/portal")
+async def billing_portal(payload: PortalRequest, current_user: dict = Depends(get_current_user)):
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Apenas profissionais")
+    if not stripe.api_key:
+        raise HTTPException(status_code=500, detail="Stripe não configurado")
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0})
+    if not prof or not prof.get("stripe_customer_id"):
+        raise HTTPException(status_code=400, detail="Você ainda não possui uma assinatura ativa")
+    origin = payload.origin_url.rstrip("/")
+    session = stripe.billing_portal.Session.create(
+        customer=prof["stripe_customer_id"],
+        return_url=f"{origin}/profile",
+    )
+    return {"portal_url": session.url}
+
+async def _apply_subscription(prof_id: str, subscription: dict, plan: Optional[str] = None):
+    """Atualiza o status do profissional conforme assinatura do Stripe."""
+    sub_status = subscription.get("status")
+    update = {"subscription_id": subscription.get("id"), "subscription_status": sub_status}
+    if plan:
+        update["subscription_plan"] = plan
+    trial_end = subscription.get("trial_end")
+    if trial_end:
+        update["trial_ends_at"] = datetime.fromtimestamp(trial_end, tz=timezone.utc).isoformat()
+    cpe = subscription.get("current_period_end")
+    if cpe:
+        update["current_period_end"] = datetime.fromtimestamp(cpe, tz=timezone.utc).isoformat()
+
+    # Mapeia status do Stripe -> status do app
+    if sub_status in ("trialing", "active"):
+        update["status"] = "active"
+        update["status_reason"] = None
+    elif sub_status in ("past_due", "unpaid", "incomplete"):
+        update["status"] = "blocked"
+        update["status_reason"] = "Pagamento pendente. Atualize o cartão em 'Perfil → Gerenciar Assinatura'."
+    elif sub_status in ("canceled", "incomplete_expired"):
+        update["status"] = "suspended"
+        update["status_reason"] = "Assinatura cancelada. Reative em 'Gerenciar Assinatura'."
+
+    await db.professionals.update_one({"id": prof_id}, {"$set": update})
+
+@api_router.post("/webhook/stripe")
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig = request.headers.get("Stripe-Signature", "")
+    try:
+        if STRIPE_WEBHOOK_SECRET:
+            event = stripe.Webhook.construct_event(payload, sig, STRIPE_WEBHOOK_SECRET)
+        else:
+            # Sem secret (modo dev) — apenas parse JSON
+            import json as _json
+            event = _json.loads(payload.decode("utf-8"))
+    except Exception as e:
+        logging.error(f"Stripe webhook signature failed: {e}")
+        raise HTTPException(status_code=400, detail="Invalid signature")
+
+    etype = event.get("type") if isinstance(event, dict) else event["type"]
+    data = (event.get("data", {}) or {}).get("object", {}) if isinstance(event, dict) else event["data"]["object"]
+    logging.info(f"Stripe webhook: {etype}")
+
+    if etype == "checkout.session.completed":
+        sub_id = data.get("subscription")
+        customer_id = data.get("customer")
+        metadata = data.get("metadata") or {}
+        plan = metadata.get("plan")
+        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
+        if prof and sub_id:
+            sub = stripe.Subscription.retrieve(sub_id)
+            await _apply_subscription(prof["id"], sub, plan=plan)
+
+    elif etype in ("customer.subscription.updated", "customer.subscription.created", "customer.subscription.deleted"):
+        customer_id = data.get("customer")
+        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
+        if prof:
+            plan = (data.get("metadata") or {}).get("plan")
+            await _apply_subscription(prof["id"], data, plan=plan)
+
+    elif etype == "invoice.payment_failed":
+        customer_id = data.get("customer")
+        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
+        if prof:
+            await db.professionals.update_one({"id": prof["id"]}, {"$set": {
+                "status": "blocked",
+                "status_reason": "Pagamento recusado. Atualize seu cartão em 'Gerenciar Assinatura'.",
+                "subscription_status": "past_due",
+            }})
+
+    return {"received": True}
 
 # ============= ADMIN ROUTES (Master User Only) =============
 
@@ -1394,14 +1588,14 @@ MASTER_ADMIN_EMAIL = "marcusmiramez@gmail.com"
 
 @app.on_event("startup")
 async def ensure_master_admin():
-    """Garante que o usuário master sempre tenha role=admin e status=active."""
+    """Garante que o usuário master sempre tenha role=admin, status=active e acesso vitalício."""
     try:
         result = await db.professionals.update_one(
             {"email": MASTER_ADMIN_EMAIL},
-            {"$set": {"role": "admin", "status": "active"}}
+            {"$set": {"role": "admin", "status": "active", "subscription_status": "lifetime_admin", "subscription_plan": "lifetime"}}
         )
         if result.matched_count > 0:
-            logging.info(f"Master admin '{MASTER_ADMIN_EMAIL}' configurado: role=admin, status=active")
+            logging.info(f"Master admin '{MASTER_ADMIN_EMAIL}' configurado: admin/active/lifetime")
         else:
             logging.info(f"Master admin '{MASTER_ADMIN_EMAIL}' ainda não cadastrado.")
     except Exception as e:

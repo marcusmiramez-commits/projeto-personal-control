@@ -9,6 +9,7 @@ import AttendanceManagement from '@/pages/AttendanceManagement';
 import FinancialManagement from '@/pages/FinancialManagement';
 import ProfileSettings from '@/pages/ProfileSettings';
 import AdminPanel from '@/pages/AdminPanel';
+import Billing from '@/pages/Billing';
 import UpdateNotifier from '@/components/UpdateNotifier';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -125,6 +126,10 @@ const App = () => {
         <Route
           path="/admin"
           element={user?.role === 'admin' ? <AdminPanel user={user} onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/billing"
+          element={user ? <Billing user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>
