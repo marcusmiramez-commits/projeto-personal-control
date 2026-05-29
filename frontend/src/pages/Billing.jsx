@@ -16,8 +16,24 @@ const Billing = ({ user, onLogout }) => {
 
   useEffect(() => {
     const flag = params.get('status');
-    if (flag === 'success') toast.success('Assinatura confirmada! Bem-vindo 🎉');
+    if (flag === 'success') {
+      toast.success('Assinatura confirmada! Sincronizando... 🎉');
+      // Tenta sincronizar com Stripe (fallback caso webhook ainda não esteja configurado)
+      (async () => {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.post(`${API}/billing/sync`, {}, { headers: { Authorization: `Bearer ${token}` } });
+        } catch (e) {
+          // silencioso
+        }
+        // Sempre re-busca o status depois
+        fetchStatus();
+        // Limpa o query param da URL
+        window.history.replaceState({}, '', '/billing');
+      })();
+    }
     if (flag === 'cancel') toast.info('Compra cancelada. Você pode escolher outro plano quando quiser.');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
   const fetchStatus = async () => {

@@ -546,6 +546,60 @@ async def billing_portal(payload: PortalRequest, current_user: dict = Depends(ge
     )
     return {"portal_url": session.url}
 
+@api_router.post("/billing/sync")
+async def billing_sync(current_user: dict = Depends(get_current_user)):
+    """
+    Fallback caso o webhook ainda não esteja configurado.
+    Consulta o Stripe pela última assinatura do customer e atualiza o status no banco.
+    """
+    if current_user["type"] != "professional":
+        raise HTTPException(status_code=403, detail="Apenas profissionais")
+    if not stripe.api_key:
+        raise HTTPException(status_code=500, detail="Stripe não configurado")
+
+    prof = await db.professionals.find_one({"id": current_user["id"]}, {"_id": 0})
+    if not prof:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    customer_id = prof.get("stripe_customer_id")
+    # Se ainda não temos customer_id, tenta achar por email no Stripe
+    if not customer_id:
+        try:
+            customers = stripe.Customer.list(email=prof["email"], limit=5).data
+            if customers:
+                # Pega o mais recente
+                customer_id = customers[0].id
+                await db.professionals.update_one({"id": prof["id"]}, {"$set": {"stripe_customer_id": customer_id}})
+        except Exception as e:
+            logging.error(f"Erro buscando customer no Stripe: {e}")
+
+    if not customer_id:
+        return {"updated": False, "reason": "Sem customer no Stripe"}
+
+    try:
+        subs = stripe.Subscription.list(customer=customer_id, status="all", limit=5).data
+        if not subs:
+            return {"updated": False, "reason": "Sem assinaturas"}
+
+        # Pega a primeira não-cancelada (ou a mais recente se todas estiverem)
+        active_sub = next((s for s in subs if s.status in ("trialing", "active", "past_due", "unpaid")), subs[0])
+        sub_dict = active_sub.to_dict() if hasattr(active_sub, "to_dict") else dict(active_sub)
+        plan = (sub_dict.get("metadata") or {}).get("plan")
+        # Se não tiver plan no metadata, infere pelo price
+        if not plan:
+            items = (sub_dict.get("items") or {}).get("data") or []
+            if items:
+                price_id = items[0].get("price", {}).get("id")
+                if price_id == STRIPE_PRICE_MONTHLY:
+                    plan = "monthly"
+                elif price_id == STRIPE_PRICE_YEARLY:
+                    plan = "yearly"
+        await _apply_subscription(prof["id"], sub_dict, plan=plan)
+        return {"updated": True, "subscription_status": sub_dict.get("status"), "plan": plan}
+    except Exception as e:
+        logging.error(f"Erro no billing sync: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao sincronizar: {str(e)}")
+
 async def _apply_subscription(prof_id: str, subscription: dict, plan: Optional[str] = None):
     """Atualiza o status do profissional conforme assinatura do Stripe."""
     sub_status = subscription.get("status")
