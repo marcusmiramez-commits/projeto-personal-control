@@ -17,35 +17,43 @@ const Billing = ({ user, onLogout }) => {
   useEffect(() => {
     const flag = params.get('status');
     if (flag === 'success') {
-      toast.success('Assinatura confirmada! Sincronizando... 🎉');
-      // Tenta sincronizar com Stripe (fallback caso webhook ainda não esteja configurado)
+      toast.success('Pagamento confirmado! Ativando seu acesso... 🎉');
+      // O webhook do Stripe atualiza o status da assinatura no banco de forma
+      // assíncrona. Fazemos um polling curto do nosso próprio status até refletir
+      // a ativação (sem depender de chamadas diretas ao Stripe pelo frontend).
       (async () => {
-        try {
-          const token = localStorage.getItem('token');
-          await axios.post(`${API}/billing/sync`, {}, { headers: { Authorization: `Bearer ${token}` } });
-        } catch (e) {
-          // silencioso
+        let activated = false;
+        for (let i = 0; i < 8; i++) {
+          const s = await fetchStatus(true);
+          if (s && (s.subscription_status === 'active' || s.subscription_status === 'trialing' || s.is_lifetime_admin)) {
+            activated = true;
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 2000));
         }
-        // Sempre re-busca o status depois
-        fetchStatus();
-        // Limpa o query param da URL
+        if (!activated) {
+          toast.info('Estamos confirmando seu pagamento. Isso pode levar alguns instantes — atualize a página em breve.');
+          await fetchStatus();
+        }
         window.history.replaceState({}, '', '/billing');
       })();
     }
     if (flag === 'cancel') toast.info('Compra cancelada. Você pode escolher outro plano quando quiser.');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [params]);
 
-  const fetchStatus = async () => {
+  const fetchStatus = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const token = localStorage.getItem('token');
       const res = await axios.get(`${API}/billing/status`, { headers: { Authorization: `Bearer ${token}` } });
       setStatus(res.data);
+      return res.data;
     } catch {
-      toast.error('Erro ao carregar status da assinatura');
+      if (!silent) toast.error('Erro ao carregar status da assinatura');
+      return null;
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 

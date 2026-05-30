@@ -517,6 +517,7 @@ async def billing_checkout(payload: CheckoutRequest, current_user: dict = Depend
     session = stripe.checkout.Session.create(
         mode="subscription",
         customer=customer_id,
+        client_reference_id=prof["id"],
         line_items=[{"price": price_id, "quantity": 1}],
         subscription_data={
             "trial_period_days": 31,
@@ -600,16 +601,73 @@ async def billing_sync(current_user: dict = Depends(get_current_user)):
         logging.error(f"Erro no billing sync: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao sincronizar: {str(e)}")
 
-async def _apply_subscription(prof_id: str, subscription: dict, plan: Optional[str] = None):
+def _stripe_obj_to_dict(obj) -> dict:
+    """Normaliza um objeto Stripe (StripeObject) ou dict para dict puro."""
+    if obj is None:
+        return {}
+    if hasattr(obj, "to_dict"):
+        return obj.to_dict()
+    return dict(obj)
+
+
+def _extract_period_end(subscription: dict):
+    """Na API Stripe 2025+ o current_period_end saiu do nível raiz da
+    Subscription e passou para cada item (items.data[].current_period_end)."""
+    cpe = subscription.get("current_period_end")
+    if cpe:
+        return cpe
+    items = (subscription.get("items") or {}).get("data") or []
+    if items:
+        return items[0].get("current_period_end")
+    return None
+
+
+def _infer_plan(subscription: dict) -> Optional[str]:
+    """Descobre o plano: primeiro pelo metadata, senão pelo price do item."""
+    plan = (subscription.get("metadata") or {}).get("plan")
+    if plan:
+        return plan
+    items = (subscription.get("items") or {}).get("data") or []
+    if items:
+        price_id = (items[0].get("price") or {}).get("id")
+        if price_id == STRIPE_PRICE_MONTHLY:
+            return "monthly"
+        if price_id == STRIPE_PRICE_YEARLY:
+            return "yearly"
+    return None
+
+
+async def _find_professional_for_event(obj: dict):
+    """Mapeia um objeto de evento Stripe ao profissional interno.
+    Ordem de confiança: metadata.professional_id -> client_reference_id -> stripe_customer_id."""
+    meta = obj.get("metadata") or {}
+    prof_id = meta.get("professional_id") or obj.get("client_reference_id")
+    if prof_id:
+        prof = await db.professionals.find_one({"id": prof_id}, {"_id": 0})
+        if prof:
+            return prof
+    customer_id = obj.get("customer")
+    if customer_id:
+        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
+        if prof:
+            return prof
+    return None
+
+
+async def _apply_subscription(prof_id: str, subscription, plan: Optional[str] = None):
     """Atualiza o status do profissional conforme assinatura do Stripe."""
+    subscription = _stripe_obj_to_dict(subscription)
     sub_status = subscription.get("status")
     update = {"subscription_id": subscription.get("id"), "subscription_status": sub_status}
+    customer_id = subscription.get("customer")
+    if customer_id:
+        update["stripe_customer_id"] = customer_id
     if plan:
         update["subscription_plan"] = plan
     trial_end = subscription.get("trial_end")
     if trial_end:
         update["trial_ends_at"] = datetime.fromtimestamp(trial_end, tz=timezone.utc).isoformat()
-    cpe = subscription.get("current_period_end")
+    cpe = _extract_period_end(subscription)
     if cpe:
         update["current_period_end"] = datetime.fromtimestamp(cpe, tz=timezone.utc).isoformat()
 
@@ -625,6 +683,7 @@ async def _apply_subscription(prof_id: str, subscription: dict, plan: Optional[s
         update["status_reason"] = "Assinatura cancelada. Reative em 'Gerenciar Assinatura'."
 
     await db.professionals.update_one({"id": prof_id}, {"$set": update})
+    logging.info(f"[stripe] profissional {prof_id} atualizado -> status={update.get('status')} sub_status={sub_status} plan={plan}")
 
 @api_router.post("/webhook/stripe")
 async def stripe_webhook(request: Request):
@@ -638,41 +697,53 @@ async def stripe_webhook(request: Request):
             import json as _json
             event = _json.loads(payload.decode("utf-8"))
     except Exception as e:
-        logging.error(f"Stripe webhook signature failed: {e}")
-        raise HTTPException(status_code=400, detail="Invalid signature")
+        logging.error(f"[stripe-webhook] assinatura/parse inválida: {e}")
+        raise HTTPException(status_code=400, detail="Invalid payload")
 
-    etype = event.get("type") if isinstance(event, dict) else event["type"]
-    data = (event.get("data", {}) or {}).get("object", {}) if isinstance(event, dict) else event["data"]["object"]
-    logging.info(f"Stripe webhook: {etype}")
+    etype = event["type"]
+    obj = _stripe_obj_to_dict(event["data"]["object"])
+    logging.info(f"[stripe-webhook] recebido: {etype}")
 
+    try:
+        await _process_stripe_event(etype, obj)
+    except Exception as e:
+        # Retornamos 200 mesmo em erro para evitar reenvios infinitos por bug de código.
+        # O erro fica registrado nos logs para diagnóstico.
+        logging.exception(f"[stripe-webhook] erro ao processar {etype}: {e}")
+
+    return {"received": True}
+
+
+async def _process_stripe_event(etype: str, obj: dict):
     if etype == "checkout.session.completed":
-        sub_id = data.get("subscription")
-        customer_id = data.get("customer")
-        metadata = data.get("metadata") or {}
-        plan = metadata.get("plan")
-        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
-        if prof and sub_id:
-            sub = stripe.Subscription.retrieve(sub_id)
+        prof = await _find_professional_for_event(obj)
+        if not prof:
+            logging.warning("[stripe-webhook] checkout.session.completed: profissional não encontrado")
+            return
+        customer_id = obj.get("customer")
+        if customer_id and not prof.get("stripe_customer_id"):
+            await db.professionals.update_one({"id": prof["id"]}, {"$set": {"stripe_customer_id": customer_id}})
+        sub_id = obj.get("subscription")
+        if sub_id:
+            sub = _stripe_obj_to_dict(stripe.Subscription.retrieve(sub_id))
+            plan = _infer_plan(sub) or (obj.get("metadata") or {}).get("plan")
             await _apply_subscription(prof["id"], sub, plan=plan)
 
-    elif etype in ("customer.subscription.updated", "customer.subscription.created", "customer.subscription.deleted"):
-        customer_id = data.get("customer")
-        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
-        if prof:
-            plan = (data.get("metadata") or {}).get("plan")
-            await _apply_subscription(prof["id"], data, plan=plan)
+    elif etype in ("customer.subscription.created", "customer.subscription.updated", "customer.subscription.deleted"):
+        prof = await _find_professional_for_event(obj)
+        if not prof:
+            logging.warning(f"[stripe-webhook] {etype}: profissional não encontrado")
+            return
+        await _apply_subscription(prof["id"], obj, plan=_infer_plan(obj))
 
     elif etype == "invoice.payment_failed":
-        customer_id = data.get("customer")
-        prof = await db.professionals.find_one({"stripe_customer_id": customer_id}, {"_id": 0})
+        prof = await _find_professional_for_event(obj)
         if prof:
             await db.professionals.update_one({"id": prof["id"]}, {"$set": {
                 "status": "blocked",
                 "status_reason": "Pagamento recusado. Atualize seu cartão em 'Gerenciar Assinatura'.",
                 "subscription_status": "past_due",
             }})
-
-    return {"received": True}
 
 # ============= ADMIN ROUTES (Master User Only) =============
 
