@@ -17,7 +17,7 @@ import os
 from dotenv import load_dotenv
 
 # Backend URL from environment
-BACKEND_URL = "https://trainer-portal-demo.preview.emergentagent.com/api"
+BACKEND_URL = "https://plano-profissional.preview.emergentagent.com/api"
 
 class ProfessionalDashboardTester:
     def __init__(self):

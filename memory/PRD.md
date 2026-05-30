@@ -23,6 +23,7 @@ Portuguese (pt-BR) — Responder sempre em pt-BR.
 - Mobile responsive em tabelas (overflow-x-auto)
 
 ## Changelog Recente
+- 2026-02: **Stripe webhook corrigido (fonte da verdade)** — `_apply_subscription` agora extrai `current_period_end` de `items.data[]` (mudança da API Stripe 2025+); webhook mapeia o profissional por `metadata.professional_id` → `client_reference_id` → `stripe_customer_id`; eventos tratados: checkout.session.completed, customer.subscription.created/updated/deleted, invoice.payment_failed. Adicionado `client_reference_id` no Checkout. Frontend `/billing` faz polling de `/api/billing/status` no retorno do checkout (não depende mais do `/sync`). Testado com objetos reais do Stripe (test mode) em `backend/tests/test_stripe_webhook.py` — 4/4 cenários OK.
 - 2026-02: Removido o card "Exercícios" do Dashboard do Profissional e todas as variáveis/fetch vinculados (totalExercises, muscleGroups, fetch `/api/exercises`).
 - 2026-02: StudentDashboard - removidos campos "Presenças/Faltas" do card Financeiro; adicionado histórico de datas no card Aulas.
 - 2026-02: Migrada Agenda de localStorage → MongoDB para sync cross-device.
