@@ -7,7 +7,7 @@ import requests
 import json
 from datetime import datetime
 
-BACKEND_URL = "https://trainer-portal-demo.preview.emergentagent.com/api"
+BACKEND_URL = "https://plano-profissional.preview.emergentagent.com/api"
 
 def test_edge_cases():
     """Test edge cases and error conditions"""

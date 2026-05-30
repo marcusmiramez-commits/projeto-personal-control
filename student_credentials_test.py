@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from environment
-BACKEND_URL = "https://trainer-portal-demo.preview.emergentagent.com/api"
+BACKEND_URL = "https://plano-profissional.preview.emergentagent.com/api"
 
 class StudentCredentialsUpdateTester:
     def __init__(self):
