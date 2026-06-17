@@ -322,7 +322,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         return {"id": user_id, "type": user_type}
     except ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
-    except (DecodeError, InvalidTokenError, PyJWTError, Exception) as e:
+    except (DecodeError, InvalidTokenError, PyJWTError, Exception):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 # ============= AUTH ROUTES =============
@@ -1339,13 +1339,26 @@ async def delete_schedule(schedule_id: str, current_user: dict = Depends(get_cur
 async def delete_attendance(student_id: str, date: str, current_user: dict = Depends(get_current_user)):
     if current_user["type"] != "professional":
         raise HTTPException(status_code=403, detail="Only professionals can delete attendance")
-    
+
+    # Busca o registro antes de excluir para estornar o saldo, se necessário
+    existing = await db.attendances.find_one({
+        "professional_id": current_user["id"],
+        "student_id": student_id,
+        "date": date
+    }, {"_id": 0})
+
+    if existing and existing.get("present"):
+        student = await db.students.find_one({"id": student_id}, {"_id": 0})
+        if student and student.get("contract_type") == "prepaid":
+            # Estorna a aula debitada anteriormente
+            await db.students.update_one({"id": student_id}, {"$inc": {"class_balance": 1}})
+
     result = await db.attendances.delete_one({
         "professional_id": current_user["id"],
         "student_id": student_id,
         "date": date
     })
-    
+
     return {"message": "Attendance deleted successfully", "deleted_count": result.deleted_count}
 
 # ============= ATTENDANCE ROUTES =============
@@ -1354,18 +1367,32 @@ async def delete_attendance(student_id: str, date: str, current_user: dict = Dep
 async def mark_attendance(attendance: AttendanceCreate, current_user: dict = Depends(get_current_user)):
     if current_user["type"] != "professional":
         raise HTTPException(status_code=403, detail="Only professionals can mark attendance")
-    
+
     student = await db.students.find_one({"id": attendance.student_id}, {"_id": 0})
     if not student or student["professional_id"] != current_user["id"]:
         raise HTTPException(status_code=404, detail="Student not found")
-    
+
+    is_prepaid = student.get("contract_type") == "prepaid"
+
     # Verificar se já existe registro para esta data
     existing = await db.attendances.find_one({
         "professional_id": current_user["id"],
         "student_id": attendance.student_id,
         "date": attendance.date
     }, {"_id": 0})
-    
+
+    was_present = bool(existing["present"]) if existing else False
+    new_present = bool(attendance.present)
+
+    # Ajuste de saldo (apenas pré-pago): debita ao marcar presença, estorna ao desmarcar/converter em ausência.
+    # delta = aulas consumidas antes - aulas consumidas depois. Pode deixar o saldo negativo.
+    if is_prepaid and was_present != new_present:
+        delta = (1 if was_present else 0) - (1 if new_present else 0)
+        await db.students.update_one(
+            {"id": attendance.student_id},
+            {"$inc": {"class_balance": delta}}
+        )
+
     # Se já existe, atualizar ao invés de inserir
     if existing:
         await db.attendances.update_one(
@@ -1374,35 +1401,27 @@ async def mark_attendance(attendance: AttendanceCreate, current_user: dict = Dep
                 "student_id": attendance.student_id,
                 "date": attendance.date
             },
-            {"$set": {"present": attendance.present}}
+            {"$set": {"present": new_present}}
         )
-        
+
         attendance_obj = Attendance(
             id=existing["id"],
             professional_id=current_user["id"],
             student_id=attendance.student_id,
             student_name=student["name"],
             date=attendance.date,
-            present=attendance.present,
+            present=new_present,
             created_at=existing["created_at"]
         )
         return attendance_obj
-    
-    # Update class balance if prepaid/postpaid (apenas para novo registro)
-    if attendance.present:
-        if student["contract_type"] == "prepaid" and student["class_balance"] > 0:
-            await db.students.update_one(
-                {"id": attendance.student_id},
-                {"$inc": {"class_balance": -1}}
-            )
-    
+
     # Inserir novo registro
     attendance_obj = Attendance(
         professional_id=current_user["id"],
         student_id=attendance.student_id,
         student_name=student["name"],
         date=attendance.date,
-        present=attendance.present
+        present=new_present
     )
     doc = attendance_obj.model_dump()
     await db.attendances.insert_one(doc)
@@ -1526,8 +1545,13 @@ async def get_financial_report(month: Optional[str] = None, current_user: dict =
         elif student["contract_type"] == "postpaid":
             expected_amount = classes_count * (student.get("class_value", 0) or 0)
         elif student["contract_type"] == "prepaid":
-            # For prepaid, expected is based on classes used
-            expected_amount = classes_count * (student.get("class_value", 0) or 0)
+            # Pré-pago: com saldo positivo as presenças saem do crédito (não gera valor).
+            # Com saldo 0 ou negativo, cobra pelas presenças do mês × valor da aula.
+            current_balance = student.get("class_balance", 0) or 0
+            if current_balance > 0:
+                expected_amount = 0
+            else:
+                expected_amount = classes_count * (student.get("class_value", 0) or 0)
         
         payment_status = "paid" if paid_amount >= expected_amount else "pending"
         

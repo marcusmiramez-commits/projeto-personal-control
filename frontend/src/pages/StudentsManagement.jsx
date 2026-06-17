@@ -89,12 +89,30 @@ const StudentsManagement = ({ user, onLogout }) => {
     return `${header}\n\n${datesLines.join('\n')}\n${footer}`;
   };
 
+  // Abre o WhatsApp sem deixar aba/página em branco no navegador.
+  // No celular usa o deep link (abre o app direto e o Personal Control continua na lista de alunos).
+  const openWhatsApp = (phone, text) => {
+    const clean = (phone || '').replace(/\D/g, '');
+    if (!clean) {
+      toast.error('Aluno sem telefone cadastrado');
+      return;
+    }
+    const encoded = encodeURIComponent(text);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    if (isMobile) {
+      window.location.href = `whatsapp://send?phone=55${clean}&text=${encoded}`;
+    } else {
+      window.open(`https://wa.me/55${clean}?text=${encoded}`, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   const sendReportWhatsApp = () => {
     const { student, data } = reportDialog;
     if (!data || !student?.phone) return;
     const text = formatReportText(data);
-    const clean = student.phone.replace(/\D/g, '');
-    window.open(`https://wa.me/55${clean}?text=${encodeURIComponent(text)}`, '_blank');
+    // Fecha o diálogo e volta para a lista de alunos antes de abrir o WhatsApp
+    setReportDialog(s => ({ ...s, open: false }));
+    openWhatsApp(student.phone, text);
     toast.success('WhatsApp aberto com o relatório!');
   };
 
@@ -164,14 +182,7 @@ const StudentsManagement = ({ user, onLogout }) => {
 
   const sendAccessDataViaWhatsApp = (studentData) => {
     const message = `Olá ${studentData.name}! 👋\n\nBem-vindo(a) ao acompanhamento personalizado! ✅\n\nA partir de agora seu Personal Trainer vai te enviar treinos, lembretes de aulas e cobranças por aqui mesmo, pelo WhatsApp. 💪\n\nQualquer dúvida, é só me chamar!`;
-    
-    // Remove formatting from phone number
-    const cleanPhone = studentData.phone.replace(/\D/g, '');
-    
-    // Open WhatsApp with pre-filled message
-    const whatsappUrl = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-    
+    openWhatsApp(studentData.phone, message);
     toast.success('WhatsApp aberto! Envie a mensagem para o aluno.');
   };
 
@@ -450,9 +461,7 @@ const StudentsManagement = ({ user, onLogout }) => {
                   variant="outline"
                   onClick={() => {
                     const message = `Olá ${student.name}! 👋\n\n💪 *Mensagem do seu Personal Trainer*\n\nQualquer informação sobre treinos, aulas, lembretes ou pagamentos será enviada por aqui.\n\nNos vemos no treino!`;
-                    const cleanPhone = student.phone.replace(/\D/g, '');
-                    const whatsappUrl = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
-                    window.open(whatsappUrl, '_blank');
+                    openWhatsApp(student.phone, message);
                     toast.success('WhatsApp aberto!');
                   }}
                   className="border-green-500 text-green-600 hover:bg-green-50"
