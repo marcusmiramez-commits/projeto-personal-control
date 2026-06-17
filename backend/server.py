@@ -1545,8 +1545,13 @@ async def get_financial_report(month: Optional[str] = None, current_user: dict =
         elif student["contract_type"] == "postpaid":
             expected_amount = classes_count * (student.get("class_value", 0) or 0)
         elif student["contract_type"] == "prepaid":
-            # For prepaid, expected is based on classes used
-            expected_amount = classes_count * (student.get("class_value", 0) or 0)
+            # Pré-pago: com saldo positivo as presenças saem do crédito (não gera valor).
+            # Com saldo 0 ou negativo, cobra pelas presenças do mês × valor da aula.
+            current_balance = student.get("class_balance", 0) or 0
+            if current_balance > 0:
+                expected_amount = 0
+            else:
+                expected_amount = classes_count * (student.get("class_value", 0) or 0)
         
         payment_status = "paid" if paid_amount >= expected_amount else "pending"
         

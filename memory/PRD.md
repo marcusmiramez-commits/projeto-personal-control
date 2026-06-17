@@ -23,6 +23,7 @@ Portuguese (pt-BR) — Responder sempre em pt-BR.
 - Mobile responsive em tabelas (overflow-x-auto)
 
 ## Changelog Recente
+- 2026-02: **Financeiro pré-pago** — `expected_amount` no `/financial/report`: saldo > 0 → R$ 0 (presenças saem do crédito); saldo ≤ 0 → nº de presenças do mês × valor da aula. Testado em `backend/tests/test_financial_prepaid.py` (3/3).
 - 2026-02: **4 ajustes** — (1) Alunos pré-pagos: presença debita 1 do `class_balance` e desmarcar/excluir estorna +1 (saldo pode ficar negativo); lógica simétrica em `mark_attendance`/`delete_attendance` (`server.py`), testada em `backend/tests/test_attendance_balance.py` (6/6). (2) Agenda: viewport alterna no foco/blur dos campos para impedir auto-zoom mantendo pinça (`ScheduleManagement.jsx`). (3) Financeiro: removidos gráficos "Receita por Aluno" e "Distribuição de Pagamentos" + import recharts (`FinancialManagement.jsx`). (4) WhatsApp: helper `openWhatsApp` usa deep link `whatsapp://` no mobile e fecha o diálogo/volta à lista (`StudentsManagement.jsx`).
 - 2026-02: **Stripe webhook corrigido (fonte da verdade)** — `_apply_subscription` extrai `current_period_end` de `items.data[]`; webhook mapeia profissional por `metadata.professional_id` → `client_reference_id` → `stripe_customer_id`; frontend `/billing` faz polling de `/api/billing/status`. Testado em `backend/tests/test_stripe_webhook.py` (4/4).
 - 2026-02: Removido o card "Exercícios" do Dashboard do Profissional e todas as variáveis/fetch vinculados (totalExercises, muscleGroups, fetch `/api/exercises`).
