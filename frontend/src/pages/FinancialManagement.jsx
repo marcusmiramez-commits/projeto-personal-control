@@ -8,7 +8,6 @@ import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { DollarSign, CheckCircle, AlertCircle, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Plus, Download } from 'lucide-react';
 import { toast } from 'sonner';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const FinancialManagement = ({ user, onLogout }) => {
   const [report, setReport] = useState(null);
@@ -135,17 +134,6 @@ const FinancialManagement = ({ user, onLogout }) => {
   }
 
   // Prepare chart data
-  const chartData = report?.students.map(s => ({
-    name: s.student_name.split(' ')[0],
-    Esperado: s.expected_amount,
-    Recebido: s.paid_amount
-  })) || [];
-
-  const pieData = [
-    { name: 'Recebido', value: report?.total_received || 0, color: '#10b981' },
-    { name: 'Pendente', value: report?.total_pending || 0, color: '#ef4444' }
-  ];
-
   const paidCount = report?.students.filter(s => s.payment_status === 'paid').length || 0;
   const pendingCount = report?.students.filter(s => s.payment_status === 'pending').length || 0;
 
@@ -222,47 +210,6 @@ const FinancialManagement = ({ user, onLogout }) => {
               <span className="text-slate-400">|</span>
               <span className="text-xl font-bold text-red-600">{pendingCount} pendentes</span>
             </div>
-          </div>
-        </div>
-
-        {/* Gráficos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="glass rounded-2xl p-6 border border-emerald-100">
-            <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk' }}>Receita por Aluno</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="Esperado" fill="#3b82f6" />
-                <Bar dataKey="Recebido" fill="#10b981" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="glass rounded-2xl p-6 border border-emerald-100">
-            <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk' }}>Distribuição de Pagamentos</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={(entry) => `${entry.name}: R$ ${entry.value.toFixed(2)}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
           </div>
         </div>
 
