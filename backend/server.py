@@ -1031,6 +1031,29 @@ async def delete_exercise(exercise_id: str, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=404, detail="Exercise not found")
     return {"message": "Exercise deleted successfully"}
 
+DAY_TO_WEEKDAY = {"Segunda": 0, "Terça": 1, "Quarta": 2, "Quinta": 3, "Sexta": 4, "Sábado": 5, "Domingo": 6}
+
+
+def _scheduled_dates(grid: dict, student_name: Optional[str], year_i: int, month_i: int) -> List[str]:
+    """Datas (com repetição por horário) em que o aluno aparece na grade semanal no mês."""
+    from calendar import monthrange
+    from datetime import date as _date
+    target_name = (student_name or "").strip().lower()
+    weekday_count = {}
+    for days_map in (grid or {}).values():
+        if not isinstance(days_map, dict):
+            continue
+        for day_label, name_val in days_map.items():
+            if name_val and str(name_val).strip().lower() == target_name and day_label in DAY_TO_WEEKDAY:
+                wd = DAY_TO_WEEKDAY[day_label]
+                weekday_count[wd] = weekday_count.get(wd, 0) + 1
+    dates = []
+    for day in range(1, monthrange(year_i, month_i)[1] + 1):
+        d = _date(year_i, month_i, day)
+        dates.extend([d.isoformat()] * weekday_count.get(d.weekday(), 0))
+    return dates
+
+
 @api_router.get("/students/{student_id}/monthly-report")
 async def student_monthly_report(student_id: str, month: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     """
@@ -1070,32 +1093,7 @@ async def student_monthly_report(student_id: str, month: Optional[str] = None, c
         # pré-pago e mensalista: gerar agendas do mês via schedule_grid
         grid_doc = await db.schedule_grids.find_one({"professional_id": current_user["id"]}, {"_id": 0})
         grid = (grid_doc or {}).get("grid_data", {}) or {}
-
-        # nome (chave do grid) — comparação tolerante a espaços/caixa
-        target_name = (student.get("name") or "").strip().lower()
-
-        # Mapear dia da semana -> dias do mês
-        DAY_TO_WEEKDAY = {"Segunda": 0, "Terça": 1, "Quarta": 2, "Quinta": 3, "Sexta": 4, "Sábado": 5, "Domingo": 6}
-        # contar quantas aulas o aluno tem em cada dia da semana
-        weekday_count = {}  # weekday -> int (slots no dia)
-        for time_slot, days_map in grid.items():
-            if not isinstance(days_map, dict):
-                continue
-            for day_label, name_val in days_map.items():
-                if not name_val:
-                    continue
-                if (str(name_val).strip().lower() == target_name) and day_label in DAY_TO_WEEKDAY:
-                    weekday_count[DAY_TO_WEEKDAY[day_label]] = weekday_count.get(DAY_TO_WEEKDAY[day_label], 0) + 1
-
-        # Para cada dia do mês, se cair em um weekday agendado, adiciona N vezes
-        from datetime import date as _date
-        last_day = monthrange(year_i, month_i)[1]
-        for day in range(1, last_day + 1):
-            d = _date(year_i, month_i, day)
-            wd = d.weekday()  # 0=Mon
-            n = weekday_count.get(wd, 0)
-            for _ in range(n):
-                dates.append(d.isoformat())
+        dates = _scheduled_dates(grid, student.get("name"), year_i, month_i)
 
     class_count = len(dates)
     class_value = student.get("class_value") or 0
@@ -1526,10 +1524,15 @@ async def get_financial_report(month: Optional[str] = None, current_user: dict =
     # Get payments for the month
     payments = await db.payments.find({"professional_id": current_user["id"], "reference_month": month}, {"_id": 0}).to_list(1000)
     
+    grid_doc = await db.schedule_grids.find_one({"professional_id": current_user["id"]}, {"_id": 0})
+    grid = (grid_doc or {}).get("grid_data", {}) or {}
+    year_i, month_i = map(int, month.split("-"))
+
     # Calculate financial data for each student
     report = []
     total_expected = 0
     total_received = 0
+    monthly_forecast = 0
     
     for student in students:
         student_attendances = [a for a in month_attendances if a["student_id"] == student["id"]]
@@ -1571,9 +1574,17 @@ async def get_financial_report(month: Optional[str] = None, current_user: dict =
         
         total_expected += expected_amount
         total_received += paid_amount
+
+        # Previsão mensal: mensalista = mensalidade fixa; pré/pós = aulas na grade × valor da aula
+        if student["contract_type"] == "monthly":
+            monthly_forecast += student.get("monthly_value", 0) or 0
+        else:
+            scheduled = len(_scheduled_dates(grid, student.get("name"), year_i, month_i))
+            monthly_forecast += scheduled * (student.get("class_value", 0) or 0)
     
     return {
         "month": month,
+        "monthly_forecast": monthly_forecast,
         "total_expected": total_expected,
         "total_received": total_received,
         "total_pending": total_expected - total_received,

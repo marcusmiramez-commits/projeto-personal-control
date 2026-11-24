@@ -58,3 +58,10 @@ Portuguese (pt-BR) — Responder sempre em pt-BR.
 
 ## DB Collections
 - users, students, attendances, schedules, exercises, workouts, workout_routines, schedule_grids
+
+## 2026-11 — Previsão Mensal (Dashboard)
+- `/api/financial/report` retorna `monthly_forecast`: mensalista = monthly_value fixo; pré/pós-pago = aulas na grade semanal do mês × class_value.
+- Helper `_scheduled_dates` (server.py) compartilhado com `/students/{id}/monthly-report`.
+- Card Financeiro do Dashboard ganhou linha "Previsão Mensal" (data-testid monthly-forecast-value). Total Esperado/Pendente inalterados.
+- Testado: API (R$ 2.740 conferido à mão para nov/2026) + screenshot.
+- Pendência conhecida: /api/upload grava arquivos no disco local (backend/uploads) — perdidos em redeploy no Render.
