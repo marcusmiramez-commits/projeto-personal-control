@@ -58,3 +58,15 @@ Portuguese (pt-BR) — Responder sempre em pt-BR.
 
 ## DB Collections
 - users, students, attendances, schedules, exercises, workouts, workout_routines, schedule_grids
+
+## 2026-11 — Previsão Mensal (Dashboard)
+- `/api/financial/report` retorna `monthly_forecast`: mensalista = monthly_value fixo; pré/pós-pago = aulas na grade semanal do mês × class_value.
+- Helper `_scheduled_dates` (server.py) compartilhado com `/students/{id}/monthly-report`.
+- Card Financeiro do Dashboard ganhou linha "Previsão Mensal" (data-testid monthly-forecast-value). Total Esperado/Pendente inalterados.
+- Testado: API (R$ 2.740 conferido à mão para nov/2026) + screenshot.
+- Pendência conhecida: /api/upload grava arquivos no disco local (backend/uploads) — perdidos em redeploy no Render.
+
+## 2026-11 — Agenda compacta no celular
+- `components/MobileScheduleGrid.jsx` (md:hidden): 7 dias cabem na tela (340px), células mostram iniciais, legenda "iniciais = nome", tocar abre diálogo com campo + chips dos alunos ativos (Limpar/OK); tocar no horário permite editar/remover.
+- Desktop mantém a tabela antiga. Salvar continua pelo botão "Salvar Agenda".
+- Testado por screenshot 390px (largura 340 ≤ 390, edição de célula OK).

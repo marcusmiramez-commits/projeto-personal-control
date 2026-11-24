@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Save, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { MobileScheduleGrid } from '../components/MobileScheduleGrid';
 
 const ScheduleManagement = ({ user, onLogout }) => {
   const [timeSlots, setTimeSlots] = useState([
@@ -43,6 +44,15 @@ const ScheduleManagement = ({ user, onLogout }) => {
   // Restaura o viewport ao sair da página da Agenda
   useEffect(() => () => setViewport(VIEWPORT_DEFAULT), []);
 
+
+  const [studentNames, setStudentNames] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.get(`${API}/students`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setStudentNames(res.data.filter(s => s.status === 'active').map(s => s.name).sort()))
+      .catch(() => setStudentNames([]));
+  }, []);
 
   // Load schedule from backend on mount
   useEffect(() => {
@@ -188,7 +198,18 @@ const ScheduleManagement = ({ user, onLogout }) => {
         </div>
 
         <div className="glass rounded-2xl p-2 md:p-6 border border-emerald-100 overflow-x-auto shadow-inner">
-          <div className="overflow-x-scroll md:overflow-x-auto">
+          <div className="md:hidden">
+            <MobileScheduleGrid
+              timeSlots={timeSlots}
+              weekDays={weekDays}
+              schedule={schedule}
+              studentNames={studentNames}
+              onCellChange={handleCellChange}
+              onTimeChange={handleTimeChange}
+              onRemoveTime={removeTimeSlot}
+            />
+          </div>
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse min-w-max" data-testid="schedule-grid">
               <thead>
                 <tr>
@@ -249,7 +270,7 @@ const ScheduleManagement = ({ user, onLogout }) => {
             </table>
           </div>
 
-          <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+          <div className="mt-4 hidden md:flex items-center justify-between text-sm text-slate-600">
             <p>✏️ Clique em qualquer célula para editar o nome do aluno</p>
             <p>💾 Suas alterações são salvas automaticamente localmente</p>
           </div>

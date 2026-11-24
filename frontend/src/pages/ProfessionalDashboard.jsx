@@ -42,6 +42,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
           ...prev,
           ...dashboardResponse.data,
           total_expected: financialResponse.data.total_expected,
+          monthly_forecast: financialResponse.data.monthly_forecast,
           total_received: financialResponse.data.total_received
         }));
         
@@ -163,6 +164,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
       stats: [
         { label: 'Receita Mensal', value: `R$ ${(dashboard?.total_received || 0).toFixed(2)}` },
         { label: 'Total Esperado', value: `R$ ${(dashboard?.total_expected || 0).toFixed(2)}` },
+        { label: 'Previsão Mensal', value: `R$ ${(dashboard?.monthly_forecast || 0).toFixed(2)}`, testId: 'monthly-forecast-value' },
         { label: 'Status', value: dashboard?.paid_count ? `${dashboard.paid_count} ${dashboard.paid_count === 1 ? 'pago' : 'pagos'}` : 'Nenhum pagamento', icon: dashboard?.paid_count > 0 ? CheckCircle : AlertCircle, iconColor: dashboard?.paid_count > 0 ? 'text-green-500' : 'text-orange-500' },
       ],
       testId: 'module-financial'
@@ -208,7 +210,7 @@ const ProfessionalDashboard = ({ user, onLogout }) => {
                       <span className="text-sm text-slate-600">{stat.label}</span>
                       <div className="flex items-center space-x-2">
                         {stat.icon && <stat.icon className={`w-4 h-4 ${stat.iconColor}`} />}
-                        <span className="text-lg font-bold">{stat.value}</span>
+                        <span className="text-lg font-bold" data-testid={stat.testId}>{stat.value}</span>
                       </div>
                     </div>
                   ))}
