@@ -65,3 +65,8 @@ Portuguese (pt-BR) — Responder sempre em pt-BR.
 - Card Financeiro do Dashboard ganhou linha "Previsão Mensal" (data-testid monthly-forecast-value). Total Esperado/Pendente inalterados.
 - Testado: API (R$ 2.740 conferido à mão para nov/2026) + screenshot.
 - Pendência conhecida: /api/upload grava arquivos no disco local (backend/uploads) — perdidos em redeploy no Render.
+
+## 2026-11 — Agenda compacta no celular
+- `components/MobileScheduleGrid.jsx` (md:hidden): 7 dias cabem na tela (340px), células mostram iniciais, legenda "iniciais = nome", tocar abre diálogo com campo + chips dos alunos ativos (Limpar/OK); tocar no horário permite editar/remover.
+- Desktop mantém a tabela antiga. Salvar continua pelo botão "Salvar Agenda".
+- Testado por screenshot 390px (largura 340 ≤ 390, edição de célula OK).
